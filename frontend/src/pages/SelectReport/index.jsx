@@ -7,7 +7,7 @@ import ReportOptionCard from '../../components/ReportOptionCard';
 export default function SelectReport() {
     return (
         <div className="transition-colors duration-500 ease-in-out min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white flex flex-col">
-            
+
             <SimpleHeader backLink="/" />
 
             {/* === SEÇÃO PRINCIPAL DE ESCOLHA === */}
@@ -34,8 +34,8 @@ export default function SelectReport() {
 
                 {/* Grid de Opções (Bento Box interativo) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
-                    
-                    <ReportOptionCard 
+
+                    <ReportOptionCard
                         to="/reportar/anonimo"
                         icon={EyeOff}
                         optionNumber="Opção 01"
@@ -43,15 +43,15 @@ export default function SelectReport() {
                         description="Nenhum dado pessoal será coletado. Ideal para relatos delicados, como barricadas ou problemas de segurança, garantindo 100% de sigilo do cidadão."
                     />
 
-                    <ReportOptionCard 
-                        to="#"
+                    <ReportOptionCard
+                        to="/acesso"
                         icon={UserCheck}
                         optionNumber="Opção 02"
                         title="Usar Conta"
                         description="Ao acessar sua conta, você ganha visibilidade total sobre seus relatos: monitore o status em tempo real, receba notificações sobre as resoluções e participe ativamente da transformação do seu bairro."
                     />
 
-                    <ReportOptionCard 
+                    <ReportOptionCard
                         to="#"
                         icon={Sparkles}
                         optionNumber="Opção 03"

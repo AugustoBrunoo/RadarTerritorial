@@ -15,7 +15,8 @@ export default function MediaSection({
   formDescription,
   setFormDescription,
   formMacroCategory,
-  isCategoriaIa
+  isCategoriaIa,
+  isAnonymousFlow = true
 }) {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [moderationError, setModerationError] = useState(null);
@@ -86,6 +87,7 @@ export default function MediaSection({
         formDescription={formDescription}
         formMacroCategory={formMacroCategory}
         isCategoriaIa={isCategoriaIa}
+        isAnonymousFlow={isAnonymousFlow}
       />
 
       {/* ERROR MODAL DE MODERAÇÃO */}

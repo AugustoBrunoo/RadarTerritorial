@@ -1,8 +1,5 @@
 import { useEffect } from 'react';
-import { Routes, Route } from 'react-router';
-import Home from './pages/Home/index.jsx';
-import SelectReport from './pages/SelectReport/index.jsx';
-import AnonymousReport from './pages/AnonymousReport/index.jsx';
+import AppRoutes from './routes';
 import './App.css';
 
 function App() {
@@ -18,14 +15,7 @@ function App() {
     }
   }, []);
 
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/reportar" element={<SelectReport />} />
-      <Route path="/reportar/anonimo" element={<AnonymousReport />} />
-      {/* Adicione mais rotas aqui conforme necessário */}
-    </Routes>
-  );
+  return <AppRoutes />;
 }
 
 export default App;

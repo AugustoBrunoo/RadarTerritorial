@@ -105,7 +105,7 @@ export default function InstallModal({ isOpen, onClose }) {
                     <i data-lucide="x" className="h-5 w-5"></i>
                 </button>
 
-                <div id="install-step-selection" className={"block " + (installStep === "selection" ? "block" : "hidden")}>
+                <div id="install-step-selection" className={installStep === "selection" ? "block" : "hidden"}>
                     <h3 className="text-2xl font-black mb-2 tracking-tight">Instalar na Tela Inicial</h3>
                     <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-8">Escolha a plataforma do seu aparelho para ver o
                         passo a passo dedicado:</p>
@@ -137,7 +137,7 @@ export default function InstallModal({ isOpen, onClose }) {
                     </div>
                 </div>
 
-                <div id="install-step-wizard" className={"hidden " + (installStep === "wizard" ? "block" : "hidden")}>
+                <div id="install-step-wizard" className={installStep === "wizard" ? "block" : "hidden"}>
                     <div className="flex items-center gap-2 mb-6">
                         <span id="wizard-os-badge" className={wizardCurrentOS === "ios" ? "px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200" : "px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"}>{wizardCurrentOS === "ios" ? "Apple iOS" : "Android OS"}</span>
                         <span id="wizard-progress-text" className="text-xs font-bold text-zinc-400">Passo {wizardCurrentStep} de {totalSteps}</span>

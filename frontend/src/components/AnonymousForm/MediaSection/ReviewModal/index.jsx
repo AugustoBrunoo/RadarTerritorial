@@ -10,6 +10,8 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { categoryMacros } from "../../CategorySection";
+import { supabase } from "../../../../lib/supabaseClient";
+import { enviarOcorrencia } from "../../../../services/relatoService";
 
 export default function ReviewModal({
   isOpen,
@@ -20,11 +22,13 @@ export default function ReviewModal({
   formDescription,
   formMacroCategory,
   isCategoriaIa,
+  isAnonymousFlow = true,
 }) {
   const [modalState, setModalState] = useState("REVIEW"); // "REVIEW" | "SUCCESS"
   const [isTurnstileChecking, setIsTurnstileChecking] = useState(false);
   const [isTurnstileChecked, setIsTurnstileChecked] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -34,13 +38,37 @@ export default function ReviewModal({
       setIsTurnstileChecking(false);
       setIsTurnstileChecked(false);
       setIsPublishing(false);
+
+      if (!isAnonymousFlow) {
+        // Busca o usuário logado de forma assíncrona, mas não bloqueia a UI
+        supabase.auth.getUser().then(({ data: { user } }) => {
+          if (user) {
+            let fullName = user.user_metadata?.nome_completo;
+            if (fullName) {
+              setCurrentUser({ id: user.id, nome: fullName, email: user.email });
+            } else {
+              supabase.from('profiles').select('nome_completo').eq('id', user.id).single()
+                .then(({ data }) => {
+                  setCurrentUser({ id: user.id, nome: data?.nome_completo || "Cidadão Logado", email: user.email });
+                });
+            }
+          } else {
+            setCurrentUser(null);
+          }
+        }).catch((err) => {
+          console.error("Erro ao buscar user no modal de revisão:", err);
+          setCurrentUser(null);
+        });
+      } else {
+        setCurrentUser(null);
+      }
     } else {
       document.body.style.overflow = "";
     }
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isOpen]);
+  }, [isOpen, isAnonymousFlow]);
 
   const simulateTurnstileCheck = () => {
     if (isTurnstileChecked || isTurnstileChecking) return;
@@ -68,19 +96,20 @@ export default function ReviewModal({
     return macro ? macro.title : "Categoria Adicional";
   };
 
-  const handleFinalizeReport = () => {
+  const finalPublish = async () => {
+    if (!isTurnstileChecked || isPublishing) return;
+    setIsPublishing(true);
+
     const payloadSupabase = {
-      user_id: null,
-      is_anonimo: true,
       tipo_loc: formLocation?.gps ? "gps" : "manual",
       bairro: formatBairro(formLocation?.bairro),
       cep: formLocation?.cep || null,
       rua: formLocation?.rua || null,
       referencia: formLocation?.ref || null,
       is_sn: formLocation?.sn || false,
-      latitude: formLocation?.lat || null,
-      longitude: formLocation?.lng || null,
-      macro_eixo: getMacroTitle(), // Agora mapeado corretamente
+      latitude: formLocation?.lat ? parseFloat(formLocation.lat) : null,
+      longitude: formLocation?.lng ? parseFloat(formLocation.lng) : null,
+      macro_eixo: getMacroTitle(), 
       categoria_nome: formCategory || null,
       is_categoria_ia: isCategoriaIa || false,
       urgencias: Array.isArray(formSeverity) ? formSeverity : [],
@@ -88,23 +117,15 @@ export default function ReviewModal({
       imagem_url: null,
     };
 
-    console.log(
-      "Payload pronto para o Supabase:",
-      JSON.stringify(payloadSupabase, null, 2),
-    );
-  };
+    const response = await enviarOcorrencia(payloadSupabase, isAnonymousFlow);
 
-  const finalPublish = () => {
-    if (!isTurnstileChecked || isPublishing) return;
-    setIsPublishing(true);
+    setIsPublishing(false);
 
-    // Dispara a função que monta e loga o payload
-    handleFinalizeReport();
-
-    setTimeout(() => {
-      setIsPublishing(false);
+    if (response.success) {
       setModalState("SUCCESS");
-    }, 2000);
+    } else {
+      alert("Erro ao publicar relato: " + response.error);
+    }
   };
 
   if (!isOpen) return null;
@@ -219,7 +240,7 @@ export default function ReviewModal({
                 </div>
                 <div>
                   <h4 className="font-bold text-zinc-900 dark:text-white leading-tight md:text-lg">
-                    Cidadão Anônimo
+                    {currentUser ? currentUser.nome : "Cidadão Anônimo"}
                   </h4>
                   <p className="text-xs md:text-sm font-semibold text-zinc-500 dark:text-zinc-400 mt-0.5 flex items-center gap-1">
                     <MapPin className="h-3 w-3 md:h-4 md:w-4" />
@@ -304,8 +325,9 @@ export default function ReviewModal({
                 )}
               </button>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">
-                Após publicar, por ser anônimo, não será possível editar ou
-                apagar o relato.
+                {isAnonymousFlow
+                  ? "Após publicar, por ser anônimo, não será possível editar ou apagar o relato."
+                  : "Após publicar, você poderá acompanhar o status deste relato em sua Central."}
               </p>
             </div>
           </div>

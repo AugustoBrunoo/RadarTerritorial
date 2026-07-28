@@ -102,10 +102,10 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
                                     className="sm:hidden flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors">
                                     <i data-lucide="megaphone" className="h-4 w-4"></i> Reportar Problema
                                 </Link>
-                                <a href="./pages/EscolhaDeReportar/UsarConta/logar_v1.html"
+                                <Link to="/login"
                                     className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white rounded-xl transition-colors">
                                     <i data-lucide="log-in" className="h-4 w-4 text-zinc-400"></i> Entrar
-                                </a>
+                                </Link>
                                 <a href="./pages/Dashboard/v12.html"
                                     className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white rounded-xl transition-colors">
                                     <i data-lucide="layout-dashboard" className="h-4 w-4 text-zinc-400"></i> Ver Painel

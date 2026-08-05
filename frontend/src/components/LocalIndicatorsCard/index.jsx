@@ -4,7 +4,7 @@ import { BarChart3, LineChart } from "lucide-react";
 
 export default function LocalIndicatorsCard() {
   return (
-    <div className="md:col-span-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2.5rem] p-6 flex flex-col justify-between shadow-sm group hover:border-red-500/30 transition-all duration-300">
+    <div className="md:col-span-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2.5rem] p-6 flex flex-col justify-between shadow-sm group hover:border-red-500/30 transition-colors duration-300">
       <div>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2 text-zinc-400">
@@ -12,7 +12,7 @@ export default function LocalIndicatorsCard() {
             <span className="text-[10px] font-black uppercase tracking-wider">Zeladoria e Eficiência</span>
           </div>
         </div>
-        <h3 className="text-xl font-black tracking-tight mb-2">Indicadores Locais</h3>
+        <h3 className="text-xl font-black tracking-tight mb-2 text-zinc-900 dark:text-white">Indicadores Locais</h3>
         <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium mb-4">
           O Radar monitora o tempo de resposta da prefeitura para a Zona Oeste e mapeia as soluções por distrito.
         </p>

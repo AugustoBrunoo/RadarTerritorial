@@ -62,7 +62,7 @@ export default function UtilityModal({ isOpen, onClose }) {
               🚨 Emergência & Socorro
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <a href="tel:193" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-150 dark:border-zinc-850 rounded-2xl transition-all">
+              <a href="tel:193" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl transition-all">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-red-100 dark:bg-red-950/30 rounded-xl flex items-center justify-center text-red-600 flex-shrink-0">
                     <Flame className="h-5 w-5" />
@@ -75,7 +75,7 @@ export default function UtilityModal({ isOpen, onClose }) {
                 <span className="text-sm font-black text-red-600">193</span>
               </a>
 
-              <a href="tel:192" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-150 dark:border-zinc-850 rounded-2xl transition-all">
+              <a href="tel:192" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl transition-all">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-red-100 dark:bg-red-950/30 rounded-xl flex items-center justify-center text-red-600 flex-shrink-0">
                     <Ambulance className="h-5 w-5" />
@@ -88,7 +88,7 @@ export default function UtilityModal({ isOpen, onClose }) {
                 <span className="text-sm font-black text-red-600">192</span>
               </a>
 
-              <a href="tel:199" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-150 dark:border-zinc-850 rounded-2xl transition-all sm:col-span-2">
+              <a href="tel:199" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl transition-all sm:col-span-2">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-amber-100 dark:bg-amber-950/30 rounded-xl flex items-center justify-center text-amber-600 flex-shrink-0">
                     <ShieldAlert className="h-5 w-5" />
@@ -109,7 +109,7 @@ export default function UtilityModal({ isOpen, onClose }) {
               🛡️ Proteção & Meio Ambiente
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <a href="tel:03002531177" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-150 dark:border-zinc-850 rounded-2xl transition-all">
+              <a href="tel:03002531177" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl transition-all">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-green-100 dark:bg-green-950/30 rounded-xl flex items-center justify-center text-green-600 flex-shrink-0">
                     <Leaf className="h-5 w-5" />
@@ -122,7 +122,7 @@ export default function UtilityModal({ isOpen, onClose }) {
                 <Phone className="h-4 w-4 text-zinc-400" />
               </a>
 
-              <a href="tel:22531177" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-150 dark:border-zinc-850 rounded-2xl transition-all">
+              <a href="tel:22531177" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl transition-all">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-zinc-100 dark:bg-zinc-800 rounded-xl flex items-center justify-center text-zinc-600 dark:text-zinc-300 flex-shrink-0">
                     <UserX className="h-5 w-5" />
@@ -143,7 +143,7 @@ export default function UtilityModal({ isOpen, onClose }) {
               💧 Concessionárias Públicas (Zona Oeste)
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <a href="tel:08005002500" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-150 dark:border-zinc-850 rounded-2xl transition-all">
+              <a href="tel:08005002500" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl transition-all">
                 <div className="flex items-center gap-3 font-medium">
                   <div className="w-10 h-10 bg-blue-100 dark:bg-blue-950/30 rounded-xl flex items-center justify-center text-blue-600 flex-shrink-0">
                     <Droplet className="h-5 w-5" />
@@ -156,7 +156,7 @@ export default function UtilityModal({ isOpen, onClose }) {
                 <Phone className="h-4 w-4 text-zinc-400" />
               </a>
 
-              <a href="tel:08000210196" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-150 dark:border-zinc-850 rounded-2xl transition-all">
+              <a href="tel:08000210196" className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-2xl transition-all">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-amber-100 dark:bg-amber-950/30 rounded-xl flex items-center justify-center text-amber-500 flex-shrink-0">
                     <Zap className="h-5 w-5" />

@@ -17,6 +17,7 @@ export default {
         'btn-click': 'btnClick 3s infinite',
         'bounce-slight': 'bounceSlight 2s infinite',
         'status-change': 'statusChange 3s infinite',
+        'typing-bounce': 'typingBounce 1.4s infinite both',
       },
       keyframes: {
         float: {
@@ -58,6 +59,10 @@ export default {
           '0%, 40%': { backgroundColor: '#fef3c7', color: '#b45309', opacity: '1' },
           '45%, 55%': { opacity: '0' },
           '60%, 100%': { backgroundColor: '#dcfce7', color: '#15803d', opacity: '1' }
+        },
+        typingBounce: {
+          '0%, 80%, 100%': { transform: 'scale(0)' },
+          '40%': { transform: 'scale(1)' },
         }
       }
     },

@@ -9,7 +9,7 @@ export default function UtilityLinksCard({ onOpenModal }) {
           <ExternalLink className="h-4 w-4" />
           <span className="text-[10px] font-black uppercase tracking-wider">Ouvidorias & Serviços</span>
         </div>
-        <h3 className="text-xl font-black tracking-tight mb-2">Utilidade Pública</h3>
+        <h3 className="text-xl font-black tracking-tight mb-2 text-zinc-900 dark:text-white">Utilidade Pública</h3>
         <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium mb-4">
           Para casos de perigo de vida ou problemas de responsabilidade de concessionárias oficiais, utilize os atalhos rápidos:
         </p>

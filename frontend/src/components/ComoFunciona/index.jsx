@@ -90,7 +90,7 @@ export default function ComoFunciona() {
                             resolução.
                         </p>
                         <div className="flex flex-wrap gap-4">
-                            <a href="#dashboard"
+                            <a href="/dashboard"
                                 className="bg-white text-red-600 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-zinc-100 transition-colors shadow-lg shadow-black/10">
                                 Painel Público <i data-lucide="bar-chart-3" className="h-4 w-4"></i>
                             </a>

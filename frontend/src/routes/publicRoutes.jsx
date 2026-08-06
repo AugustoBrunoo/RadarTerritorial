@@ -3,6 +3,7 @@ import SelectReport from '../pages/SelectReport/index.jsx';
 import AnonymousReport from '../pages/AnonymousReport/index.jsx';
 import Feed from '../pages/Feed/index.jsx';
 import AiAssistant from '../pages/AiAssistant/index.jsx';
+import EmConstrucao from '../pages/EmConstrucao/index.jsx';
 
 export const publicRoutes = [
   { path: "/", element: <Home /> },
@@ -10,4 +11,6 @@ export const publicRoutes = [
   { path: "/reportar/anonimo", element: <AnonymousReport /> },
   { path: "/feed", element: <Feed /> },
   { path: "/assistente-ia", element: <AiAssistant /> },
+  { path: "/em-construcao", element: <EmConstrucao /> },
+  { path: "*", element: <EmConstrucao /> },
 ];

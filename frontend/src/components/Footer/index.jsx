@@ -69,14 +69,14 @@ export default function Footer() {
                                         <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
                                     </svg>
                                 </a>
-                                <a href="#" target="_blank" aria-label="Facebook"
+                                <Link to="/em-construcao" aria-label="Facebook"
                                     className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:bg-blue-600 hover:text-white dark:hover:text-white transition-all duration-300 hover:scale-110 shadow-sm">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
                                         strokeLinejoin="round" className="lucide lucide-facebook">
                                         <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
                                     </svg>
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -105,9 +105,9 @@ export default function Footer() {
 
                     {/* Right: Links */}
                     <div className="flex flex-wrap justify-center gap-6 font-semibold text-zinc-600 dark:text-zinc-400">
-                        <a href="./pages/TermosDeUso/Termos_v1.html"
-                            className="hover:text-red-600 transition-colors">Privacidade e Termos de Uso</a>
-                        <a href="https://github.com/AugustoBrunoo/RadarTerritorial"
+                        <Link to="/em-construcao"
+                            className="hover:text-red-600 transition-colors">Privacidade e Termos de Uso</Link>
+                        <Link to="/em-construcao"
                             className="hover:text-red-600 transition-colors flex items-center gap-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -117,7 +117,7 @@ export default function Footer() {
                                 <path d="M9 18c-4.51 2-5-2-7-2" />
                             </svg>
                             Código Aberto
-                        </a>
+                        </Link>
                     </div>
 
                 </div>

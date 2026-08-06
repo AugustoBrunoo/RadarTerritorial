@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router';
 import jccLogoImg from '../../assets/images/home/JCC - LOGO PRINCIPAL.png';
 import naveLogoImg from '../../assets/images/home/Logo-Nave-CG.png';
+import NodaLogo from '../NodaLogo';
 
 export default function Footer() {
     useEffect(() => {
@@ -83,8 +84,9 @@ export default function Footer() {
                 </div>
 
                 <div
-                    className="mt-20 pt-8 border-t border-zinc-200 dark:border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-6 text-zinc-500 text-sm font-medium">
+                    className="mt-20 pt-8 border-t border-zinc-200 dark:border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-8 text-zinc-500 text-sm font-medium">
 
+                    {/* Left: RadarTerritorial */}
                     <div className="flex items-center gap-3 cursor-pointer group">
                         <div className="bg-red-600 p-2 rounded-full group-hover:scale-105 transition-transform">
                             <i data-lucide="map-pin" className="h-5 w-5 text-white"></i>
@@ -95,6 +97,13 @@ export default function Footer() {
                         <span className="ml-1 text-zinc-500 dark:text-zinc-400">© <span id="current-year"></span></span>
                     </div>
 
+                    {/* Center: Powered By Noda */}
+                    <div className="flex flex-col items-center gap-2">
+                        <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">Powered By</span>
+                        <NodaLogo iconSize={32} textSize="text-xl" />
+                    </div>
+
+                    {/* Right: Links */}
                     <div className="flex flex-wrap justify-center gap-6 font-semibold text-zinc-600 dark:text-zinc-400">
                         <a href="./pages/TermosDeUso/Termos_v1.html"
                             className="hover:text-red-600 transition-colors">Privacidade e Termos de Uso</a>

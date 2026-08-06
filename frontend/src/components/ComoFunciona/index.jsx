@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 export default function ComoFunciona() {
     return (
@@ -93,10 +94,10 @@ export default function ComoFunciona() {
                                 className="bg-white text-red-600 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-zinc-100 transition-colors shadow-lg shadow-black/10">
                                 Painel Público <i data-lucide="bar-chart-3" className="h-4 w-4"></i>
                             </a>
-                            <a href="./pages/Feed/NaoLogado/v1.html"
+                            <Link to="/feed"
                                 className="bg-red-900/40 text-white border border-white/10 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-red-900/60 transition-colors">
                                 Ver Recentes <i data-lucide="message-square" className="h-4 w-4"></i>
-                            </a>
+                            </Link>
                         </div>
                     </div>
 

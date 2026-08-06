@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, X, MessageSquare, Brain, CheckSquare, ChevronRight, Check } from 'lucide-react';
 
-export default function HowItWorksModal({ isOpen, onClose }) {
+export default function AiAssistantHowItWorksModal({ isOpen, onClose }) {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
 

@@ -52,7 +52,7 @@ export default function SelectReport() {
                     />
 
                     <ReportOptionCard
-                        to="#"
+                        to="/assistente-ia"
                         icon={Sparkles}
                         optionNumber="Opção 03"
                         title="Assistente IA"

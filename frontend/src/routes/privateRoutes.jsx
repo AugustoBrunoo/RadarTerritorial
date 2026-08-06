@@ -3,7 +3,6 @@ import LoggedReport from '../pages/LoggedReport/index.jsx';
 import CentralCidadao from '../pages/CentralCidadao/index.jsx';
 import DemandasUsuario from '../pages/DemandasUsuario/index.jsx';
 import RelatoDetalhado from '../pages/RelatoDetalhado/index.jsx';
-import Feed from '../pages/Feed/index.jsx';
 import ProtectedRoute from '../components/ProtectedRoute/index.jsx';
 
 export const privateRoutes = [
@@ -12,5 +11,4 @@ export const privateRoutes = [
   { path: "/central-cidadao", element: <ProtectedRoute><CentralCidadao /></ProtectedRoute> },
   { path: "/demandas-usuario", element: <ProtectedRoute><DemandasUsuario /></ProtectedRoute> },
   { path: "/relato/:id", element: <ProtectedRoute><RelatoDetalhado /></ProtectedRoute> },
-  { path: "/feed", element: <ProtectedRoute><Feed /></ProtectedRoute> },
 ];

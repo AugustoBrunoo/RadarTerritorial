@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import AutoSupportModal from '../AutoSupportModal';
 import ReportModal from '../ReportModal';
+import AuthRequiredModal from '../AuthRequiredModal';
 
 const iconMap = {
   Cone, AlertCircle, AlertTriangle, Lightbulb, Droplet, Bus, ShieldAlert, History, Info, CheckCircle
@@ -16,9 +17,14 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
   const [showComments, setShowComments] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleSupportClick = () => {
-    if (currentUserId && currentUserId === report.user_id) {
+    if (!currentUserId) {
+      setShowAuthModal(true);
+      return;
+    }
+    if (currentUserId === report.user_id) {
       setShowModal(true);
     } else {
       onSupport(report.id);
@@ -47,27 +53,27 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
   return (
     <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm hover:shadow-md transition-all duration-300 animate-in zoom-in-95">
       {/* Cabeçalho do Card */}
-      <div className="flex items-center gap-3 mb-5">
-        <div className={`w-12 h-12 rounded-full ${report.avatarBg} flex items-center justify-center font-black text-sm flex-shrink-0`}>
+      <div className="flex items-start sm:items-center gap-2 sm:gap-3 mb-5">
+        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${report.avatarBg} flex items-center justify-center font-black text-sm flex-shrink-0`}>
           <span>{report.initials}</span>
         </div>
-        <div className="flex-1">
-          <h4 className="font-bold text-zinc-900 dark:text-white leading-tight text-base">{report.author}</h4>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 flex items-center gap-1 font-semibold">
-            <MapPin className="h-3 w-3" /> 
-            <span className="truncate max-w-[180px] sm:max-w-md" title={report.location}>{report.location}</span>
+        <div className="flex-1 min-w-0">
+          <h4 className="font-bold text-zinc-900 dark:text-white leading-tight text-sm sm:text-base truncate">{report.author}</h4>
+          <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 flex items-center gap-1 font-semibold">
+            <MapPin className="h-3 w-3 flex-shrink-0" /> 
+            <span className="truncate" title={report.location}>{report.location}</span>
           </p>
         </div>
         
         {/* Botão Denunciar e Data/Hora */}
-        <div className="flex items-start gap-3">
-          <div className="text-right flex flex-col items-end gap-1">
-            <span className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">{report.time}</span>
-            <span className="text-[9px] font-bold text-zinc-400 dark:text-zinc-500">{report.date}</span>
+        <div className="flex items-start gap-2 sm:gap-3 flex-shrink-0">
+          <div className="text-right flex flex-col items-end gap-0.5 sm:gap-1">
+            <span className="text-[9px] sm:text-[10px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">{report.time}</span>
+            <span className="text-[8px] sm:text-[9px] font-bold text-zinc-400 dark:text-zinc-500">{report.date}</span>
           </div>
           <button 
             onClick={() => setShowReportModal(true)}
-            className="text-zinc-400 hover:text-red-500 transition-colors p-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 hover:bg-red-50 dark:hover:bg-red-900/20 border border-transparent hover:border-red-200 dark:hover:border-red-900/30" 
+            className="text-zinc-400 hover:text-red-500 transition-colors p-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 hover:bg-red-50 dark:hover:bg-red-900/20 border border-transparent hover:border-red-200 dark:hover:border-red-900/30 flex-shrink-0" 
             title="Denunciar publicação"
           >
             <Flag className="h-3.5 w-3.5" />
@@ -147,9 +153,9 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
       )}
 
       {/* Ações do Card */}
-      <div className="flex items-center justify-between pt-4 border-t border-zinc-150 dark:border-zinc-800/60">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between pt-4 border-t border-zinc-150 dark:border-zinc-800/60 gap-4 sm:gap-0">
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <div className="w-8 h-8 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 flex-shrink-0">
             <Award className="h-4 w-4" />
           </div>
           <div className="text-xs">
@@ -158,28 +164,28 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-stretch gap-2 justify-end sm:justify-end w-full sm:w-auto">
           <button 
             onClick={() => setShowComments(!showComments)}
-            className="flex items-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-black tracking-wide bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 transition-all"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-black tracking-wide bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 transition-all"
           >
             <MessageSquare className="h-4 w-4" />
-            <span>{report.comentarios_count}</span>
+            <span className="whitespace-nowrap">{report.comentarios_count}</span>
           </button>
 
           <Link 
             to={`/relato/${report.id}`}
-            className="flex items-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-black tracking-wide bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 transition-all"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-black tracking-wide bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 transition-all"
           >
-            <span>Ver Detalhes</span>
+            <span className="whitespace-nowrap">Ver Detalhes</span>
           </Link>
           
           <button 
             onClick={handleSupportClick}
-            className={`flex items-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-black tracking-wide border transition-all ${supportedClass}`}
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-black tracking-wide border transition-all ${supportedClass}`}
           >
             <SupportIcon className="h-4 w-4" />
-            <span className="hidden sm:inline">{supportText}</span>
+            <span className="whitespace-nowrap inline">{supportText}</span>
           </button>
         </div>
       </div>
@@ -210,10 +216,11 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
           <div className="relative mt-2">
             <input 
               type="text" 
-              placeholder="Escreva seu comentário..." 
-              className="w-full bg-zinc-50 dark:bg-zinc-950 border-transparent rounded-xl pl-4 pr-12 py-3 text-sm text-zinc-900 dark:text-white focus:ring-2 focus:ring-zinc-200 dark:focus:ring-zinc-800 focus:bg-white dark:focus:bg-zinc-900 outline-none transition-all placeholder-zinc-400 font-medium"
+              placeholder={currentUserId ? "Escreva seu comentário..." : "Faça login para comentar"} 
+              disabled={!currentUserId}
+              className="w-full bg-zinc-50 dark:bg-zinc-950 border-transparent rounded-xl pl-4 pr-12 py-3 text-sm text-zinc-900 dark:text-white focus:ring-2 focus:ring-zinc-200 dark:focus:ring-zinc-800 focus:bg-white dark:focus:bg-zinc-900 outline-none transition-all placeholder-zinc-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             />
-            <button className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 p-2 rounded-lg transition-colors">
+            <button disabled={!currentUserId} className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-zinc-400">
               <Send className="h-4 w-4" />
             </button>
           </div>
@@ -222,6 +229,7 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
 
       <AutoSupportModal isOpen={showModal} onClose={() => setShowModal(false)} />
       <ReportModal isOpen={showReportModal} onClose={() => setShowReportModal(false)} reportId={report.id} />
+      <AuthRequiredModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} message="Crie uma conta para interagir com relatos." />
     </div>
   );
 }

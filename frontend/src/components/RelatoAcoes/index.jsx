@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Flame, ThumbsUp, Share2, X, AlertTriangle, Link2, MessageCircle, Check } from 'lucide-react';
 import AutoSupportModal from '../AutoSupportModal';
+import AuthRequiredModal from '../AuthRequiredModal';
 
 const InstagramIcon = ({ className }) => (
   <svg 
@@ -19,12 +20,17 @@ const InstagramIcon = ({ className }) => (
   </svg>
 );
 
-export default function RelatoAcoes({ report, isOwner }) {
+export default function RelatoAcoes({ report, isOwner, currentUserId }) {
   const [showModal, setShowModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleApoiar = () => {
+    if (!currentUserId) {
+      setShowAuthModal(true);
+      return;
+    }
     if (isOwner) {
       setShowModal(true);
       return;
@@ -143,6 +149,7 @@ export default function RelatoAcoes({ report, isOwner }) {
         isOpen={showModal} 
         onClose={() => setShowModal(false)} 
       />
+      <AuthRequiredModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} message="Crie uma conta para apoiar este relato." />
     </>
   );
 }

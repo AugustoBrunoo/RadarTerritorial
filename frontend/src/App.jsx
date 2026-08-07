@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import AppRoutes from './routes';
+import BetaWarningModal from './components/BetaWarningModal';
 import './App.css';
 
 function App() {
@@ -15,7 +16,12 @@ function App() {
     }
   }, []);
 
-  return <AppRoutes />;
+  return (
+    <>
+      <BetaWarningModal />
+      <AppRoutes />
+    </>
+  );
 }
 
 export default App;

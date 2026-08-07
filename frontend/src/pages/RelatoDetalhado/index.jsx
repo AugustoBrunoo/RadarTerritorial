@@ -5,6 +5,7 @@ import {
   Loader2, CheckCircle, Lightbulb, ShieldAlert, Bus
 } from 'lucide-react';
 import LoggedHeader from '../../components/LoggedHeader';
+import SimpleHeader from '../../components/SimpleHeader';
 import SimpleFooter from '../../components/SimpleFooter';
 import { supabase } from '../../lib/supabaseClient';
 
@@ -47,6 +48,7 @@ export default function RelatoDetalhado() {
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
   const [authorName, setAuthorName] = useState("");
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
     async function loadData() {
@@ -54,6 +56,9 @@ export default function RelatoDetalhado() {
       setLoading(true);
       try {
         const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          setCurrentUserId(user.id);
+        }
         
         const { data: relatoData, error } = await supabase
           .from('relatos')
@@ -129,7 +134,7 @@ export default function RelatoDetalhado() {
 
   return (
     <div className="transition-colors duration-500 ease-in-out min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
-      <LoggedHeader />
+      {currentUserId ? <LoggedHeader /> : <SimpleHeader />}
 
       <main className="flex-grow pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full animate-in fade-in slide-in-from-bottom-8 duration-700">
         
@@ -168,8 +173,8 @@ export default function RelatoDetalhado() {
 
           {/* COLUNA DA DIREITA (Apoio e Comentários) */}
           <div className="space-y-6">
-            <RelatoAcoes report={report} isOwner={isOwner} />
-            <RelatoComentarios report={report} />
+            <RelatoAcoes report={report} isOwner={isOwner} currentUserId={currentUserId} />
+            <RelatoComentarios report={report} currentUserId={currentUserId} />
           </div>
         </div>
       </main>

@@ -10,5 +10,4 @@ export const privateRoutes = [
   { path: "/reportar-logado", element: <ProtectedRoute><LoggedReport /></ProtectedRoute> },
   { path: "/central-cidadao", element: <ProtectedRoute><CentralCidadao /></ProtectedRoute> },
   { path: "/demandas-usuario", element: <ProtectedRoute><DemandasUsuario /></ProtectedRoute> },
-  { path: "/relato/:id", element: <ProtectedRoute><RelatoDetalhado /></ProtectedRoute> },
 ];

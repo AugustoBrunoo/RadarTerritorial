@@ -13,8 +13,8 @@ export default function EmConstrucao() {
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-red-600/10 dark:bg-red-600/5 blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-600/10 dark:bg-blue-600/5 blur-[120px] pointer-events-none" />
 
-            <main className="flex-grow flex flex-col items-center justify-center px-4 sm:px-6 z-10 relative mt-20 mb-20">
-                <div className="max-w-2xl w-full text-center space-y-8 animate-in slide-in-from-bottom-8 duration-700">
+            <main className="flex-grow flex flex-col items-center justify-center px-4 sm:px-6 z-10 relative pt-32 pb-16">
+                <div className="max-w-2xl w-full text-center space-y-10 animate-in slide-in-from-bottom-8 duration-700">
                     
                     {/* Icon Container */}
                     <div className="relative inline-flex items-center justify-center">

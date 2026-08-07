@@ -11,7 +11,7 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
     const updateNavPill = (id) => {
         const activeLink = document.querySelector(`.nav-item[href="#${id}"]`);
         const navContainer = navPillRef.current ? navPillRef.current.parentElement : null;
-        
+
         if (!activeLink || !navContainer || !navPillRef.current) return;
 
         const linkRect = activeLink.getBoundingClientRect();
@@ -27,10 +27,10 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
 
     useEffect(() => {
         updateNavPill(activeSection);
-        
+
         const handleResize = () => updateNavPill(activeSection);
         window.addEventListener('resize', handleResize);
-        
+
         return () => window.removeEventListener('resize', handleResize);
     }, [activeSection]);
 
@@ -82,7 +82,7 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
                         </button>
 
                         {/* Dropdown Menu */}
-                        <div id="app-menu-dropdown" className={`absolute right-0 top-full mt-3 w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-xl shadow-zinc-200/20 dark:shadow-black/40 py-2 transition-all duration-200 origin-top-right transform z-50 ${isMenuOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"}`}>
+                        <div id="app-menu-dropdown" className={`absolute right-0 top-full mt-6 w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-xl shadow-zinc-200/20 dark:shadow-black/40 py-2 transition-all duration-200 origin-top-right transform z-50 ${isMenuOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"}`}>
 
                             {/* Links de Navegação (Visível apenas no Mobile) */}
                             <div className="md:hidden border-b border-zinc-100 dark:border-zinc-800 pb-2 mb-2 px-2">
@@ -106,14 +106,14 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
                                     className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white rounded-xl transition-colors">
                                     <i data-lucide="log-in" className="h-4 w-4 text-zinc-400"></i> Entrar
                                 </Link>
-                                <a href="./pages/Dashboard/v12.html"
+                                <Link to="/dashboard"
                                     className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white rounded-xl transition-colors">
                                     <i data-lucide="layout-dashboard" className="h-4 w-4 text-zinc-400"></i> Ver Painel
-                                </a>
-                                <a href="./pages/Feed/NaoLogado/v1.html"
+                                </Link>
+                                <Link to="/feed"
                                     className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white rounded-xl transition-colors">
                                     <i data-lucide="layers" className="h-4 w-4 text-zinc-400"></i> Ver Publicações
-                                </a>
+                                </Link>
                             </div>
 
                             <div className="border-t border-zinc-100 dark:border-zinc-800 my-2"></div>

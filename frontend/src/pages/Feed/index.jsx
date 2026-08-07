@@ -215,7 +215,7 @@ export default function Feed() {
 
       <main className="flex-grow pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full flex flex-col justify-start animate-in slide-in-from-bottom-4 duration-500">
         
-        <FeedHeader />
+        <FeedHeader isLoggedIn={!!currentUserId} />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           

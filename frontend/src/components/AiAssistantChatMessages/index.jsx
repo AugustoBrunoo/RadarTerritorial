@@ -145,7 +145,7 @@ export default function AiAssistantChatMessages({
                     <Check className="absolute w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" strokeWidth={3} />
                   </div>
                   <span className="text-sm text-zinc-700 dark:text-zinc-300 font-medium leading-relaxed">
-                    Eu concordo com os <a href="/termos" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:underline">Termos de Uso</a> e a <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:underline">Política de Privacidade</a>.
+                    Eu concordo com os <a href="/termos" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:underline">Termos de Uso</a> e a <a href="/termos" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:underline">Política de Privacidade</a>.
                   </span>
                 </label>
                 <button 

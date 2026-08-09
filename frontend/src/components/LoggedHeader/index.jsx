@@ -129,9 +129,9 @@ export default function LoggedHeader() {
             <Link to="/demandas-usuario" className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition-colors">
               <LayoutDashboard className="h-4 w-4" /> Minhas Demandas
             </Link>
-            <button className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition-colors">
+            <Link to="/configuracoes" className="flex items-center gap-3 px-4 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition-colors">
               <Settings className="h-4 w-4" /> Configurações
-            </button>
+            </Link>
 
             <div className="border-t border-zinc-100 dark:border-zinc-800 my-1"></div>
 

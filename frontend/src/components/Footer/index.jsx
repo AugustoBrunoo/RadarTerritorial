@@ -105,7 +105,7 @@ export default function Footer() {
 
                     {/* Right: Links */}
                     <div className="flex flex-wrap justify-center gap-6 font-semibold text-zinc-600 dark:text-zinc-400">
-                        <Link to="/em-construcao"
+                        <Link to="/termos"
                             className="hover:text-red-600 transition-colors">Privacidade e Termos de Uso</Link>
                         <Link to="/em-construcao"
                             className="hover:text-red-600 transition-colors flex items-center gap-1">

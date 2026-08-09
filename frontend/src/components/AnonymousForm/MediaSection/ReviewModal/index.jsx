@@ -29,6 +29,7 @@ export default function ReviewModal({
   const [isTurnstileChecked, setIsTurnstileChecked] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [publishedReportId, setPublishedReportId] = useState(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -38,6 +39,7 @@ export default function ReviewModal({
       setIsTurnstileChecking(false);
       setIsTurnstileChecked(false);
       setIsPublishing(false);
+      setPublishedReportId(null);
 
       if (!isAnonymousFlow) {
         // Busca o usuário logado de forma assíncrona, mas não bloqueia a UI
@@ -122,6 +124,9 @@ export default function ReviewModal({
     setIsPublishing(false);
 
     if (response.success) {
+      if (response.data && response.data.length > 0) {
+        setPublishedReportId(response.data[0].id);
+      }
       setModalState("SUCCESS");
     } else {
       alert("Erro ao publicar relato: " + response.error);
@@ -211,9 +216,9 @@ export default function ReviewModal({
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
       <div className="bg-white dark:bg-zinc-900 w-full max-w-md md:max-w-xl rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden transform animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
         {modalState === "REVIEW" && (
-          <div className="flex flex-col w-full h-full">
+          <div className="flex flex-col w-full max-h-full overflow-hidden">
             {/* Header */}
-            <div className="bg-zinc-100 dark:bg-zinc-800/80 p-4 md:p-5 border-b border-zinc-200 dark:border-zinc-700 flex items-center justify-between">
+            <div className="bg-zinc-100 dark:bg-zinc-800/80 p-4 md:p-5 border-b border-zinc-200 dark:border-zinc-700 flex items-center justify-between shrink-0">
               <h3 className="font-black text-lg md:text-xl text-zinc-800 dark:text-white flex items-center gap-2">
                 <Eye className="h-5 w-5 text-red-600" /> Revise seu Relato
               </h3>
@@ -234,26 +239,26 @@ export default function ReviewModal({
               </p>
 
               {/* Cabeçalho do Post */}
-              <div className="flex items-center gap-3 mb-5 md:mb-6">
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-zinc-100 dark:bg-zinc-800 border-2 border-red-100 dark:border-red-900/30 flex items-center justify-center flex-shrink-0">
-                  <ShieldCheck className="h-6 w-6 md:h-7 md:w-7 text-red-600" />
+              <div className="flex items-center gap-2 sm:gap-3 mb-5 md:mb-6">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-zinc-100 dark:bg-zinc-800 border-2 border-red-100 dark:border-red-900/30 flex items-center justify-center flex-shrink-0">
+                  <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-red-600" />
                 </div>
-                <div>
-                  <h4 className="font-bold text-zinc-900 dark:text-white leading-tight md:text-lg">
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-zinc-900 dark:text-white leading-tight md:text-lg truncate">
                     {currentUser ? currentUser.nome : "Cidadão Anônimo"}
                   </h4>
                   <p className="text-xs md:text-sm font-semibold text-zinc-500 dark:text-zinc-400 mt-0.5 flex items-center gap-1">
-                    <MapPin className="h-3 w-3 md:h-4 md:w-4" />
-                    <span className="truncate max-w-[200px] md:max-w-[300px]">
+                    <MapPin className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
+                    <span className="truncate">
                       {locationString}
                     </span>
                   </p>
                 </div>
-                <div className="ml-auto flex flex-col items-end gap-1">
-                  <div className="text-[10px] md:text-xs font-black text-red-600 uppercase tracking-widest bg-red-50 dark:bg-red-900/20 px-2.5 py-1 rounded-md border border-red-100 dark:border-red-900/50">
+                <div className="ml-auto flex flex-col items-end gap-1 flex-shrink-0 pl-1">
+                  <div className="text-[10px] md:text-xs font-black text-red-600 uppercase tracking-widest bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-md border border-red-100 dark:border-red-900/50">
                     {timeString}
                   </div>
-                  <div className="text-[10px] md:text-xs font-semibold text-zinc-400 dark:text-zinc-500 capitalize">
+                  <div className="text-[9px] sm:text-[10px] md:text-xs font-semibold text-zinc-400 dark:text-zinc-500 capitalize">
                     {dateString}
                   </div>
                 </div>
@@ -278,7 +283,7 @@ export default function ReviewModal({
               <div className="mt-8 border-t border-zinc-200 dark:border-zinc-800 pt-6">
                 <div
                   onClick={simulateTurnstileCheck}
-                  className="cursor-pointer max-w-[300px] bg-[#fdfdfd] dark:bg-[#222222] border border-[#e0e0e0] dark:border-[#333333] rounded-lg p-3 flex items-center justify-between shadow-sm transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800 mx-auto sm:mx-0"
+                  className="cursor-pointer w-full max-w-[300px] bg-[#fdfdfd] dark:bg-[#222222] border border-[#e0e0e0] dark:border-[#333333] rounded-lg p-3 flex items-center justify-between shadow-sm transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800 mx-auto sm:mx-0"
                 >
                   <div className="flex items-center gap-3">
                     {isTurnstileChecking ? (
@@ -305,7 +310,7 @@ export default function ReviewModal({
             </div>
 
             {/* Footer / Submit Button */}
-            <div className="p-4 md:p-6 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-100 dark:border-zinc-800 flex flex-col items-center gap-3">
+            <div className="p-4 md:p-6 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-100 dark:border-zinc-800 flex flex-col items-center gap-3 shrink-0">
               <button
                 onClick={finalPublish}
                 disabled={!isTurnstileChecked || isPublishing}
@@ -334,9 +339,9 @@ export default function ReviewModal({
         )}
 
         {modalState === "SUCCESS" && (
-          <div className="flex flex-col items-center justify-center p-8 md:p-12 text-center h-full min-h-[400px]">
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col items-center">
-              <div className="w-24 h-24 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(34,197,94,0.3)]">
+          <div className="flex flex-col items-center justify-center p-8 md:p-12 text-center overflow-y-auto">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col items-center w-full">
+              <div className="w-24 h-24 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(34,197,94,0.3)] shrink-0">
                 <CheckCircle className="h-12 w-12 text-green-600" />
               </div>
               <h3 className="text-2xl md:text-3xl font-black text-zinc-900 dark:text-white tracking-tight mb-3">
@@ -356,7 +361,7 @@ export default function ReviewModal({
                   <Home className="h-4 w-4" /> Voltar ao Início
                 </a>
                 <a
-                  href="#"
+                  href={publishedReportId ? `/relato/${publishedReportId}` : "#"}
                   className="flex-1 py-3.5 rounded-xl font-bold text-sm bg-red-600 hover:bg-red-700 text-white transition-all flex items-center justify-center gap-2 shadow-lg shadow-red-600/30"
                 >
                   Ver Relato Publicado <ArrowRight className="h-4 w-4" />

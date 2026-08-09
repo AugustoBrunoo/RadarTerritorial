@@ -79,7 +79,7 @@ export async function searchStreetSuggestions(searchTerm) {
     const data = await response.json();
 
     // Filtra os resultados para garantir que a rua pertence a um dos 3 bairros aceitos
-    const filteredResults = data
+    const basicResults = data
       .map(item => {
         const addr = item.address || {};
         // O Nominatim pode retornar o bairro em suburb, neighbourhood ou quarter
@@ -109,7 +109,32 @@ export async function searchStreetSuggestions(searchTerm) {
       })
       .filter(Boolean); // Remove resultados nulos que não pertencem aos 3 bairros
 
-    return filteredResults;
+    // Busca o CEP preciso no ViaCEP para cada resultado encontrado
+    const enhancedResults = await Promise.all(
+      basicResults.map(async (item) => {
+        try {
+          const ruaEncoded = encodeURIComponent(item.ruaOficial);
+          const viaCepRes = await fetch(`https://viacep.com.br/ws/RJ/Rio de Janeiro/${ruaEncoded}/json/`);
+          if (viaCepRes.ok) {
+            const viaCepData = await viaCepRes.json();
+            if (viaCepData && Array.isArray(viaCepData)) {
+              // Procura a entrada do ViaCEP que bate com o bairro
+              const matchingCep = viaCepData.find(v => 
+                v.bairro && v.bairro.toLowerCase().includes(item.bairro.toLowerCase())
+              );
+              if (matchingCep && matchingCep.cep) {
+                item.cep = matchingCep.cep.replace(/[^\d-]/g, "");
+              }
+            }
+          }
+        } catch (err) {
+          // Em caso de erro do ViaCEP, mantém silenciosamente o CEP impreciso do Nominatim
+        }
+        return item;
+      })
+    );
+
+    return enhancedResults;
   } catch (error) {
     console.error("Erro ao buscar sugestões de endereço:", error);
     return [];

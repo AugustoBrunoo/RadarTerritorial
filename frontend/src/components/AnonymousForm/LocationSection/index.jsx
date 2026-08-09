@@ -74,16 +74,6 @@ export default function LocationSection({
             console.log("Bairro:", rawBairro);
             console.log("CEP Aproximado:", cep);
             
-            // Format CEP se a API retornar
-            if (cep) {
-              const cleanCep = cep.replace(/\D/g, "");
-              if (cleanCep.length >= 8) {
-                setCepValue(cleanCep.substring(0, 5) + "-" + cleanCep.substring(5, 8));
-              } else {
-                setCepValue(cep);
-              }
-            }
-
             // Validação de Bairro
             let selectValue = "";
             const isAllowedBairro = [
@@ -108,12 +98,52 @@ export default function LocationSection({
                 selectValue = "cosmos";
             }
             
-            // Preenche o formulário
+            // Tenta buscar o CEP preciso pelo ViaCEP baseado na rua e bairro encontrados pelo GPS
+            let finalCep = cep;
+            if (rua) {
+              try {
+                const ruaEncoded = encodeURIComponent(rua);
+                const viaCepRes = await fetch(`https://viacep.com.br/ws/RJ/Rio de Janeiro/${ruaEncoded}/json/`);
+                if (viaCepRes.ok) {
+                  const viaCepData = await viaCepRes.json();
+                  if (viaCepData && Array.isArray(viaCepData)) {
+                    // Procura o CEP que bate com o bairro
+                    const matchingCep = viaCepData.find(v => 
+                      v.bairro && v.bairro.toLowerCase().includes(rawBairro.toLowerCase())
+                    );
+                    if (matchingCep && matchingCep.cep) {
+                      finalCep = matchingCep.cep.replace(/[^\d-]/g, "");
+                    }
+                  }
+                }
+              } catch (err) {
+                console.log("ViaCEP silenciosamente falhou, mantendo CEP aproximado do GPS.");
+              }
+            }
+
+            // Sincroniza os estados locais do formulário manual para aparecerem preenchidos quando abrir
+            setManualRua(rua);
+            setManualBairro(selectValue);
+            setIsStreetConfirmed(true);
+
+            // Formata CEP final
+            if (finalCep) {
+              const cleanCep = finalCep.replace(/\D/g, "");
+              if (cleanCep.length >= 8) {
+                setCepValue(cleanCep.substring(0, 5) + "-" + cleanCep.substring(5, 8));
+              } else {
+                setCepValue(finalCep);
+              }
+            } else {
+              setCepValue("");
+            }
+
+            // Preenche o estado global do formulário
             setFormLocation((prev) => ({ 
               ...prev, 
               rua: rua || prev.rua,
               bairro: selectValue || prev.bairro,
-              cep: cep || prev.cep,
+              cep: finalCep || prev.cep,
               lat: lat,
               lng: lng,
               gps: true

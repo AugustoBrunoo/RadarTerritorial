@@ -32,3 +32,34 @@ html {
 .accordion-inner {
   overflow: hidden;
 }
+
+/* Dashboard Map Pins */
+.pin-ativo {
+    background-color: #ef4444;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+    width: 14px !important;
+    height: 14px !important;
+}
+.pin-alerta {
+    background-color: #f59e0b;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+    width: 14px !important;
+    height: 14px !important;
+}
+.pin-resolvido {
+    background-color: #10b981;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    width: 12px !important;
+    height: 12px !important;
+    opacity: 0.8;
+}
+.dark .pin-ativo,
+.dark .pin-alerta,
+.dark .pin-resolvido {
+    border-color: #18181b;
+}

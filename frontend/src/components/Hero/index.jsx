@@ -31,13 +31,13 @@ export default function Hero() {
                             <span>Reportar Ocorrência</span>
                             <i data-lucide="arrow-up-right" className="h-5 w-5 opacity-70"></i>
                         </Link>
-                        <a href="/dashboard"
+                        <Link to="/dashboard"
                             className="flex-1 sm:flex-none flex justify-between items-center gap-6 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white px-8 py-5 rounded-2xl text-lg font-bold transition-transform hover:-translate-y-1">
                             <span className="flex items-center gap-2">
                                 <i data-lucide="bar-chart-3" className="h-4 w-4"></i>
                                 Ver painel público
                             </span>
-                        </a>
+                        </Link>
                     </div>
                 </div>
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { Flag, X, CheckCircle, Loader2, UserCircle, LogIn } from 'lucide-react';
 import { denunciarRelato } from '../../services/interacoesService';
 
-export default function ReportModal({ isOpen, onClose, reportId, currentUserId }) {
+export default function DenunciaModal({ isOpen, onClose, reportId, currentUserId }) {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [reason, setReason] = useState('');

@@ -3,11 +3,12 @@ import { Link } from 'react-router';
 import { 
   MapPin, Flag, Clock, MessageSquare, Award, CheckCircle, 
   ArrowUp, Building2, BadgeCheck, ThumbsUp, ThumbsDown, Send,
-  Cone, AlertCircle, AlertTriangle, Lightbulb, Droplet, Bus, ShieldAlert, History, Info
+  Cone, AlertCircle, AlertTriangle, Lightbulb, Droplet, Bus, ShieldAlert, History, Info, Loader2
 } from 'lucide-react';
 import AutoSupportModal from '../AutoSupportModal';
-import ReportModal from '../ReportModal';
+import DenunciaModal from '../DenunciaModal';
 import AuthRequiredModal from '../AuthRequiredModal';
+import { getComentariosByRelato, adicionarComentario } from '../../services/interacoesService';
 
 const iconMap = {
   Cone, AlertCircle, AlertTriangle, Lightbulb, Droplet, Bus, ShieldAlert, History, Info, CheckCircle
@@ -18,6 +19,55 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
   const [showModal, setShowModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  
+  const [comments, setComments] = useState([]);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [commentInput, setCommentInput] = useState("");
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [commentsCount, setCommentsCount] = useState(report.comentarios_count || 0);
+
+  const getInitials = (name) => {
+    if (!name) return "U";
+    const parts = name.trim().split(' ');
+    if (parts.length > 1) {
+      return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
+  const toggleComments = async () => {
+    const nextState = !showComments;
+    setShowComments(nextState);
+    
+    if (nextState && comments.length === 0) {
+      setIsLoadingComments(true);
+      const data = await getComentariosByRelato(report.id);
+      setComments(data);
+      setIsLoadingComments(false);
+    }
+  };
+
+  const handleComentar = async () => {
+    if (!commentInput.trim() || !currentUserId || isSubmittingComment) return;
+
+    setIsSubmittingComment(true);
+    const { success, data, error } = await adicionarComentario(report.id, currentUserId, commentInput);
+    
+    if (success && data) {
+      setComments(prev => [
+        {
+          ...data,
+          authorName: "Você"
+        },
+        ...prev
+      ]);
+      setCommentsCount(prev => prev + 1);
+      setCommentInput("");
+    } else {
+      alert("Erro ao enviar comentário: " + (error || "Tente novamente."));
+    }
+    setIsSubmittingComment(false);
+  };
 
   const handleSupportClick = () => {
     if (!currentUserId) {
@@ -166,11 +216,11 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
 
         <div className="flex flex-wrap items-stretch gap-2 justify-end sm:justify-end w-full sm:w-auto">
           <button 
-            onClick={() => setShowComments(!showComments)}
+            onClick={toggleComments}
             className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-black tracking-wide bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 transition-all"
           >
             <MessageSquare className="h-4 w-4" />
-            <span className="whitespace-nowrap">{report.comentarios_count}</span>
+            <span className="whitespace-nowrap">{commentsCount}</span>
           </button>
 
           <Link 
@@ -196,14 +246,27 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
           <h5 className="text-xs font-black uppercase tracking-widest text-zinc-400">Comentários Locais</h5>
           
           <div className="space-y-3 max-h-56 overflow-y-auto custom-scroll pr-1">
-            {report.comments.length > 0 ? (
-              report.comments.map((c, i) => (
-                <div key={i} className="bg-zinc-50/50 hover:bg-zinc-50 dark:bg-zinc-950/30 dark:hover:bg-zinc-950/50 p-3.5 rounded-2xl transition-colors">
-                  <div className="flex justify-between items-center mb-1.5">
-                    <span className="text-xs font-bold text-zinc-900 dark:text-white">{c.author}</span>
-                    <span className="text-[10px] font-semibold text-zinc-400">{c.time}</span>
+            {isLoadingComments ? (
+              <div className="flex justify-center items-center py-4">
+                <Loader2 className="h-5 w-5 animate-spin text-zinc-400" />
+              </div>
+            ) : comments.length > 0 ? (
+              comments.map((c) => (
+                <div key={c.id} className="flex gap-2.5 animate-in fade-in slide-in-from-bottom-2">
+                  <div className="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center shrink-0 border border-zinc-300 dark:border-zinc-700 shadow-sm">
+                    <span className="font-extrabold text-[10px] text-zinc-600 dark:text-zinc-400">
+                      {getInitials(c.authorName)}
+                    </span>
                   </div>
-                  <p className="text-[13px] text-zinc-600 dark:text-zinc-300 leading-relaxed">{c.text}</p>
+                  <div className="flex-1 bg-zinc-50 dark:bg-zinc-950/50 p-3 rounded-2xl rounded-tl-sm border border-zinc-100 dark:border-zinc-800/80 shadow-sm">
+                    <div className="flex justify-between items-start mb-1 gap-2">
+                      <span className="text-xs font-bold text-zinc-900 dark:text-white truncate">{c.authorName}</span>
+                      <span className="text-[9px] font-semibold text-zinc-400 whitespace-nowrap">
+                        {new Date(c.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} às {new Date(c.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                    <p className="text-[13px] text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap">{c.texto}</p>
+                  </div>
                 </div>
               ))
             ) : (
@@ -216,19 +279,25 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
           <div className="relative mt-2">
             <input 
               type="text" 
+              value={commentInput}
+              onChange={(e) => setCommentInput(e.target.value)}
               placeholder={currentUserId ? "Escreva seu comentário..." : "Faça login para comentar"} 
-              disabled={!currentUserId}
+              disabled={!currentUserId || isSubmittingComment}
               className="w-full bg-zinc-50 dark:bg-zinc-950 border-transparent rounded-xl pl-4 pr-12 py-3 text-sm text-zinc-900 dark:text-white focus:ring-2 focus:ring-zinc-200 dark:focus:ring-zinc-800 focus:bg-white dark:focus:bg-zinc-900 outline-none transition-all placeholder-zinc-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             />
-            <button disabled={!currentUserId} className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-zinc-400">
-              <Send className="h-4 w-4" />
+            <button 
+              onClick={handleComentar}
+              disabled={!currentUserId || !commentInput.trim() || isSubmittingComment} 
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-zinc-400 flex items-center justify-center"
+            >
+              {isSubmittingComment ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </button>
           </div>
         </div>
       )}
 
       <AutoSupportModal isOpen={showModal} onClose={() => setShowModal(false)} />
-      <ReportModal isOpen={showReportModal} onClose={() => setShowReportModal(false)} reportId={report.id} />
+      <DenunciaModal isOpen={showReportModal} onClose={() => setShowReportModal(false)} reportId={report.id} currentUserId={currentUserId} />
       <AuthRequiredModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} message="Crie uma conta para interagir com relatos." />
     </div>
   );

@@ -7,6 +7,7 @@ import FeedHeader from '../../components/FeedHeader';
 import FeedFilters from '../../components/FeedFilters';
 import FeedList from '../../components/FeedList';
 import { supabase } from '../../lib/supabaseClient';
+import { getUserApoios, toggleApoio } from '../../services/interacoesService';
 
 export default function Feed() {
   const [reports, setReports] = useState([]);
@@ -40,9 +41,15 @@ export default function Feed() {
           const userIds = [...new Set(fallbackData.map(r => r.user_id).filter(Boolean))];
           const { data: profiles } = await supabase.from('profiles').select('id, nome_completo').in('id', userIds);
           
+          let userApoiosIds = [];
+          if (user) {
+            userApoiosIds = await getUserApoios(user.id);
+          }
+
           const mapped = fallbackData.map(report => {
             const prof = profiles?.find(p => p.id === report.user_id);
-            return mapDBReportToFeedCard(report, prof);
+            const userVoted = userApoiosIds.includes(report.id);
+            return mapDBReportToFeedCard(report, prof, userVoted);
           });
           setReports(mapped);
         }
@@ -56,7 +63,7 @@ export default function Feed() {
     fetchData();
   }, []);
 
-  const mapDBReportToFeedCard = (dbReport, profileData) => {
+  const mapDBReportToFeedCard = (dbReport, profileData, userVoted = false) => {
     let author = "Usuário Anônimo";
     let initials = "CA";
     
@@ -147,7 +154,7 @@ export default function Feed() {
       urgencyIcon,
       description: dbReport.descricao,
       votes: dbReport.apoios_count || 0,
-      userHasVoted: false,
+      userHasVoted: userVoted,
       date,
       time,
       status: dbReport.status === 'resolvido' ? 'resolved' : 'pending',
@@ -163,17 +170,43 @@ export default function Feed() {
     };
   };
 
-  const handleSupport = (id) => {
+  const handleSupport = async (id) => {
+    if (!currentUserId) return; // Se não logado, o AuthModal já cuidará disso no FeedCard
+    
+    // Encontrar report atual
+    const reportToUpdate = reports.find(r => r.id === id);
+    if (!reportToUpdate) return;
+
+    const currentStatus = reportToUpdate.userHasVoted;
+
+    // Atualização otimista
     setReports(prev => prev.map(report => {
       if (report.id === id) {
         return {
           ...report,
-          userHasVoted: !report.userHasVoted,
-          votes: report.userHasVoted ? report.votes - 1 : report.votes + 1
+          userHasVoted: !currentStatus,
+          votes: currentStatus ? Math.max(0, report.votes - 1) : report.votes + 1
         };
       }
       return report;
     }));
+
+    // Chamada à API
+    const { success } = await toggleApoio(id, currentUserId, currentStatus);
+    
+    // Se falhar, reverte
+    if (!success) {
+      setReports(prev => prev.map(report => {
+        if (report.id === id) {
+          return {
+            ...report,
+            userHasVoted: currentStatus,
+            votes: currentStatus ? report.votes + 1 : Math.max(0, report.votes - 1)
+          };
+        }
+        return report;
+      }));
+    }
   };
 
   const filteredData = reports.filter(report => {

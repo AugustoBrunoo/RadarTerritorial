@@ -6,6 +6,7 @@ import AiAssistant from '../pages/AiAssistant/index.jsx';
 import EmConstrucao from '../pages/EmConstrucao/index.jsx';
 import RelatoDetalhado from '../pages/RelatoDetalhado/index.jsx';
 import TermosDeUso from '../pages/TermosDeUso/index.jsx';
+import Dashboard from '../pages/Dashboard/index.jsx';
 
 export const publicRoutes = [
   { path: "/", element: <Home /> },
@@ -14,6 +15,7 @@ export const publicRoutes = [
   { path: "/termos", element: <TermosDeUso /> },
   { path: "/feed", element: <Feed /> },
   { path: "/assistente-ia", element: <AiAssistant /> },
+  { path: "/dashboard", element: <Dashboard /> },
   { path: "/em-construcao", element: <EmConstrucao /> },
   { path: "/relato/:id", element: <RelatoDetalhado /> },
   { path: "*", element: <EmConstrucao /> },

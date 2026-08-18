@@ -15,6 +15,8 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
+import SimpleHeader from '../../components/SimpleHeader';
+
 export default function EsqueciSenha() {
   const [email, setEmail] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
@@ -87,29 +89,7 @@ export default function EsqueciSenha() {
   return (
     <div className="transition-colors duration-500 ease-in-out min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white flex flex-col">
 
-      {/* === NAVBAR SIMPLIFICADA === */}
-      <div className="fixed top-6 left-0 right-0 z-40 px-4 flex justify-center pointer-events-none">
-        <header className="pointer-events-auto w-full max-w-5xl bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full px-4 sm:px-6 py-3 flex justify-between items-center shadow-lg shadow-zinc-200/20 dark:shadow-black/40 transition-all duration-300">
-
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 cursor-pointer group">
-            <div className="bg-red-600 p-2 rounded-full group-hover:scale-105 transition-transform">
-              <MapPin className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-bold text-lg sm:text-xl tracking-tight text-zinc-900 dark:text-white">
-              Radar<span className="text-red-600">Territorial</span>
-            </span>
-          </Link>
-
-          {/* Actions */}
-          <div className="flex items-center gap-3">
-            <Link to="/login" className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-5 py-2.5 rounded-full text-sm font-bold transition-colors">
-              <ArrowLeft className="h-4 w-4" />
-              <span className="hidden sm:inline">Voltar ao Login</span>
-            </Link>
-          </div>
-        </header>
-      </div>
+      <SimpleHeader backLink="/login" />
 
       {/* === SEÇÃO DE RECUPERAÇÃO DE SENHA (SPLIT LAYOUT) === */}
       <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full flex items-center justify-center min-h-[90vh] animate-in fade-in slide-in-from-bottom-4 duration-700 relative z-10">

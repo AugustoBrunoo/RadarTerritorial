@@ -7,68 +7,167 @@ import {
   Eye, 
   EyeOff, 
   Check, 
-  CheckCircle2,
+  CheckCircle2, 
   Loader2, 
-  AlertCircle 
+  AlertCircle,
+  ShieldAlert
 } from 'lucide-react';
 import SimpleHeader from '../../components/SimpleHeader';
 import SimpleFooter from '../../components/SimpleFooter';
 import { signInUser, resendConfirmationEmail } from '../../services/authService';
+import { 
+  sanitizeInput, 
+  isValidEmail, 
+  sanitizeRedirectUrl, 
+  getRateLimitStatus, 
+  registerFailedAttempt, 
+  resetRateLimit 
+} from '../../utils/security';
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   
   const queryParams = new URLSearchParams(location.search);
-  const redirectPath = queryParams.get('redirect') || '/central-cidadao';
+  // Proteção contra Open Redirect: valida e sanitiza rigorosamente a URL de destino
+  const redirectPath = sanitizeRedirectUrl(queryParams.get('redirect'), '/central-cidadao');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [keepLogged, setKeepLogged] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
+  // Armadilha Honeypot anti-bot
+  const [honeypot, setHoneypot] = useState('');
+  
+  // Rate limiting / Proteção contra Força Bruta
+  const [lockoutRemaining, setLockoutRemaining] = useState(0);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isResending, setIsResending] = useState(false);
   const [resendSuccessMessage, setResendSuccessMessage] = useState('');
 
-  // Scroll to top on mount
+  // Checa status de bloqueio por tentativas excessivas ao montar
   useEffect(() => {
     window.scrollTo(0, 0);
+    const status = getRateLimitStatus('login', 5, 30);
+    if (status.isLocked) {
+      setLockoutRemaining(status.remainingSeconds);
+    }
   }, []);
+
+  // Timer para contagem regressiva de bloqueio temporário
+  useEffect(() => {
+    if (lockoutRemaining <= 0) return;
+
+    const timer = setInterval(() => {
+      setLockoutRemaining(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [lockoutRemaining]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
     setResendSuccessMessage('');
-    setIsSubmitting(true);
 
-    const response = await signInUser({ email, password });
+    // 1. Verificação de Bloqueio por Força Bruta
+    if (lockoutRemaining > 0) {
+      setErrorMessage(`Muitas tentativas falhas. Aguarde ${lockoutRemaining} segundos para tentar novamente.`);
+      return;
+    }
 
-    if (response.success) {
-      setIsSuccess(true);
+    // 2. Armadilha Honeypot para Bots e Scrapers Automatizados
+    if (honeypot.trim() !== '') {
+      // Bot detectado: simula processamento e rejeita silenciosamente
+      setIsSubmitting(true);
       setTimeout(() => {
         setIsSubmitting(false);
-        setIsSuccess(false);
-        
-        // Redirecionamento Baseado em primeiro_acesso
-        if (response.isFirstAccess) {
-          navigate('/bem-vindo');
-        } else {
-          navigate(redirectPath);
-        }
+        setErrorMessage('Credenciais inválidas.');
       }, 1000);
-    } else {
+      return;
+    }
+
+    // 3. Sanitização e Validação Estrita dos Campos (Anti-Injection & XSS)
+    const cleanEmail = sanitizeInput(email, 100).toLowerCase();
+    const cleanPassword = password ? password.slice(0, 128) : '';
+
+    if (!cleanEmail || !cleanPassword) {
+      setErrorMessage('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    if (!isValidEmail(cleanEmail)) {
+      setErrorMessage('Por favor, insira um formato de e-mail válido.');
+      return;
+    }
+
+    if (cleanPassword.length < 6) {
+      setErrorMessage('A senha deve conter no mínimo 6 caracteres.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await signInUser({ email: cleanEmail, password: cleanPassword });
+
+      if (response.success) {
+        // Reset do contador de tentativas após sucesso
+        resetRateLimit('login');
+        setIsSuccess(true);
+
+        setTimeout(() => {
+          setIsSubmitting(false);
+          setIsSuccess(false);
+          
+          // Redirecionamento baseado em primeiro_acesso e perfil com rota sanitizada
+          if (response.isFirstAccess) {
+            navigate('/bem-vindo');
+          } else {
+            if (response.profile?.role === 'admin' && redirectPath === '/central-cidadao') {
+              navigate('/admin/dashboard');
+            } else {
+              navigate(redirectPath);
+            }
+          }
+        }, 1000);
+      } else {
+        // Registra tentativa com falha para controle de força bruta
+        const rateStatus = registerFailedAttempt('login', 5, 30);
+        if (rateStatus.isLocked) {
+          setLockoutRemaining(rateStatus.remainingSeconds);
+          setErrorMessage(`Muitas tentativas incorretas. Por segurança, aguarde ${rateStatus.remainingSeconds} segundos.`);
+        } else {
+          setErrorMessage(response.error);
+        }
+        setIsSubmitting(false);
+      }
+    } catch {
       setIsSubmitting(false);
-      setErrorMessage(response.error);
+      setErrorMessage('Ocorreu um erro ao autenticar. Tente novamente mais tarde.');
     }
   };
 
   const handleResendEmail = async () => {
+    const cleanEmail = sanitizeInput(email, 100);
+    if (!isValidEmail(cleanEmail)) {
+      setErrorMessage('Insira um e-mail válido para reenviar a confirmação.');
+      return;
+    }
+
     setIsResending(true);
     setResendSuccessMessage('');
-    const res = await resendConfirmationEmail(email);
+    const res = await resendConfirmationEmail(cleanEmail);
     setIsResending(false);
     if (res.success) {
       setResendSuccessMessage('E-mail de confirmação reenviado com sucesso! Verifique sua caixa de entrada.');
@@ -119,7 +218,31 @@ export default function Login() {
               <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">Acesse seu painel com E-mail e Senha.</p>
             </div>
 
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+
+              {/* Armadilha Honeypot invisível para enganar bots e scrapers automatizados */}
+              <div aria-hidden="true" className="opacity-0 absolute -left-[9999px] pointer-events-none h-0 w-0 overflow-hidden">
+                <label htmlFor="user_security_token">Não preencha este campo</label>
+                <input 
+                  id="user_security_token"
+                  type="text" 
+                  name="user_security_token"
+                  value={honeypot} 
+                  onChange={(e) => setHoneypot(e.target.value)} 
+                  tabIndex={-1} 
+                  autoComplete="off" 
+                />
+              </div>
+
+              {/* Banner de Bloqueio por Força Bruta */}
+              {lockoutRemaining > 0 && (
+                <div className="bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 px-4 py-3 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-3 animate-in fade-in">
+                  <ShieldAlert className="h-5 w-5 flex-shrink-0 text-amber-500" />
+                  <span>
+                    Bloqueio temporário de segurança. Aguarde <strong>{lockoutRemaining}s</strong> para tentar novamente.
+                  </span>
+                </div>
+              )}
 
               {/* E-mail */}
               <div>
@@ -131,10 +254,15 @@ export default function Login() {
                   <input 
                     type="email" 
                     required 
+                    maxLength={100}
+                    autoComplete="username"
+                    spellCheck={false}
+                    autoCapitalize="none"
                     placeholder="seu@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-11 pr-4 py-3.5 text-zinc-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none transition-all placeholder-zinc-400 font-medium" 
+                    disabled={lockoutRemaining > 0 || isSubmitting}
+                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-11 pr-4 py-3.5 text-zinc-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none transition-all placeholder-zinc-400 font-medium disabled:opacity-60 disabled:cursor-not-allowed" 
                   />
                 </div>
               </div>
@@ -153,17 +281,23 @@ export default function Login() {
                   <input 
                     type={showPassword ? "text" : "password"} 
                     required 
+                    maxLength={128}
+                    autoComplete="current-password"
+                    spellCheck={false}
+                    autoCapitalize="none"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className={`w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-11 pr-10 py-3.5 text-zinc-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none transition-all placeholder-zinc-400 font-medium ${!showPassword ? 'tracking-widest' : ''}`} 
+                    disabled={lockoutRemaining > 0 || isSubmitting}
+                    className={`w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-11 pr-10 py-3.5 text-zinc-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none transition-all placeholder-zinc-400 font-medium disabled:opacity-60 disabled:cursor-not-allowed ${!showPassword ? 'tracking-widest' : ''}`} 
                   />
 
                   <button 
                     type="button" 
                     onClick={() => setShowPassword(!showPassword)}
-                    tabIndex="-1"
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+                    tabIndex={-1}
+                    disabled={lockoutRemaining > 0 || isSubmitting}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors cursor-pointer"
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
@@ -179,6 +313,7 @@ export default function Login() {
                       className="peer sr-only" 
                       checked={keepLogged}
                       onChange={(e) => setKeepLogged(e.target.checked)}
+                      disabled={lockoutRemaining > 0 || isSubmitting}
                     />
                     <div className="w-5 h-5 border-2 border-zinc-300 dark:border-zinc-700 rounded bg-white dark:bg-zinc-950 flex items-center justify-center transition-colors peer-checked:bg-red-600 peer-checked:border-red-600 peer-checked:[&_svg]:block">
                       <Check className="hidden h-3.5 w-3.5 text-white pointer-events-none" strokeWidth={3} />
@@ -190,9 +325,9 @@ export default function Login() {
                 </label>
               </div>
 
-              {/* Feedback Messages */}
+              {/* Mensagens de Feedback */}
               {errorMessage && (
-                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm font-medium flex flex-col sm:flex-row sm:items-center gap-3">
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm font-medium flex flex-col sm:flex-row sm:items-center gap-3 animate-in fade-in">
                   <div className="flex items-center gap-2">
                     <AlertCircle className="h-5 w-5 flex-shrink-0" />
                     <span>{errorMessage}</span>
@@ -202,7 +337,7 @@ export default function Login() {
                       type="button" 
                       onClick={handleResendEmail}
                       disabled={isResending}
-                      className="sm:ml-auto bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/60 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors disabled:opacity-50 whitespace-nowrap"
+                      className="sm:ml-auto bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/60 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors disabled:opacity-50 whitespace-nowrap cursor-pointer"
                     >
                       {isResending ? 'Enviando...' : 'Reenviar E-mail'}
                     </button>
@@ -211,27 +346,31 @@ export default function Login() {
               )}
 
               {resendSuccessMessage && (
-                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900/50 text-green-700 dark:text-green-400 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2">
+                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900/50 text-green-700 dark:text-green-400 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2 animate-in fade-in">
                   <CheckCircle2 className="h-5 w-5 flex-shrink-0" />
                   <span>{resendSuccessMessage}</span>
                 </div>
               )}
 
-              {/* Botão Submit */}
+              {/* Botão Submit com proteção */}
               <div className="pt-2">
                 <button 
                   type="submit" 
-                  disabled={isSubmitting || isSuccess}
-                  className={`w-full py-4 rounded-xl font-black text-base transition-transform shadow-lg flex justify-center items-center gap-2 ${
+                  disabled={isSubmitting || isSuccess || lockoutRemaining > 0}
+                  className={`w-full py-4 rounded-xl font-black text-base transition-transform shadow-lg flex justify-center items-center gap-2 cursor-pointer ${
                     isSuccess 
                       ? 'bg-green-600 hover:bg-green-700 text-white shadow-green-600/30' 
-                      : 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 hover:-translate-y-1'
-                  } ${isSubmitting ? 'opacity-80 cursor-not-allowed' : ''}`}
+                      : lockoutRemaining > 0
+                        ? 'bg-zinc-300 dark:bg-zinc-800 text-zinc-500 cursor-not-allowed shadow-none'
+                        : 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 hover:-translate-y-1'
+                  } ${(isSubmitting || lockoutRemaining > 0) ? 'opacity-80 cursor-not-allowed' : ''}`}
                 >
                   {isSubmitting ? (
                     <><Loader2 className="h-5 w-5 animate-spin" /> Autenticando...</>
                   ) : isSuccess ? (
                     <><Check className="h-5 w-5" /> Acesso Liberado!</>
+                  ) : lockoutRemaining > 0 ? (
+                    <>Bloqueado temporariamente ({lockoutRemaining}s)</>
                   ) : (
                     <>Acessar <ArrowRight className="h-4 w-4" /></>
                   )}

@@ -1,0 +1,42 @@
+# ==============================================================================
+# Robots.txt - Radar Territorial (https://radar-territorial.vercel.app)
+# ==============================================================================
+
+User-agent: *
+
+# --- Áreas Públicas Permitidas para Indexação (SEO) ---
+Allow: /$
+Allow: /index.html
+Allow: /feed
+Allow: /publicacoes/
+Allow: /relato/
+Allow: /dashboard
+Allow: /termos
+Allow: /privacidade
+Allow: /static/
+Allow: /assets/
+
+# --- Áreas Administrativas e de Gestão (Bloqueadas) ---
+Disallow: /admin/
+Disallow: /admin*
+Disallow: /gestao/
+Disallow: /moderacao/
+
+# --- Áreas Privadas e de Autenticação do Usuário (Bloqueadas) ---
+Disallow: /hub
+Disallow: /painel
+Disallow: /configuracoes
+Disallow: /settings
+Disallow: /login
+Disallow: /cadastro
+Disallow: /auth/
+Disallow: /escolhaReporte.html
+Disallow: /novo-relato
+
+# --- Parâmetros de Busca e Sessão ---
+Disallow: /*?*token=
+Disallow: /*?*session=
+Disallow: /*?*code=
+
+# --- Sitemap Oficial ---
+Sitemap: https://radar-territorial.vercel.app/sitemap.xml

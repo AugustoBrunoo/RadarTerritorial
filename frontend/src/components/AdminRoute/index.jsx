@@ -14,8 +14,12 @@ export default function AdminRoute({ children }) {
     );
   }
 
-  if (!user || !isAdmin) {
-    return <Navigate to="/feed" replace />;
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!isAdmin) {
+    return <Navigate to="/central-cidadao" replace />;
   }
 
   return children ? children : <Outlet />;

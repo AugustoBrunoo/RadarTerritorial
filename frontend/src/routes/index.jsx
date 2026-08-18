@@ -8,6 +8,8 @@ import { Loader2 } from 'lucide-react';
 
 const AdminLayout = React.lazy(() => import('../pages/Admin/Layout'));
 const AdminDashboard = React.lazy(() => import('../pages/Admin/Dashboard'));
+const AdminModeracao = React.lazy(() => import('../pages/Admin/Moderacao'));
+const AdminOrgaos = React.lazy(() => import('../pages/Admin/Orgaos'));
 
 const adminRoutes = [
   {
@@ -24,6 +26,18 @@ const adminRoutes = [
       </AdminRoute>
     ),
     children: [
+      {
+        path: 'dashboard',
+        element: <AdminDashboard />
+      },
+      {
+        path: 'moderacao',
+        element: <AdminModeracao />
+      },
+      {
+        path: 'orgaos',
+        element: <AdminOrgaos />
+      },
       {
         index: true,
         element: <AdminDashboard />

@@ -12,7 +12,7 @@ export default function AuthChoice() {
 
   return (
     <div className="transition-colors duration-500 ease-in-out min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white flex flex-col">
-      <SimpleHeader backLink="/reportar" />
+      <SimpleHeader backLink="/" />
 
       <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full flex flex-col justify-center min-h-[90vh] relative">
         {/* Elemento de Blur Decorativo no Fundo */}

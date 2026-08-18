@@ -149,9 +149,9 @@ export default function RelatoDetalhado() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           {/* COLUNA DA ESQUERDA (Detalhes do Relato) */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-8 min-w-0">
             <RelatoHeader 
               report={report} 
               dateStr={dateStr} 
@@ -172,7 +172,7 @@ export default function RelatoDetalhado() {
           </div>
 
           {/* COLUNA DA DIREITA (Apoio e Comentários) */}
-          <div className="space-y-6">
+          <div className="space-y-6 min-w-0">
             <RelatoAcoes report={report} isOwner={isOwner} currentUserId={currentUserId} />
             <RelatoComentarios report={report} currentUserId={currentUserId} />
           </div>

@@ -1,37 +1,90 @@
-import React from 'react';
-import { Activity, ShieldCheck, Users, FileText } from 'lucide-react';
+import React, { useState } from 'react';
+import { Flag, Building2, TrendingUp, Layers, Bot, ShieldAlert, Briefcase } from 'lucide-react';
+import AdminKpiCard from '../../../components/AdminKpiCard';
+import AdminActionCard from '../../../components/AdminActionCard';
 
 export default function AdminDashboard() {
-  return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <h2 className="text-2xl font-black text-zinc-900 dark:text-white mb-6">Visão Geral</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {[
-          { title: "Usuários Ativos", val: "---", icon: Users },
-          { title: "Relatos no Sistema", val: "---", icon: FileText },
-          { title: "Denúncias (Moderação)", val: "---", icon: ShieldCheck },
-          { title: "Acessos Hoje", val: "---", icon: Activity },
-        ].map((card, idx) => (
-          <div key={idx} className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 shrink-0">
-              <card.icon className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-xs font-black uppercase tracking-widest text-zinc-400">{card.title}</p>
-              <p className="text-2xl font-bold text-zinc-900 dark:text-white mt-1">{card.val}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+  const [metrics] = useState({
+    denunciasCount: 4,
+    solicitacoesCount: 1,
+    relatosCount: 1248
+  });
 
-      <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm p-8 text-center max-w-3xl mx-auto mt-12">
-        <ShieldCheck className="h-16 w-16 text-zinc-300 dark:text-zinc-700 mx-auto mb-4" />
-        <h3 className="text-2xl font-black text-zinc-900 dark:text-white mb-3">Painel do Administrador do Sistema - Em Breve</h3>
-        <p className="text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium">
-          A infraestrutura da área administrativa está configurada. Aqui faremos a moderação global de relatos, banimento de usuários infratores e a parametrização do Radar Territorial. O acesso está bloqueado e seguro apenas para os administradores.
-        </p>
-      </div>
+  return (
+    <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      
+      {/* 1. KPIS MACRO (Bento Grid Style) */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <AdminKpiCard 
+          title="Denúncias Pendentes"
+          value={metrics.denunciasCount}
+          icon={Flag}
+          colorScheme="red"
+          trendIcon={TrendingUp}
+          trendValue="+2 hoje"
+          highlight={true}
+        />
+        
+        <AdminKpiCard 
+          title="Solicitações de Órgãos"
+          value={metrics.solicitacoesCount}
+          icon={Building2}
+          colorScheme="amber"
+        />
+
+        <AdminKpiCard 
+          title="Relatos (Mês Atual)"
+          value={metrics.relatosCount}
+          icon={Layers}
+          colorScheme="blue"
+        />
+
+        <AdminKpiCard 
+          title="Acurácia Triagem IA"
+          value="--"
+          icon={Bot}
+          colorScheme="zinc"
+          comingSoon={true}
+        />
+      </section>
+
+      {/* 2. ATALHOS DE AÇÃO (Substituindo listas complexas no dashboard) */}
+      <section className="space-y-6">
+        <div>
+          <h2 className="text-xl font-black text-zinc-900 dark:text-white flex items-center gap-2 mb-2">
+            Ações Requeridas
+          </h2>
+          <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+            Módulos que exigem atenção da administração
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <AdminActionCard 
+            title="Fila de Moderação"
+            description="Relatos sinalizados como falsos, ofensivos ou spam pela comunidade aguardando análise."
+            value={metrics.denunciasCount}
+            valueSuffix="Pendentes"
+            icon={ShieldAlert}
+            actionText="Analisar Denúncias"
+            actionLink="/admin/moderacao"
+            colorClass="text-red-600 bg-red-50 dark:bg-red-950/30 border-red-100 dark:border-red-900/30"
+            btnClass="bg-red-600 hover:bg-red-700 text-white dark:bg-red-600 dark:hover:bg-red-500"
+          />
+
+          <AdminActionCard 
+            title="Solicitações de Órgãos"
+            description="Novos cadastros de gestores públicos e órgãos que precisam de aprovação de acesso."
+            value={metrics.solicitacoesCount}
+            valueSuffix="Aguardando"
+            icon={Briefcase}
+            actionText="Gerenciar Órgãos"
+            actionLink="/admin/orgaos"
+            colorClass="text-amber-600 bg-amber-50 dark:bg-amber-950/30 border-amber-100 dark:border-amber-900/30"
+            btnClass="bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-white dark:hover:bg-zinc-200 dark:text-zinc-900"
+          />
+        </div>
+      </section>
     </div>
   );
 }

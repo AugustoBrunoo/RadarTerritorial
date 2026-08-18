@@ -7,14 +7,7 @@ export default function SimpleHeader({ backLink = "/" }) {
 
     const handleBack = (e) => {
         e.preventDefault();
-        // Verifica se há histórico no React Router ou no navegador
-        if (window.history.state && window.history.state.idx > 0) {
-            navigate(-1);
-        } else if (window.history.length > 2) {
-            navigate(-1);
-        } else {
-            navigate(backLink);
-        }
+        navigate(backLink || "/");
     };
 
     return (

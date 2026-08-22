@@ -38,6 +38,7 @@ export async function getRelatosRealtime() {
         imagemUrl: item.imagem_url,
         descricao: item.descricao,
         protocolo: item.protocolo_oficial,
+        respostaOrgao: item.resposta_orgao,
         // Mantemos fallback do operador para não quebrar compatibilidade
         operador: item.orgao_responsavel_id || "Órgão Competente" 
       };

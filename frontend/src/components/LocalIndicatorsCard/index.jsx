@@ -19,16 +19,7 @@ export default function LocalIndicatorsCard() {
       </div>
 
       <div className="space-y-4">
-        <div className="bg-zinc-50 dark:bg-zinc-950/40 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800/60 flex items-center justify-between">
-          <div>
-            <span className="text-2xl font-black text-green-600 dark:text-green-400">84%</span>
-            <span className="block text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">Resolvidos Cosmos</span>
-          </div>
-          <div className="text-right">
-            <span className="text-2xl font-black text-zinc-800 dark:text-white">4.2d</span>
-            <span className="block text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">Média de solução</span>
-          </div>
-        </div>
+
         <Link
           to="#"
           className="w-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 font-extrabold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all"

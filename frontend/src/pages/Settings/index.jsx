@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { supabase } from '../../lib/supabaseClient';
+import { useAuth } from '../../hooks/useAuth';
 import {
   ArrowLeft,
   UserCog,
@@ -15,30 +17,81 @@ import {
   User,
   Bell,
   Circle,
-  Check
+  Check,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import LoggedHeader from '../../components/LoggedHeader/index.jsx';
 
 export default function Settings() {
   const navigate = useNavigate();
-  
+  const { user, profile } = useAuth();
+
   // Modals state
   const [activeModal, setActiveModal] = useState(null); // 'profile' | 'notifications' | 'security' | 'delete' | null
-  
+
   // Toast state
   const [toast, setToast] = useState({ show: false, title: '', msg: '' });
 
   // Profile form state
-  const [profileName, setProfileName] = useState('Augusto Martins');
-  const [profileEmail, setProfileEmail] = useState('augusto.martins@email.com');
+  const [profileName, setProfileName] = useState('');
+  const [initialProfileName, setInitialProfileName] = useState('');
+  const [profileEmail, setProfileEmail] = useState('');
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+  const [profileError, setProfileError] = useState('');
+
+  React.useEffect(() => {
+    async function loadUserProfile() {
+      let fullName = profile?.nome_completo || profile?.nome || user?.user_metadata?.nome_completo || user?.user_metadata?.nome;
+      let email = user?.email;
+
+      if (!fullName || !email) {
+        const { data: { user: currentUser } } = await supabase.auth.getUser();
+        if (currentUser) {
+          if (!email) email = currentUser.email;
+          if (!fullName) {
+            fullName = currentUser.user_metadata?.nome_completo;
+          }
+          if (!fullName) {
+            const { data: dbProfile } = await supabase
+              .from('profiles')
+              .select('nome_completo')
+              .eq('id', currentUser.id)
+              .maybeSingle();
+            if (dbProfile) {
+              fullName = dbProfile.nome_completo;
+            }
+          }
+        }
+      }
+
+      if (fullName) {
+        setProfileName(fullName);
+        setInitialProfileName(fullName);
+      }
+      if (email) setProfileEmail(email);
+    }
+
+    loadUserProfile();
+  }, [profile, user]);
+
+  const isProfileChanged = profileName.trim() !== '' && profileName.trim() !== initialProfileName.trim();
+  const canSaveProfile = isProfileChanged && !isUpdatingProfile;
 
   // Security form state
   const [currentPass, setCurrentPass] = useState('');
   const [newPass, setNewPass] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
+  const [showCurrentPass, setShowCurrentPass] = useState(false);
+  const [showNewPass, setShowNewPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
 
   // Delete form state
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   // Toast Helper
   const showToast = (title, msg) => {
@@ -48,13 +101,52 @@ export default function Settings() {
     }, 3000);
   };
 
-  const closeModal = () => setActiveModal(null);
+  const closeModal = () => {
+    setActiveModal(null);
+    setProfileName(initialProfileName);
+    setProfileError('');
+    setPasswordError('');
+    setDeleteError('');
+    setDeleteConfirmText('');
+  };
 
   // Profile Handlers
-  const handleSaveProfile = (e) => {
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
-    closeModal();
-    showToast('Perfil Atualizado!', `Dados alterados para ${profileName}.`);
+    const cleanName = profileName.trim();
+    if (!cleanName || isUpdatingProfile) return;
+
+    setIsUpdatingProfile(true);
+    setProfileError('');
+
+    try {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      const currentUserId = user?.id || currentUser?.id;
+      if (!currentUserId) throw new Error('Usuário não autenticado.');
+
+      // Atualiza na tabela profiles apenas o campo existente nome_completo
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ nome_completo: cleanName })
+        .eq('id', currentUserId);
+
+      if (profileError) throw profileError;
+
+      // Sincroniza também nos metadados do Supabase Auth
+      await supabase.auth.updateUser({
+        data: { nome_completo: cleanName }
+      });
+
+      setInitialProfileName(cleanName);
+      setProfileName(cleanName);
+      closeModal();
+      showToast('Perfil Atualizado!', `Nome atualizado para ${cleanName}.`);
+    } catch (err) {
+      console.error('Erro ao atualizar perfil:', err);
+      setProfileError('Não foi possível atualizar o perfil. Tente novamente.');
+    } finally {
+      setIsUpdatingProfile(false);
+    }
   };
 
   // Notification Handlers
@@ -69,28 +161,81 @@ export default function Settings() {
   const hasNum = /[0-9]/.test(newPass);
   const hasSym = /[!@#$%^&*(),.?":{}|<>]/.test(newPass);
   const hasMatch = newPass.length > 0 && newPass === confirmPass;
-  const canUpdatePassword = hasLen && hasUpper && hasNum && hasSym && hasMatch;
+  const canUpdatePassword = hasLen && hasUpper && hasNum && hasSym && hasMatch && !isUpdatingPassword;
 
-  const handleUpdatePassword = (e) => {
+  const handleUpdatePassword = async (e) => {
     e.preventDefault();
     if (!canUpdatePassword) return;
-    closeModal();
-    setCurrentPass('');
-    setNewPass('');
-    setConfirmPass('');
-    showToast('Senha Alterada!', 'Sua nova senha foi salva com segurança.');
+
+    setIsUpdatingPassword(true);
+    setPasswordError('');
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Usuário não autenticado.');
+
+      // Verificar a senha atual
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPass
+      });
+
+      if (signInError) {
+        setPasswordError('A senha atual está incorreta.');
+        setIsUpdatingPassword(false);
+        return;
+      }
+
+      // Atualizar para a nova senha
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: newPass
+      });
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      closeModal();
+      setCurrentPass('');
+      setNewPass('');
+      setConfirmPass('');
+      showToast('Senha Alterada!', 'Sua nova senha foi salva com segurança.');
+    } catch (err) {
+      console.error('Erro ao atualizar senha:', err);
+      setPasswordError('Ocorreu um erro ao atualizar sua senha. Tente novamente.');
+    } finally {
+      setIsUpdatingPassword(false);
+    }
   };
 
   // Delete Handlers
-  const canDelete = deleteConfirmText === 'EXCLUIR';
-  
-  const executeAccountDeletion = () => {
+  const canDelete = deleteConfirmText === 'EXCLUIR' && !isDeleting;
+
+  const executeAccountDeletion = async () => {
     if (!canDelete) return;
-    closeModal();
-    showToast('Conta Removida', 'Sua conta foi encerrada segundo os termos da LGPD.');
-    setTimeout(() => {
-      navigate('/');
-    }, 1500);
+    setIsDeleting(true);
+    setDeleteError('');
+
+    try {
+      const { error } = await supabase.rpc('delete_user_account_lgpd');
+
+      if (error) {
+        throw error;
+      }
+
+      await supabase.auth.signOut();
+
+      closeModal();
+      showToast('Conta Removida', 'Sua conta foi encerrada segundo os termos da LGPD.');
+      setTimeout(() => {
+        navigate('/');
+      }, 1500);
+    } catch (err) {
+      console.error('Erro ao excluir conta:', err);
+      setDeleteError('Não foi possível excluir sua conta. Verifique sua conexão e tente novamente.');
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const ReqItem = ({ isValid, text }) => (
@@ -101,11 +246,11 @@ export default function Settings() {
 
   return (
     <div className="transition-colors duration-500 ease-in-out min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col antialiased">
-      
+
       <LoggedHeader />
 
       <main className="flex-grow pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full flex flex-col justify-start animate-in fade-in slide-in-from-bottom-4 duration-500">
-        
+
         {/* Cabeçalho de Boas-Vindas */}
         <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -114,7 +259,7 @@ export default function Settings() {
               Gerencie suas informações pessoais, canais de alerta e segurança de acesso.
             </p>
           </div>
-          <button 
+          <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold text-xs transition-colors shadow-sm shrink-0"
           >
@@ -123,7 +268,7 @@ export default function Settings() {
         </div>
 
         <div className="space-y-4 mb-8">
-          
+
           {/* CARD 1: Perfil */}
           <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-sm hover:border-zinc-300 dark:hover:border-zinc-700 transition-all">
             <div className="flex items-start gap-4">
@@ -137,7 +282,7 @@ export default function Settings() {
                 </p>
               </div>
             </div>
-            <button 
+            <button
               onClick={() => setActiveModal('profile')}
               className="w-full sm:w-auto bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white font-extrabold py-3 px-6 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all shrink-0"
             >
@@ -158,7 +303,7 @@ export default function Settings() {
                 </p>
               </div>
             </div>
-            <button 
+            <button
               onClick={() => setActiveModal('notifications')}
               className="w-full sm:w-auto bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white font-extrabold py-3 px-6 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all shrink-0"
             >
@@ -180,7 +325,7 @@ export default function Settings() {
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto shrink-0">
-              <button 
+              <button
                 onClick={() => setActiveModal('security')}
                 className="w-full sm:w-auto bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-white text-white dark:text-zinc-900 font-extrabold py-3 px-5 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all shadow-md"
               >
@@ -205,13 +350,13 @@ export default function Settings() {
             </div>
             <div className="flex flex-col sm:flex-row gap-2.5 w-full sm:w-auto shrink-0">
               {/* Note: Logout can be handled via the LoggedHeader logic if we want, but we can also just show the modal here */}
-              <button 
+              <button
                 onClick={() => navigate('/login')}
                 className="w-full sm:w-auto bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all"
               >
                 <LogOut className="h-4 w-4" /> <span>Sair</span>
               </button>
-              <button 
+              <button
                 onClick={() => setActiveModal('delete')}
                 className="w-full sm:w-auto bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-white border border-red-600/20 hover:border-red-600 font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all"
               >
@@ -223,7 +368,7 @@ export default function Settings() {
       </main>
 
       {/* === MODALS === */}
-      
+
       {/* MODAL 1: Editar Perfil */}
       {activeModal === 'profile' && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
@@ -244,32 +389,46 @@ export default function Settings() {
             </div>
 
             <form onSubmit={handleSaveProfile} className="space-y-4">
+              {profileError && (
+                <div className="p-3 bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-xl text-xs text-red-600 dark:text-red-400 font-bold text-left mb-4">
+                  {profileError}
+                </div>
+              )}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">Nome Completo</label>
-                <input 
-                  type="text" 
+                <label className="block text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">Nome de Usuário</label>
+                <input
+                  type="text"
                   value={profileName}
                   onChange={e => setProfileName(e.target.value)}
+                  placeholder="Seu nome completo"
                   required
-                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl px-4 py-3.5 text-sm font-medium text-zinc-900 dark:text-white focus:outline-none focus:border-red-600 transition-colors"
+                  disabled={isUpdatingProfile}
+                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl px-4 py-3.5 text-sm font-medium text-zinc-900 dark:text-white focus:outline-none focus:border-red-600 transition-colors disabled:opacity-50"
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">E-mail Cadastrado</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   value={profileEmail}
-                  onChange={e => setProfileEmail(e.target.value)}
-                  required
-                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl px-4 py-3.5 text-sm font-medium text-zinc-900 dark:text-white focus:outline-none focus:border-red-600 transition-colors"
+                  readOnly
+                  disabled
+                  className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl px-4 py-3.5 text-sm font-medium text-zinc-500 dark:text-zinc-500 cursor-not-allowed transition-colors"
                 />
               </div>
               <div className="pt-4 flex gap-3">
-                <button type="button" onClick={closeModal} className="flex-1 py-3.5 rounded-xl font-bold text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                <button type="button" onClick={closeModal} disabled={isUpdatingProfile} className="flex-1 py-3.5 rounded-xl font-bold text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 disabled:opacity-50 transition-all">
                   Cancelar
                 </button>
-                <button type="submit" className="flex-1 py-3.5 rounded-xl font-extrabold text-xs bg-red-600 hover:bg-red-700 text-white shadow-md">
-                  Salvar Alterações
+                <button
+                  type="submit"
+                  disabled={!canSaveProfile}
+                  className={`flex-1 py-3.5 rounded-xl font-extrabold text-xs transition-all ${canSaveProfile
+                      ? 'bg-red-600 hover:bg-red-700 text-white shadow-md'
+                      : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-500 cursor-not-allowed'
+                    }`}
+                >
+                  {isUpdatingProfile ? 'Salvando...' : 'Salvar'}
                 </button>
               </div>
             </form>
@@ -339,38 +498,79 @@ export default function Settings() {
             </div>
 
             <form onSubmit={handleUpdatePassword} className="space-y-4">
+              {passwordError && (
+                <div className="p-3 bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-xl text-xs text-red-600 dark:text-red-400 font-bold text-left mb-4">
+                  {passwordError}
+                </div>
+              )}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">Senha Atual</label>
-                <input 
-                  type="password" 
-                  required 
-                  placeholder="Digite a senha atual"
-                  value={currentPass}
-                  onChange={e => setCurrentPass(e.target.value)}
-                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl px-4 py-3.5 text-sm font-medium text-zinc-900 dark:text-white focus:outline-none focus:border-red-600"
-                />
+                <div className="relative">
+                  <input
+                    type={showCurrentPass ? "text" : "password"}
+                    required
+                    placeholder="Digite a senha atual"
+                    value={currentPass}
+                    onChange={e => setCurrentPass(e.target.value)}
+                    disabled={isUpdatingPassword}
+                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl pl-4 pr-11 py-3.5 text-sm font-medium text-zinc-900 dark:text-white focus:outline-none focus:border-red-600 disabled:opacity-50"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPass(!showCurrentPass)}
+                    tabIndex={-1}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors p-1"
+                    title={showCurrentPass ? "Ocultar senha" : "Exibir senha"}
+                  >
+                    {showCurrentPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">Nova Senha</label>
-                <input 
-                  type="password" 
-                  required 
-                  placeholder="Digite a nova senha"
-                  value={newPass}
-                  onChange={e => setNewPass(e.target.value)}
-                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl px-4 py-3.5 text-sm font-medium text-zinc-900 dark:text-white focus:outline-none focus:border-red-600"
-                />
+                <div className="relative">
+                  <input
+                    type={showNewPass ? "text" : "password"}
+                    required
+                    placeholder="Digite a nova senha"
+                    value={newPass}
+                    onChange={e => setNewPass(e.target.value)}
+                    disabled={isUpdatingPassword}
+                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl pl-4 pr-11 py-3.5 text-sm font-medium text-zinc-900 dark:text-white focus:outline-none focus:border-red-600 disabled:opacity-50"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPass(!showNewPass)}
+                    tabIndex={-1}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors p-1"
+                    title={showNewPass ? "Ocultar senha" : "Exibir senha"}
+                  >
+                    {showNewPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">Confirmar Nova Senha</label>
-                <input 
-                  type="password" 
-                  required 
-                  placeholder="Repita a nova senha"
-                  value={confirmPass}
-                  onChange={e => setConfirmPass(e.target.value)}
-                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl px-4 py-3.5 text-sm font-medium text-zinc-900 dark:text-white focus:outline-none focus:border-red-600"
-                />
+                <div className="relative">
+                  <input
+                    type={showConfirmPass ? "text" : "password"}
+                    required
+                    placeholder="Repita a nova senha"
+                    value={confirmPass}
+                    onChange={e => setConfirmPass(e.target.value)}
+                    disabled={isUpdatingPassword}
+                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl pl-4 pr-11 py-3.5 text-sm font-medium text-zinc-900 dark:text-white focus:outline-none focus:border-red-600 disabled:opacity-50"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPass(!showConfirmPass)}
+                    tabIndex={-1}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors p-1"
+                    title={showConfirmPass ? "Ocultar senha" : "Exibir senha"}
+                  >
+                    {showConfirmPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
 
               {/* Widget de Requisitos */}
@@ -387,12 +587,12 @@ export default function Settings() {
                 </div>
               </div>
 
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 disabled={!canUpdatePassword}
                 className={`w-full py-3.5 rounded-xl font-extrabold text-xs transition-all ${canUpdatePassword ? 'bg-red-600 hover:bg-red-700 text-white shadow-md' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed'}`}
               >
-                Atualizar Senha
+                {isUpdatingPassword ? 'Atualizando...' : 'Atualizar Senha'}
               </button>
             </form>
           </div>
@@ -412,29 +612,38 @@ export default function Settings() {
                 Esta ação é <strong className="text-red-600">irreversível</strong>. Todos os seus dados pessoais serão apagados. Seus relatos permanecerão anonimizados.
               </p>
             </div>
+
+            {deleteError && (
+              <div className="p-3 bg-red-100 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-xl text-xs text-red-600 dark:text-red-400 font-bold text-left">
+                {deleteError}
+              </div>
+            )}
+
             <div className="space-y-2 bg-zinc-50 dark:bg-zinc-950 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800">
               <label className="text-[10px] font-black uppercase tracking-wider text-zinc-400 block">Digite <span className="text-red-600 font-extrabold">EXCLUIR</span> para confirmar</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="EXCLUIR"
                 value={deleteConfirmText}
                 onChange={e => setDeleteConfirmText(e.target.value)}
-                className="w-full text-center uppercase bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl py-2.5 text-sm font-extrabold text-zinc-900 dark:text-white focus:outline-none focus:border-red-600"
+                disabled={isDeleting}
+                className="w-full text-center uppercase bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl py-2.5 text-sm font-extrabold text-zinc-900 dark:text-white focus:outline-none focus:border-red-600 disabled:opacity-50"
               />
             </div>
             <div className="flex gap-3">
-              <button 
+              <button
                 onClick={closeModal}
-                className="flex-1 py-3 rounded-xl font-bold text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
+                disabled={isDeleting}
+                className="flex-1 py-3 rounded-xl font-bold text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 disabled:opacity-50 transition-all"
               >
                 Cancelar
               </button>
-              <button 
+              <button
                 onClick={executeAccountDeletion}
                 disabled={!canDelete}
                 className={`flex-1 py-3 rounded-xl font-extrabold text-xs transition-all ${canDelete ? 'bg-red-600 hover:bg-red-700 text-white shadow-md' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed'}`}
               >
-                Confirmar
+                {isDeleting ? 'Excluindo conta...' : 'Confirmar'}
               </button>
             </div>
           </div>
@@ -442,7 +651,7 @@ export default function Settings() {
       )}
 
       {/* TOAST NOTIFICATION */}
-      <div 
+      <div
         className={`fixed bottom-6 right-6 z-[120] bg-zinc-900 text-white border border-green-500/40 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 transition-all duration-300 pointer-events-none ${toast.show ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}
       >
         <div className="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center shrink-0">

@@ -7,6 +7,7 @@ import EmConstrucao from '../pages/EmConstrucao/index.jsx';
 import RelatoDetalhado from '../pages/RelatoDetalhado/index.jsx';
 import TermosDeUso from '../pages/TermosDeUso/index.jsx';
 import Dashboard from '../pages/Dashboard/index.jsx';
+import DashboardOrgao from '../pages/DashboardOrgao/index.jsx';
 
 export const publicRoutes = [
   { path: "/", element: <Home /> },
@@ -16,6 +17,9 @@ export const publicRoutes = [
   { path: "/feed", element: <Feed /> },
   { path: "/assistente-ia", element: <AiAssistant /> },
   { path: "/dashboard", element: <Dashboard /> },
+  { path: "/dashboard-orgao", element: <DashboardOrgao /> },
+  { path: "/painel-orgao", element: <DashboardOrgao /> },
+  { path: "/gestao", element: <DashboardOrgao /> },
   { path: "/em-construcao", element: <EmConstrucao /> },
   { path: "/relato/:id", element: <RelatoDetalhado /> },
   { path: "*", element: <EmConstrucao /> },

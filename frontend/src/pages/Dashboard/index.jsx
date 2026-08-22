@@ -118,13 +118,14 @@ export default function Dashboard() {
     }
     if (currentTab !== 'geral') { fd = fd.filter(d => d.eixo === currentTab); }
 
-    const st = { total: fd.length, resolvidos: 0, ativas: 0, slaEstourado: 0, somaDias: 0, reabertas: 0, subs: {}, eixos: {}, pontosCriticos: {}, ops: {} };
+    const st = { total: fd.length, resolvidos: 0, ativas: 0, slaEstourado: 0, somaDias: 0, reabertas: 0, subs: {}, eixos: {}, pontosCriticos: {}, ops: {}, comResposta: 0 };
 
     fd.forEach(d => {
         if (d.status === "Resolvido") st.resolvidos++; else st.ativas++;
         if (d.status === "Não Resolvido" && d.diasAberto > 30) st.slaEstourado++;
         if (d.reaberto) st.reabertas++;
         if (d.status === "Resolvido") st.somaDias += d.diasAberto;
+        if (d.respostaOrgao || d.status === "Resolvido") st.comResposta++;
         if (!st.subs[d.category]) st.subs[d.category] = 0; st.subs[d.category]++;
         if (!st.eixos[d.eixo]) st.eixos[d.eixo] = 0; st.eixos[d.eixo]++;
         if (!st.ops[d.operador]) st.ops[d.operador] = { resolvido: 0, pendente: 0 };
@@ -140,13 +141,15 @@ export default function Dashboard() {
   }, [currentTab, bairroFilter, timeFilter, realDatabase]);
 
   // KPIs calculation
+  const hasScore = stats.comResposta > 0;
   const resolucaoPct = stats.total > 0 ? Math.round((stats.resolvidos / stats.total) * 100) : 0;
   const tempoMedio = stats.resolvidos > 0 ? Math.round(stats.somaDias / stats.resolvidos) : 0;
-  const notaBairro = stats.total > 0 ? ((stats.resolvidos / stats.total) * 10).toFixed(1) : "10.0";
-  const notaProgressPct = stats.total > 0 ? Math.round((stats.resolvidos / stats.total) * 100) : 100;
+  const notaBairro = hasScore ? ((stats.resolvidos / stats.total) * 10).toFixed(1) : "0.0";
+  const notaProgressPct = stats.total > 0 ? Math.round((stats.resolvidos / stats.total) * 100) : 0;
   
   let notaColor = "bg-emerald-500";
-  if (notaProgressPct < 50) notaColor = "bg-red-500";
+  if (!hasScore) notaColor = "bg-zinc-400 dark:bg-zinc-600";
+  else if (notaProgressPct < 50) notaColor = "bg-red-500";
   else if (notaProgressPct < 75) notaColor = "bg-amber-500";
 
   const topRuas = Object.entries(stats.pontosCriticos).sort((a, b) => b[1].apoios - a[1].apoios).slice(0, 5);
@@ -429,10 +432,11 @@ export default function Dashboard() {
         ) : (
           <>
             <HeroSection 
-              eixoData={EIXOS[currentTab]} 
+              eixoData={EIXOS[currentTab] || EIXOS.geral} 
               notaBairro={notaBairro} 
-              notaProgressPct={notaProgressPct} 
+              notaProgressPct={hasScore ? notaProgressPct : 0} 
               notaColor={notaColor} 
+              hasScore={hasScore}
             />
 
             {currentTab === 'geral' && (

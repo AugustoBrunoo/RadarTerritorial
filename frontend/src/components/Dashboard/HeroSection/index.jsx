@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { ArrowLeft, Megaphone, HelpCircle } from 'lucide-react';
 import TooltipWrapper from '../../TooltipWrapper';
 
-export default function HeroSection({ eixoData, notaBairro, notaProgressPct, notaColor }) {
+export default function HeroSection({ eixoData, notaBairro, notaProgressPct, notaColor, hasScore }) {
   const navigate = useNavigate();
 
   return (
@@ -29,18 +29,32 @@ export default function HeroSection({ eixoData, notaBairro, notaProgressPct, not
 
         <div className="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 text-center shadow-inner shrink-0 w-full md:w-64 relative">
           <div className="absolute top-3 right-3">
-            <TooltipWrapper text={<span><strong>Nota do Bairro:</strong> Mede o desempenho local com base no avanço das soluções do macro eixo ativo. <br/><br/><strong>Cálculo:</strong> (Relatos Resolvidos ÷ Total de Relatos) × 10.</span>}>
+            <TooltipWrapper text={<span><strong>Nota do Bairro:</strong> A nota apenas é calculada após o primeiro caso relatado receber alguma resposta oficial do órgão responsável ou ser resolvido.<br/><br/><strong>Cálculo:</strong> (Relatos Resolvidos ÷ Total de Relatos) × 10.</span>}>
               <HelpCircle className="h-4 w-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-help transition-colors" />
             </TooltipWrapper>
           </div>
           <p className="text-xs font-black uppercase tracking-widest text-zinc-500 mb-2">Nota do Bairro</p>
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <h3 className="text-5xl font-black text-zinc-900 dark:text-white">{notaBairro}</h3>
-            <span className="text-xl text-zinc-400">/10</span>
-          </div>
-          <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
-            <div className={`${notaColor} h-full rounded-full transition-all duration-1000`} style={{ width: `${notaProgressPct}%` }}></div>
-          </div>
+          
+          {hasScore ? (
+            <>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <h3 className="text-5xl font-black text-zinc-900 dark:text-white">{notaBairro}</h3>
+                <span className="text-xl text-zinc-400">/10</span>
+              </div>
+              <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
+                <div className={`${notaColor} h-full rounded-full transition-all duration-1000`} style={{ width: `${notaProgressPct}%` }}></div>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center pt-2">
+              <span className="text-sm font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-200/50 dark:bg-zinc-800/50 px-4 py-2 rounded-xl mb-3">
+                Ainda não avaliado
+              </span>
+              <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
+                <div className="bg-zinc-300 dark:bg-zinc-700 h-full rounded-full w-0"></div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

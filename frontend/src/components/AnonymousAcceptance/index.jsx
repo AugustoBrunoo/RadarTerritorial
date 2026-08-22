@@ -1,4 +1,5 @@
 import React from "react";
+import { AlertCircle, XCircle } from 'lucide-react';
 
 export default function AnonymousAcceptance({
   currentStep,
@@ -16,7 +17,7 @@ export default function AnonymousAcceptance({
         className={`flex-col items-center${currentStep === 2 ? " flex" : " hidden"}  w-full max-w-lg text-center`}
       >
         <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
-          <i data-lucide="alert-circle" className="h-10 w-10 text-red-600"></i>
+          <AlertCircle className="h-10 w-10 text-red-600" />
         </div>
 
         <h2 className="text-3xl font-black tracking-tight mb-4">
@@ -30,10 +31,7 @@ export default function AnonymousAcceptance({
           </p>
           <ul className="space-y-3 font-medium text-zinc-900 dark:text-zinc-300">
             <li className="flex items-start gap-2">
-              <i
-                data-lucide="x-circle"
-                className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5"
-              ></i>
+              <XCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
               Não poderá interagir, curtir ou comentar nos problemas reportados
               pelos seus vizinhos na plataforma.
             </li>

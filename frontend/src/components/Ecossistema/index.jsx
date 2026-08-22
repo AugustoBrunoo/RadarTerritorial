@@ -1,4 +1,5 @@
 import React from 'react';
+import { Leaf, GraduationCap, Bot, Activity, CloudRain, ShieldCheck, Layers } from 'lucide-react';
 
 export default function Ecossistema() {
     return (
@@ -38,8 +39,7 @@ export default function Ecossistema() {
                                     <p className="text-xs font-medium text-zinc-500">Desenvolvedor JCC</p>
                                 </div>
                             </div>
-                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><i
-                                    data-lucide="leaf" className="h-5 w-5 text-emerald-500"></i> EcoMonitor ZO</h3>
+                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><Leaf className="h-5 w-5 text-emerald-500" /> EcoMonitor ZO</h3>
                             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Sensores IoT de baixo custo
                                 espalhados pelos postes para mapear a qualidade do ar e criar alertas de ilhas de calor.</p>
                         </div>
@@ -57,8 +57,7 @@ export default function Ecossistema() {
                                     <p className="text-xs font-medium text-zinc-500">Pesquisadora JCC</p>
                                 </div>
                             </div>
-                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><i
-                                    data-lucide="graduation-cap" className="h-5 w-5 text-blue-500"></i> EducaConecta</h3>
+                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><GraduationCap className="h-5 w-5 text-blue-500" /> EducaConecta</h3>
                             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Uma plataforma gamificada
                                 que une alunos de escolas públicas a mentores voluntários para reforço em matemática básica.
                             </p>
@@ -77,8 +76,7 @@ export default function Ecossistema() {
                                     <p className="text-xs font-medium text-zinc-500">Eng. Robótica JCC</p>
                                 </div>
                             </div>
-                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><i
-                                    data-lucide="bot" className="h-5 w-5 text-amber-500"></i> ColetaBot</h3>
+                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><Bot className="h-5 w-5 text-amber-500" /> ColetaBot</h3>
                             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Robô lixeiro autônomo
                                 desenvolvido com sucata para limpar praças públicas, usando visão computacional para separar
                                 recicláveis.</p>
@@ -97,8 +95,7 @@ export default function Ecossistema() {
                                     <p className="text-xs font-medium text-zinc-500">Cientista de Dados</p>
                                 </div>
                             </div>
-                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><i
-                                    data-lucide="activity" className="h-5 w-5 text-emerald-500"></i> SaúdeZO</h3>
+                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><Activity className="h-5 w-5 text-emerald-500" /> SaúdeZO</h3>
                             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">App que centraliza o tempo
                                 de espera de clínicas da família, permitindo aos moradores escolherem os postos menos cheios.
                             </p>
@@ -117,8 +114,7 @@ export default function Ecossistema() {
                                     <p className="text-xs font-medium text-zinc-500">Eng. de Software</p>
                                 </div>
                             </div>
-                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><i
-                                    data-lucide="cloud-rain" className="h-5 w-5 text-pink-500"></i> ÁguaViva</h3>
+                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><CloudRain className="h-5 w-5 text-pink-500" /> ÁguaViva</h3>
                             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Rede de alerta de enchentes
                                 alimentada pela comunidade, usando IA para prever áreas de risco após chuvas fortes.</p>
                         </div>
@@ -136,8 +132,7 @@ export default function Ecossistema() {
                                     <p className="text-xs font-medium text-zinc-500">Pesquisador JCC</p>
                                 </div>
                             </div>
-                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><i
-                                    data-lucide="shield-check" className="h-5 w-5 text-violet-500"></i> BairroSeguro</h3>
+                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><ShieldCheck className="h-5 w-5 text-violet-500" /> BairroSeguro</h3>
                             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Mapeamento colaborativo de
                                 postes apagados e terrenos baldios, gerando rotas mais seguras para pedestres à noite.</p>
                         </div>
@@ -155,8 +150,7 @@ export default function Ecossistema() {
                                     <p className="text-xs font-medium text-zinc-500">Desenvolvedor JCC</p>
                                 </div>
                             </div>
-                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><i
-                                    data-lucide="leaf" className="h-5 w-5 text-emerald-500"></i> EcoMonitor ZO</h3>
+                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><Leaf className="h-5 w-5 text-emerald-500" /> EcoMonitor ZO</h3>
                             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Sensores IoT de baixo custo
                                 espalhados pelos postes para mapear a qualidade do ar e criar alertas de ilhas de calor.</p>
                         </div>
@@ -173,8 +167,7 @@ export default function Ecossistema() {
                                     <p className="text-xs font-medium text-zinc-500">Pesquisadora JCC</p>
                                 </div>
                             </div>
-                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><i
-                                    data-lucide="graduation-cap" className="h-5 w-5 text-blue-500"></i> EducaConecta</h3>
+                            <h3 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white flex items-center gap-2"><GraduationCap className="h-5 w-5 text-blue-500" /> EducaConecta</h3>
                             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Uma plataforma gamificada
                                 que une alunos de escolas públicas a mentores voluntários para reforço em matemática básica.
                             </p>
@@ -187,7 +180,7 @@ export default function Ecossistema() {
             <div className="mt-16 text-center">
                 <a href="./pages/Projetos/index.html"
                     className="inline-flex px-8 py-4 rounded-xl bg-zinc-900 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold transition-all hover:-translate-y-1 items-center gap-3 shadow-lg shadow-zinc-900/20 dark:shadow-white/10">
-                    <i data-lucide="layers" className="h-5 w-5"></i> Conhecer os projetos a fundo
+                    <Layers className="h-5 w-5" /> Conhecer os projetos a fundo
                 </a>
                 <p className="mt-4 text-sm font-medium text-zinc-500 dark:text-zinc-400">Passe o mouse (ou segure) nos cartões
                     para ler com calma.</p>

@@ -52,7 +52,7 @@ export default function AuthCard({
 
       <div className="flex justify-between items-start mb-8 relative z-10">
         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 ${iconWrapperClasses}`}>
-          <Icon className={`h-7 w-7 transition-colors duration-500 ${iconClasses}`} />
+          <Icon className={`h-7 w-7 ${iconClasses}`} />
         </div>
       </div>
 

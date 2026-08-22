@@ -245,7 +245,7 @@ export default function Settings() {
   );
 
   return (
-    <div className="transition-colors duration-500 ease-in-out min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col antialiased">
+    <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col antialiased">
 
       <LoggedHeader />
 

@@ -119,7 +119,7 @@ export default function DemandasUsuario() {
   const resolvedCount = reports.filter(r => getMappedStatus(r.status) === 'resolved').length;
 
   return (
-    <div className="transition-colors duration-500 ease-in-out min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
+    <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
       <LoggedHeader />
 
       <main className="flex-grow pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full flex flex-col justify-start animate-in fade-in slide-in-from-bottom-8 duration-700">

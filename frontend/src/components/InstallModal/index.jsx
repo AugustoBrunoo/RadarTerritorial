@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { X, Smartphone, TabletSmartphone } from 'lucide-react';
 
 export default function InstallModal({ isOpen, onClose }) {
     const [installStep, setInstallStep] = useState('selection');
@@ -14,11 +15,7 @@ export default function InstallModal({ isOpen, onClose }) {
         }
     }, [isOpen]);
 
-    useEffect(() => {
-        if (window.lucide) {
-            window.lucide.createIcons();
-        }
-    }, [installStep, wizardCurrentStep, isOpen]);
+
 
     const startInstallFlow = (os) => {
         setWizardCurrentOS(os);
@@ -102,7 +99,7 @@ export default function InstallModal({ isOpen, onClose }) {
 
                 <button onClick={onClose}
                     className="absolute top-6 right-6 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 p-2 rounded-full transition-colors">
-                    <i data-lucide="x" className="h-5 w-5"></i>
+                    <X className="h-5 w-5" />
                 </button>
 
                 <div id="install-step-selection" className={installStep === "selection" ? "block" : "hidden"}>
@@ -115,7 +112,7 @@ export default function InstallModal({ isOpen, onClose }) {
                             className="flex flex-col items-center gap-4 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-red-500 dark:hover:border-red-500 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-all text-center group">
                             <div
                                 className="bg-zinc-100 dark:bg-zinc-800 p-4 rounded-full text-zinc-700 dark:text-zinc-300 group-hover:scale-110 transition-transform">
-                                <i data-lucide="smartphone" className="h-8 w-8"></i>
+                                <Smartphone className="h-8 w-8" />
                             </div>
                             <div>
                                 <strong className="block text-lg">iPhone / iOS</strong>
@@ -127,7 +124,7 @@ export default function InstallModal({ isOpen, onClose }) {
                             className="flex flex-col items-center gap-4 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-red-500 dark:hover:border-red-500 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-all text-center group">
                             <div
                                 className="bg-zinc-100 dark:bg-zinc-800 p-4 rounded-full text-zinc-700 dark:text-zinc-300 group-hover:scale-110 transition-transform">
-                                <i data-lucide="tablet-smartphone" className="h-8 w-8"></i>
+                                <TabletSmartphone className="h-8 w-8" />
                             </div>
                             <div>
                                 <strong className="block text-lg">Android</strong>

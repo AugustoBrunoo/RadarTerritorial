@@ -1,4 +1,5 @@
 import React from 'react';
+import { DownloadCloud, MapPin, Menu, AlertTriangle, Zap, Plus } from 'lucide-react';
 
 export default function AppPromo({ openInstallModal }) {
     return (
@@ -28,7 +29,7 @@ export default function AppPromo({ openInstallModal }) {
                     <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                         <button onClick={openInstallModal}
                             className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all transform hover:-translate-y-1 hover:shadow-lg hover:shadow-red-600/30 w-full sm:w-auto">
-                            <i data-lucide="download-cloud" className="h-5 w-5"></i> Quero instalar!
+                            <DownloadCloud className="h-5 w-5" /> Quero instalar!
                         </button>
                     </div>
                 </div>
@@ -46,13 +47,13 @@ export default function AppPromo({ openInstallModal }) {
                             <div className="flex justify-between items-center mb-8">
                                 <div className="flex items-center gap-2">
                                     <div className="bg-red-600 p-1.5 rounded-full">
-                                        <i data-lucide="map-pin" className="h-3 w-3 text-white"></i>
+                                        <MapPin className="h-3 w-3 text-white" />
                                     </div>
                                     <div className="w-16 h-3 bg-zinc-200 dark:bg-zinc-700 rounded-full"></div>
                                 </div>
                                 <div
                                     className="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
-                                    <i data-lucide="menu" className="h-4 w-4 text-zinc-500"></i>
+                                    <Menu className="h-4 w-4 text-zinc-500" />
                                 </div>
                             </div>
 
@@ -64,7 +65,7 @@ export default function AppPromo({ openInstallModal }) {
                                     className="w-full bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl p-4 shadow-sm flex items-start gap-3">
                                     <div
                                         className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
-                                        <i data-lucide="alert-triangle" className="h-4 w-4 text-red-500"></i>
+                                        <AlertTriangle className="h-4 w-4 text-red-500" />
                                     </div>
                                     <div className="flex-1 space-y-2 mt-1">
                                         <div className="w-full h-2.5 bg-zinc-200 dark:bg-zinc-700 rounded-sm"></div>
@@ -76,7 +77,7 @@ export default function AppPromo({ openInstallModal }) {
                                     className="w-full bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl p-4 shadow-sm flex items-start gap-3 opacity-60">
                                     <div
                                         className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center flex-shrink-0">
-                                        <i data-lucide="zap" className="h-4 w-4 text-zinc-400"></i>
+                                        <Zap className="h-4 w-4 text-zinc-400" />
                                     </div>
                                     <div className="flex-1 space-y-2 mt-1">
                                         <div className="w-full h-2.5 bg-zinc-200 dark:bg-zinc-700 rounded-sm"></div>
@@ -87,7 +88,7 @@ export default function AppPromo({ openInstallModal }) {
 
                             <div
                                 className="absolute bottom-8 right-6 w-14 h-14 bg-red-600 rounded-full shadow-lg shadow-red-600/40 flex items-center justify-center animate-pulse">
-                                <i data-lucide="plus" className="text-white h-6 w-6"></i>
+                                <Plus className="text-white h-6 w-6" />
                             </div>
 
                             <div

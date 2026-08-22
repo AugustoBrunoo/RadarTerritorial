@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
+import { Activity, Smartphone, Sparkles, CheckSquare, MessageSquareText, BarChart3, MessageSquare, Users, AlertTriangle, Check } from 'lucide-react';
 
 export default function ComoFunciona() {
     return (
@@ -13,7 +14,7 @@ export default function ComoFunciona() {
                 </div>
                 <div className="hidden md:block">
                     <span className="text-red-600 font-bold tracking-widest uppercase text-sm flex items-center gap-2">
-                        <i data-lucide="activity" className="h-4 w-4"></i> Fluxo em Tempo Real
+                        <Activity className="h-4 w-4" /> Fluxo em Tempo Real
                     </span>
                 </div>
             </div>
@@ -23,7 +24,7 @@ export default function ComoFunciona() {
                     className="md:col-span-5 bg-white dark:bg-zinc-900 rounded-[2rem] p-8 border border-zinc-200 dark:border-zinc-800 flex flex-col justify-between group hover:border-red-500/50 transition-colors">
                     <div
                         className="w-14 h-14 bg-zinc-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                        <i data-lucide="smartphone" className="h-6 w-6 text-zinc-900 dark:text-white"></i>
+                        <Smartphone className="h-6 w-6 text-zinc-900 dark:text-white" />
                     </div>
                     <div>
                         <span className="text-red-600 font-bold text-sm mb-2 block">PASSO 01</span>
@@ -41,7 +42,7 @@ export default function ComoFunciona() {
                     <div className="relative z-10 flex flex-col h-full justify-between">
                         <div className="flex justify-between items-start mb-6">
                             <div className="w-14 h-14 bg-red-600 rounded-2xl flex items-center justify-center">
-                                <i data-lucide="sparkles" className="h-6 w-6 text-white"></i>
+                                <Sparkles className="h-6 w-6 text-white" />
                             </div>
                         </div>
                         <div>
@@ -55,7 +56,7 @@ export default function ComoFunciona() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                                 <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-start gap-3">
                                     <div className="bg-white/10 p-2 rounded-xl text-red-400">
-                                        <i data-lucide="check-square" className="h-4 w-4"></i>
+                                        <CheckSquare className="h-4 w-4" />
                                     </div>
                                     <div>
                                         <p className="text-white text-sm font-bold">Formulário Rápido</p>
@@ -65,7 +66,7 @@ export default function ComoFunciona() {
                                 </div>
                                 <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-start gap-3">
                                     <div className="bg-white/10 p-2 rounded-xl text-red-400">
-                                        <i data-lucide="message-square-text" className="h-4 w-4"></i>
+                                        <MessageSquareText className="h-4 w-4" />
                                     </div>
                                     <div>
                                         <p className="text-white text-sm font-bold">Texto Livre + IA</p>
@@ -92,11 +93,11 @@ export default function ComoFunciona() {
                         <div className="flex flex-wrap gap-4">
                             <a href="/dashboard"
                                 className="bg-white text-red-600 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-zinc-100 transition-colors shadow-lg shadow-black/10">
-                                Painel Público <i data-lucide="bar-chart-3" className="h-4 w-4"></i>
+                                Painel Público <BarChart3 className="h-4 w-4" />
                             </a>
                             <Link to="/feed"
                                 className="bg-red-900/40 text-white border border-white/10 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-red-900/60 transition-colors">
-                                Ver Recentes <i data-lucide="message-square" className="h-4 w-4"></i>
+                                Ver Recentes <MessageSquare className="h-4 w-4" />
                             </Link>
                         </div>
                     </div>
@@ -124,7 +125,7 @@ export default function ComoFunciona() {
                         <div className="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800/60 backdrop-blur-sm">
                             <p
                                 className="text-zinc-400 text-xs uppercase tracking-wider font-bold mb-3 flex items-center gap-2">
-                                <i data-lucide="users" className="h-3 w-3"></i> Atualizações de Ocorrências
+                                <Users className="h-3 w-3" /> Atualizações de Ocorrências
                             </p>
                             <div className="space-y-3">
                                 <div
@@ -132,7 +133,7 @@ export default function ComoFunciona() {
                                     <div className="flex items-start gap-2.5 sm:gap-3 flex-1 min-w-0">
                                         <div
                                             className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="alert-triangle" className="h-4 w-4 text-amber-500"></i>
+                                            <AlertTriangle className="h-4 w-4 text-amber-500" />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-white text-xs sm:text-sm font-bold leading-tight line-clamp-2">
@@ -151,7 +152,7 @@ export default function ComoFunciona() {
                                     <div className="flex items-start gap-2.5 sm:gap-3 flex-1 min-w-0">
                                         <div
                                             className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                                            <i data-lucide="check" className="h-4 w-4 text-emerald-500"></i>
+                                            <Check className="h-4 w-4 text-emerald-500" />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-white text-xs sm:text-sm font-bold leading-tight line-clamp-2">

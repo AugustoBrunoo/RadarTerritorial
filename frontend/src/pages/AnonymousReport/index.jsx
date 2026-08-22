@@ -41,14 +41,8 @@ export default function AnonymousReport() {
   const toggleAccordion = (id) =>
     setOpenAccordions((prev) => ({ ...prev, [id]: !prev[id] }));
 
-  useEffect(() => {
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
-  }, []);
-
   return (
-    <div className="transition-colors duration-500 ease-in-out min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
+    <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
       <SimpleHeader backLink="/reportar" />
 
       <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto w-full flex flex-col items-center justify-center min-h-[90vh]">

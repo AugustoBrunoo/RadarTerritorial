@@ -16,7 +16,7 @@ import SimpleFooter from '../../components/SimpleFooter';
 
 export default function TermosDeUso() {
     return (
-        <div className="min-h-screen bg-[#F9FAFB] dark:bg-[#09090B] flex flex-col font-sans transition-colors duration-500 ease-in-out relative overflow-hidden text-zinc-900 dark:text-zinc-50">
+        <div className="min-h-screen bg-[#F9FAFB] dark:bg-[#09090B] flex flex-col font-sans relative overflow-hidden text-zinc-900 dark:text-zinc-50">
             <SimpleHeader />
             
             {/* Background elements */}

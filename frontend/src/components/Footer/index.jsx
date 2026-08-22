@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import jccLogoImg from '../../assets/images/home/JCC - LOGO PRINCIPAL.png';
 import naveLogoImg from '../../assets/images/home/Logo-Nave-CG.png';
 import NodaLogo from '../NodaLogo';
+import { Award, MapPin } from 'lucide-react';
 
 export default function Footer() {
     useEffect(() => {
@@ -34,7 +35,7 @@ export default function Footer() {
                         <div className="w-full flex flex-col items-center md:items-end">
                             <p
                                 className="font-black text-sm uppercase tracking-widest text-zinc-400 mb-6 flex items-center justify-center md:justify-end gap-2">
-                                <i data-lucide="award" className="h-4 w-4"></i> Apoiado por
+                                <Award className="h-4 w-4" /> Apoiado por
                             </p>
 
                             <div
@@ -42,7 +43,8 @@ export default function Footer() {
                                 <a href="https://jovenscientistas.ciedseduca.org.br/" target="_blank"
                                     className="group relative flex items-center justify-center h-24 w-52 bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 transition-transform hover:scale-105 p-4">
                                     <img src={jccLogoImg} alt="Programa Jovens Cientistas Cariocas"
-                                        className="relative z-10 h-full w-full object-contain" />
+                                        loading="lazy" width="208" height="96" fetchpriority="low"
+                                        className="relative z-10 h-full w-full object-contain aspect-[26/12]" />
                                 </a>
 
                                 <div className="hidden sm:block h-12 w-px bg-zinc-200 dark:bg-zinc-800"></div>
@@ -50,7 +52,8 @@ export default function Footer() {
                                 <a href="https://www.navedoconhecimento.rio/" target="_blank"
                                     className="group relative flex items-center justify-center h-24 w-52 bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 transition-transform hover:scale-105 p-1">
                                     <img src={naveLogoImg} alt="Nave do Conhecimento de Campo Grande"
-                                        className="relative z-10 h-full w-full object-contain scale-110" />
+                                        loading="lazy" width="208" height="96" fetchpriority="low"
+                                        className="relative z-10 h-full w-full object-contain scale-110 aspect-[26/12]" />
                                 </a>
                             </div>
                         </div>
@@ -89,7 +92,7 @@ export default function Footer() {
                     {/* Left: RadarTerritorial */}
                     <div className="flex items-center gap-3 cursor-pointer group">
                         <div className="bg-red-600 p-2 rounded-full group-hover:scale-105 transition-transform">
-                            <i data-lucide="map-pin" className="h-5 w-5 text-white"></i>
+                            <MapPin className="h-5 w-5 text-white" />
                         </div>
                         <span className="font-bold text-lg sm:text-xl tracking-tight text-zinc-900 dark:text-white">
                             Radar<span className="text-red-600">Territorial</span>

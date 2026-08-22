@@ -1,4 +1,5 @@
 import React from "react";
+import { ShieldCheck, Map, MessageSquareOff, ArrowRight } from 'lucide-react';
 
 export default function AnonymousTutorial({
   currentStep,
@@ -30,7 +31,7 @@ export default function AnonymousTutorial({
           className={currentSlide === 1 ? "animate-fade-in" : "hidden"}
         >
           <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <i data-lucide="shield-check" className="h-8 w-8 text-red-600"></i>
+            <ShieldCheck className="h-8 w-8 text-red-600" />
           </div>
           <h3 className="text-2xl font-black mb-3">100% de Sigilo</h3>
           <p className="text-zinc-500 dark:text-zinc-400">
@@ -45,10 +46,7 @@ export default function AnonymousTutorial({
           className={currentSlide === 2 ? "animate-fade-in" : "hidden"}
         >
           <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
-            <i
-              data-lucide="map"
-              className="h-8 w-8 text-zinc-900 dark:text-white"
-            ></i>
+            <Map className="h-8 w-8 text-zinc-900 dark:text-white" />
           </div>
           <h3 className="text-2xl font-black mb-3">Poder de Gestão</h3>
           <p className="text-zinc-500 dark:text-zinc-400">
@@ -63,10 +61,7 @@ export default function AnonymousTutorial({
           className={currentSlide === 3 ? "animate-fade-in" : "hidden"}
         >
           <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
-            <i
-              data-lucide="message-square-off"
-              className="h-8 w-8 text-zinc-900 dark:text-white"
-            ></i>
+            <MessageSquareOff className="h-8 w-8 text-zinc-900 dark:text-white" />
           </div>
           <h3 className="text-2xl font-black mb-3">Limitações</h3>
           <p className="text-zinc-500 dark:text-zinc-400">
@@ -92,7 +87,7 @@ export default function AnonymousTutorial({
           }}
           className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-6 py-2.5 rounded-full font-bold flex items-center gap-2 transition-transform hover:scale-105"
         >
-          Próximo <i data-lucide="arrow-right" className="h-4 w-4"></i>
+          Próximo <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>

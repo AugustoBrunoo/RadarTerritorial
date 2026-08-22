@@ -14,10 +14,6 @@ export default function Home() {
     const [activeSection, setActiveSection] = useState('inicio');
 
     useEffect(() => {
-        if (window.lucide) {
-            window.lucide.createIcons();
-        }
-        
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark' || (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -72,8 +68,16 @@ export default function Home() {
     const closeInstallModal = () => setIsInstallModalOpen(false);
 
     return (
-        <div className={`transition-colors duration-500 ease-in-out min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white ${isDarkMode ? 'dark' : ''}`}>
+        <div className={`min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white ${isDarkMode ? 'dark' : ''}`}>
             
+            {/* Skip Link para Acessibilidade */}
+            <a 
+                href="#main-content" 
+                className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-red-600 focus:text-white focus:rounded-xl focus:font-bold focus:shadow-lg focus:outline-none focus:ring-4 focus:ring-red-500/50 transition-all"
+            >
+                Pular para o conteúdo principal
+            </a>
+
             <Header 
                 activeSection={activeSection}
                 isDarkMode={isDarkMode}
@@ -81,18 +85,17 @@ export default function Home() {
                 openInstallModal={openInstallModal}
             />
 
-            <Hero />
-            
-            <ComoFunciona />
-            
-            <AppPromo openInstallModal={openInstallModal} />
+            <main id="main-content" tabIndex="-1" className="focus:outline-none">
+                <Hero />
+                <ComoFunciona />
+                <AppPromo openInstallModal={openInstallModal} />
+                <Ecossistema />
+            </main>
             
             <InstallModal 
                 isOpen={isInstallModalOpen} 
                 onClose={closeInstallModal} 
             />
-            
-            <Ecossistema />
             
             <Footer />
 

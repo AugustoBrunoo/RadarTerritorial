@@ -6,7 +6,7 @@ export default function SlaSettingsCard() {
     return (
         <section 
             aria-labelledby="sla-settings-title"
-            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm space-y-5"
+            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm space-y-5 relative hover:z-20 focus-within:z-20 transition-all"
         >
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">

@@ -16,11 +16,13 @@ export default function KpiCardOrgao({
 }) {
     return (
         <div 
-            className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm relative overflow-hidden group focus-within:ring-2 focus-within:ring-blue-500/50"
+            className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm relative group hover:z-30 focus-within:z-30 transition-all"
             role="region"
             aria-label={`${title}: ${value}`}
         >
-            <div className={`absolute top-0 right-0 w-28 h-28 ${bgColorClass.replace('bg-', 'bg-').replace('50', '500/10')} rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none transition-transform group-hover:scale-150`}></div>
+            <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
+                <div className={`absolute top-0 right-0 w-28 h-28 ${bgColorClass.replace('bg-', 'bg-').replace('50', '500/10')} rounded-full blur-2xl -mr-8 -mt-8 transition-transform group-hover:scale-150`}></div>
+            </div>
             
             <div className="flex justify-between items-start mb-4 relative z-10">
                 <div className={`${bgColorClass} p-2.5 rounded-xl`}>

@@ -4,13 +4,13 @@ import TooltipWrapper from '../TooltipWrapper';
 
 export default function NeighborhoodDemandsCard() {
     return (
-        <section 
+        <section
             aria-labelledby="neighborhood-demands-title"
-            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm space-y-6"
+            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm space-y-6 relative hover:z-20 focus-within:z-20 transition-all"
         >
             <div className="flex items-center justify-between">
                 <h3 id="neighborhood-demands-title" className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-red-500" aria-hidden="true" /> Demandas por Bairro (AP 5.2)
+                    <MapPin className="h-4 w-4 text-red-500" aria-hidden="true" /> Demandas por Bairro
                 </h3>
                 <TooltipWrapper text="Mapeia a distribuição geográfica das solicitações por bairro, permitindo identificar áreas com maior acúmulo de chamados.">
                     <button

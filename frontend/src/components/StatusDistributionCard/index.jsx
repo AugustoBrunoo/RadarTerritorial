@@ -6,7 +6,7 @@ export default function StatusDistributionCard() {
     return (
         <section 
             aria-labelledby="status-dist-title"
-            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm space-y-6"
+            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm space-y-6 relative hover:z-20 focus-within:z-20 transition-all"
         >
             <div className="flex items-center justify-between">
                 <h3 id="status-dist-title" className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2">

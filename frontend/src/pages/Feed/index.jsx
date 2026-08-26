@@ -63,6 +63,33 @@ export default function Feed() {
     fetchData();
   }, []);
 
+  const normalizeStr = (str) =>
+    (str || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
+
+  const normalizeRegionKey = (bairro, location) => {
+    const text = `${bairro || ''} ${location || ''}`;
+    const norm = normalizeStr(text);
+    if (norm.includes('campo grande') || norm.includes('campo-grande')) return 'campo-grande';
+    if (norm.includes('inhoaiba')) return 'inhoaiba';
+    if (norm.includes('cosmos')) return 'cosmos';
+    return norm.replace(/\s+/g, '-') || 'all';
+  };
+
+  const normalizeCategoryKey = (macroEixo, categoriaNome) => {
+    const text = `${macroEixo || ''} ${categoriaNome || ''}`;
+    const norm = normalizeStr(text);
+    if (norm.includes('infra') || norm.includes('via') || norm.includes('buraco') || norm.includes('calcada') || norm.includes('arvore')) return 'infra';
+    if (norm.includes('saneamento') || norm.includes('limpeza') || norm.includes('lixo') || norm.includes('esgoto') || norm.includes('agua') || norm.includes('bueiro') || norm.includes('entulho')) return 'saneamento';
+    if (norm.includes('ilumina') || norm.includes('luz') || norm.includes('poste') || norm.includes('fio') || norm.includes('lampada')) return 'iluminacao';
+    if (norm.includes('mobilidade') || norm.includes('transporte') || norm.includes('onibus') || norm.includes('semaforo') || norm.includes('ponto')) return 'mobilidade';
+    if (norm.includes('seguranca') || norm.includes('inseguranca') || norm.includes('barricada') || norm.includes('ocupacao')) return 'seguranca';
+    return norm.replace(/\s+/g, '-') || 'all';
+  };
+
   const mapDBReportToFeedCard = (dbReport, profileData, userVoted = false) => {
     let author = "Usuário Anônimo";
     let initials = "CA";
@@ -90,23 +117,28 @@ export default function Feed() {
     let location = locationParts.join(', ') || 'Localização não informada';
     if (dbReport.referencia) location += ` • Ref: ${dbReport.referencia}`;
 
-    const region = dbReport.bairro ? dbReport.bairro.toLowerCase().replace(/ /g, "-") : "all";
+    const region = normalizeRegionKey(dbReport.bairro, location);
+    const categoryKey = normalizeCategoryKey(dbReport.macro_eixo, dbReport.categoria_nome);
 
     const categoryIconMap = {
       'infra': 'MapPin',
       'saneamento': 'Droplet',
       'mobilidade': 'Bus',
       'iluminacao': 'Lightbulb',
-      'seguranca': 'ShieldAlert'
+      'seguranca': 'ShieldAlert',
+      'inseguranca': 'ShieldAlert'
     };
-    const categoryIcon = categoryIconMap[dbReport.macro_eixo] || 'Info';
+    const categoryIcon = categoryIconMap[categoryKey] || 'MapPin';
 
     let urgency = 'recente';
     let urgencyText = 'Problema Recente';
     let urgencyClass = 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800/50 text-blue-700 dark:text-blue-400';
     let urgencyIcon = 'Info';
 
-    const urgenciasStr = dbReport.urgencias ? dbReport.urgencias.join(' ').toLowerCase() : '';
+    const urgenciasStr = Array.isArray(dbReport.urgencias)
+      ? dbReport.urgencias.join(' ').toLowerCase()
+      : (typeof dbReport.urgencias === 'string' ? dbReport.urgencias.toLowerCase() : '');
+
     if (urgenciasStr.includes('grave') || urgenciasStr.includes('acidente')) {
       urgency = 'grave';
       urgencyText = 'Grave / Risco de Acidente';
@@ -145,8 +177,8 @@ export default function Feed() {
       avatarBg,
       location,
       region,
-      category: dbReport.macro_eixo,
-      categoryText: dbReport.categoria_nome || dbReport.macro_eixo,
+      category: categoryKey,
+      categoryText: dbReport.categoria_nome || dbReport.macro_eixo || 'Outra situação',
       categoryIcon,
       urgency,
       urgencyText,
@@ -164,7 +196,7 @@ export default function Feed() {
       organName: dbReport.orgao_responsavel_id ? "Órgão Responsável" : null,
       responseDate: dbReport.fechado_em ? new Date(dbReport.fechado_em).toLocaleDateString('pt-BR') : date,
       responseText: dbReport.resposta_orgao,
-      comments: [], // Arrays can be expanded in the future
+      comments: [],
       comentarios_count: dbReport.comentarios_count || 0,
       user_id: dbReport.user_id
     };
@@ -210,14 +242,24 @@ export default function Feed() {
   };
 
   const filteredData = reports.filter(report => {
-    const searchLower = filters.search.toLowerCase();
-    const matchesSearch = filters.search === "" ||
-      report.author.toLowerCase().includes(searchLower) ||
-      report.location.toLowerCase().includes(searchLower) ||
-      (report.description && report.description.toLowerCase().includes(searchLower));
+    const searchLower = normalizeStr(filters.search);
+    const matchesSearch = searchLower === "" ||
+      normalizeStr(report.author).includes(searchLower) ||
+      normalizeStr(report.location).includes(searchLower) ||
+      normalizeStr(report.categoryText).includes(searchLower) ||
+      (report.description && normalizeStr(report.description).includes(searchLower));
 
-    const matchesRegion = filters.region === "all" || report.region === filters.region;
-    const matchesCategory = filters.category === "all" || report.category === filters.category;
+    const matchesRegion = filters.region === "all" || 
+      report.region === filters.region ||
+      normalizeStr(report.region).includes(normalizeStr(filters.region)) ||
+      normalizeStr(report.location).includes(normalizeStr(filters.region.replace(/-/g, ' ')));
+
+    const matchesCategory = filters.category === "all" || 
+      report.category === filters.category ||
+      (filters.category === "seguranca" && report.category === "inseguranca") ||
+      (filters.category === "inseguranca" && report.category === "seguranca") ||
+      normalizeStr(report.categoryText).includes(normalizeStr(filters.category));
+
     const matchesUrgency = filters.urgency === "all" || report.urgency === filters.urgency;
 
     return matchesSearch && matchesRegion && matchesCategory && matchesUrgency;

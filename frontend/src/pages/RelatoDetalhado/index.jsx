@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { 
-  ArrowLeft, Clock, Droplet, MapPin, 
+import {
+  ArrowLeft, Clock, Droplet, MapPin,
   Loader2, CheckCircle, Lightbulb, ShieldAlert, Bus
 } from 'lucide-react';
 import LoggedHeader from '../../components/LoggedHeader';
@@ -49,6 +49,7 @@ export default function RelatoDetalhado() {
   const [isOwner, setIsOwner] = useState(false);
   const [authorName, setAuthorName] = useState("");
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [orgaoResponsavel, setOrgaoResponsavel] = useState(null);
 
   useEffect(() => {
     async function loadData() {
@@ -59,7 +60,7 @@ export default function RelatoDetalhado() {
         if (user) {
           setCurrentUserId(user.id);
         }
-        
+
         const { data: relatoData, error } = await supabase
           .from('relatos')
           .select('*')
@@ -67,7 +68,7 @@ export default function RelatoDetalhado() {
           .single();
 
         if (error) throw error;
-        
+
         setReport(relatoData);
         if (user && relatoData.user_id === user.id) {
           setIsOwner(true);
@@ -85,6 +86,17 @@ export default function RelatoDetalhado() {
         } else {
           setAuthorName("Usuário Anônimo");
         }
+
+        if (relatoData.orgao_responsavel_id) {
+          const { data: orgao } = await supabase
+            .from('orgaos')
+            .select('*')
+            .eq('id', relatoData.orgao_responsavel_id)
+            .single();
+          if (orgao) {
+            setOrgaoResponsavel(orgao);
+          }
+        }
       } catch (err) {
         console.error("Erro ao carregar relato:", err);
       } finally {
@@ -97,7 +109,7 @@ export default function RelatoDetalhado() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
-        <LoggedHeader />
+        {currentUserId ? <LoggedHeader /> : <SimpleHeader backLink="/feed" />}
         <main className="flex-grow pt-40 pb-16 px-4 flex flex-col items-center justify-center">
           <Loader2 className="h-10 w-10 text-red-600 animate-spin mb-4" />
           <p className="font-bold">Buscando relato...</p>
@@ -110,11 +122,11 @@ export default function RelatoDetalhado() {
   if (!report) {
     return (
       <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
-        <LoggedHeader />
+        {currentUserId ? <LoggedHeader /> : <SimpleHeader backLink="/feed" />}
         <main className="flex-grow pt-40 pb-16 px-4 flex flex-col items-center justify-center">
           <MapPin className="h-10 w-10 text-zinc-400 mb-4" />
           <h2 className="text-xl font-bold mb-4">Relato não encontrado</h2>
-          <button onClick={() => navigate(-1)} className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold">Voltar</button>
+          <button onClick={() => navigate('/feed')} className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold">Voltar para o Feed</button>
         </main>
         <SimpleFooter />
       </div>
@@ -134,40 +146,43 @@ export default function RelatoDetalhado() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
-      {currentUserId ? <LoggedHeader /> : <SimpleHeader />}
+      {currentUserId ? <LoggedHeader /> : <SimpleHeader backLink="/feed" />}
 
       <main className="flex-grow pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full animate-in fade-in slide-in-from-bottom-8 duration-700">
-        
-        {/* Navigation */}
-        <div className="mb-6 flex flex-wrap gap-3">
-          <button 
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-sm font-bold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-4 py-2 rounded-xl shadow-sm hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Voltar
-          </button>
-        </div>
+
+        {/* Navigation (Exclusivo para usuários logados, já que não logados possuem o botão no SimpleHeader) */}
+        {currentUserId && (
+          <div className="mb-6 flex flex-wrap gap-3">
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2 text-sm font-bold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-4 py-2 rounded-xl shadow-sm hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Voltar
+            </button>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           {/* COLUNA DA ESQUERDA (Detalhes do Relato) */}
           <div className="lg:col-span-2 space-y-8 min-w-0">
-            <RelatoHeader 
-              report={report} 
-              dateStr={dateStr} 
-              isOwner={isOwner} 
+            <RelatoHeader
+              report={report}
+              dateStr={dateStr}
+              isOwner={isOwner}
               authorName={authorName}
-              CategoryIcon={CategoryIcon} 
-              StatusIcon={StatusIcon} 
-              statusDetails={statusDetails} 
+              CategoryIcon={CategoryIcon}
+              StatusIcon={StatusIcon}
+              statusDetails={statusDetails}
             />
-            <RelatoMidia 
-              report={report} 
-              locationStr={locationStr} 
+            <RelatoMidia
+              report={report}
+              locationStr={locationStr}
             />
-            <RelatoLinhaDoTempo 
-              report={report} 
-              dateStr={dateStr} 
+            <RelatoLinhaDoTempo
+              report={report}
+              dateStr={dateStr}
+              orgao={orgaoResponsavel}
             />
           </div>
 

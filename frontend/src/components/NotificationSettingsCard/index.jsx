@@ -2,7 +2,7 @@ import React from 'react';
 import { Bell, HelpCircle } from 'lucide-react';
 import TooltipWrapper from '../TooltipWrapper';
 
-export default function NotificationSettingsCard() {
+export default function NotificationSettingsCard({ sla = 3 }) {
     return (
         <section 
             aria-labelledby="notification-settings-title"
@@ -47,13 +47,13 @@ export default function NotificationSettingsCard() {
 
                 <label className="flex items-center justify-between p-3.5 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl border border-zinc-100 dark:border-zinc-800 cursor-pointer">
                     <div>
-                        <h4 className="text-xs font-bold text-zinc-900 dark:text-white">Alerta de Estouro de SLA (3 dias)</h4>
+                        <h4 className="text-xs font-bold text-zinc-900 dark:text-white">Alerta de Estouro de SLA ({sla} {sla === 1 ? 'dia' : 'dias'})</h4>
                         <p className="text-[11px] text-zinc-500">Enviar aviso quando um chamado ficar sem resposta.</p>
                     </div>
                     <input 
                         type="checkbox" 
                         defaultChecked 
-                        aria-label="Ativar alerta de estouro de SLA de 3 dias"
+                        aria-label={`Ativar alerta de estouro de SLA de ${sla} dias`}
                         className="w-5 h-5 accent-blue-600 rounded cursor-pointer" 
                     />
                 </label>

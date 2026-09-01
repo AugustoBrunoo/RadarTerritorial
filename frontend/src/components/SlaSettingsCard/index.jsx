@@ -1,12 +1,44 @@
-import React from 'react';
-import { Sliders, HelpCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Sliders, HelpCircle, Check, Loader2 } from 'lucide-react';
 import TooltipWrapper from '../TooltipWrapper';
 
-export default function SlaSettingsCard() {
+export default function SlaSettingsCard({ sla, setSla, onSave }) {
+    const [selectedSla, setSelectedSla] = useState(sla || 3);
+    const [isSaving, setIsSaving] = useState(false);
+    const [savedSuccess, setSavedSuccess] = useState(false);
+
+    useEffect(() => {
+        if (sla) setSelectedSla(sla);
+    }, [sla]);
+
+    const handleSelectChange = (e) => {
+        const val = parseInt(e.target.value, 10);
+        setSelectedSla(val);
+        if (setSla) setSla(val);
+        setSavedSuccess(false);
+    };
+
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            if (onSave) {
+                await onSave(selectedSla);
+            } else if (setSla) {
+                setSla(selectedSla);
+            }
+            setSavedSuccess(true);
+            setTimeout(() => setSavedSuccess(false), 3000);
+        } catch (error) {
+            console.error('Erro ao salvar SLA:', error);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     return (
         <section 
             aria-labelledby="sla-settings-title"
-            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm space-y-5 relative hover:z-20 focus-within:z-20 transition-all"
+            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm space-y-5 relative hover:z-20 focus-within:z-20 transition-all flex flex-col justify-between"
         >
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -38,8 +70,9 @@ export default function SlaSettingsCard() {
                     </label>
                     <select 
                         id="sla-meta-select"
-                        defaultValue="3" 
-                        className="w-full bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3 text-sm font-bold text-zinc-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                        value={selectedSla} 
+                        onChange={handleSelectChange}
+                        className="w-full bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3 text-sm font-bold text-zinc-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-colors"
                     >
                         <option value="2">Até 2 dias úteis</option>
                         <option value="3">Até 3 dias úteis (Padrão)</option>
@@ -50,10 +83,23 @@ export default function SlaSettingsCard() {
                 <div className="pt-2">
                     <button 
                         type="button"
-                        onClick={() => alert('Configurações salvas com sucesso!')} 
-                        className="w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 py-3 rounded-xl font-extrabold text-xs transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        disabled={isSaving}
+                        onClick={handleSave}
+                        className="w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 py-3 rounded-xl font-extrabold text-xs transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer active:scale-[0.99]"
                     >
-                        Salvar Preferências
+                        {isSaving ? (
+                            <>
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                Salvando...
+                            </>
+                        ) : savedSuccess ? (
+                            <>
+                                <Check className="h-4 w-4 text-green-500" />
+                                Salvo com Sucesso!
+                            </>
+                        ) : (
+                            'Salvar Preferências'
+                        )}
                     </button>
                 </div>
             </div>

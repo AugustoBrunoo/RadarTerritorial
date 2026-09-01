@@ -2,11 +2,29 @@ import React from 'react';
 import { Donut, HelpCircle } from 'lucide-react';
 import TooltipWrapper from '../TooltipWrapper';
 
-export default function StatusDistributionCard() {
+export default function StatusDistributionCard({ kpis }) {
+    if (!kpis || kpis.total === 0) {
+        return (
+            <section 
+                aria-labelledby="status-dist-title"
+                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm space-y-6 relative hover:z-20 focus-within:z-20 transition-all flex flex-col justify-center items-center h-full min-h-[300px]"
+            >
+                <div className="text-zinc-500 dark:text-zinc-400 text-sm">Nenhum dado disponível.</div>
+            </section>
+        );
+    }
+
+    const formatPercent = (value, total) => total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+    const resolvidosPercent = formatPercent(kpis.resolvidos, kpis.total);
+    const emExecucaoPercent = formatPercent(kpis.emExecucao, kpis.total);
+    const emAnalisePercent = formatPercent(kpis.emAnalise, kpis.total);
+    const pendentesPercent = formatPercent(kpis.pendentes, kpis.total);
+    const rejeitadosPercent = formatPercent(kpis.rejeitados, kpis.total);
+
     return (
         <section 
             aria-labelledby="status-dist-title"
-            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm space-y-6 relative hover:z-20 focus-within:z-20 transition-all"
+            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm space-y-6 relative hover:z-20 focus-within:z-20 transition-all flex flex-col"
         >
             <div className="flex items-center justify-between">
                 <h3 id="status-dist-title" className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2">
@@ -23,40 +41,64 @@ export default function StatusDistributionCard() {
                 </TooltipWrapper>
             </div>
 
-            <div className="space-y-4" role="list" aria-label="Lista de status de chamados">
+            <div className="space-y-4 flex-grow" role="list" aria-label="Lista de status de chamados">
                 <div role="listitem">
                     <div className="flex justify-between text-xs font-bold mb-1">
                         <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" aria-hidden="true"></span> Resolvidos
                         </span>
-                        <span className="text-zinc-900 dark:text-white">894 (71,6%)</span>
+                        <span className="text-zinc-900 dark:text-white">{kpis.resolvidos} ({resolvidosPercent}%)</span>
                     </div>
-                    <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-3 overflow-hidden" role="progressbar" aria-valuenow={71.6} aria-valuemin={0} aria-valuemax={100} aria-label="71,6% resolvidos">
-                        <div className="bg-emerald-500 h-full rounded-full" style={{ width: '71.6%' }}></div>
+                    <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden" role="progressbar" aria-valuenow={resolvidosPercent} aria-valuemin={0} aria-valuemax={100} aria-label={`${resolvidosPercent}% resolvidos`}>
+                        <div className="bg-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: `${resolvidosPercent}%` }}></div>
                     </div>
                 </div>
 
                 <div role="listitem">
                     <div className="flex justify-between text-xs font-bold mb-1">
                         <span className="text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5 rounded-full bg-blue-500" aria-hidden="true"></span> Em Atendimento
+                            <span className="w-2.5 h-2.5 rounded-full bg-blue-500" aria-hidden="true"></span> Em Execução
                         </span>
-                        <span className="text-zinc-900 dark:text-white">180 (14,4%)</span>
+                        <span className="text-zinc-900 dark:text-white">{kpis.emExecucao} ({emExecucaoPercent}%)</span>
                     </div>
-                    <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-3 overflow-hidden" role="progressbar" aria-valuenow={14.4} aria-valuemin={0} aria-valuemax={100} aria-label="14,4% em atendimento">
-                        <div className="bg-blue-500 h-full rounded-full" style={{ width: '14.4%' }}></div>
+                    <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden" role="progressbar" aria-valuenow={emExecucaoPercent} aria-valuemin={0} aria-valuemax={100} aria-label={`${emExecucaoPercent}% em execução`}>
+                        <div className="bg-blue-500 h-full rounded-full transition-all duration-500" style={{ width: `${emExecucaoPercent}%` }}></div>
+                    </div>
+                </div>
+
+                <div role="listitem">
+                    <div className="flex justify-between text-xs font-bold mb-1">
+                        <span className="text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" aria-hidden="true"></span> Em Análise
+                        </span>
+                        <span className="text-zinc-900 dark:text-white">{kpis.emAnalise} ({emAnalisePercent}%)</span>
+                    </div>
+                    <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden" role="progressbar" aria-valuenow={emAnalisePercent} aria-valuemin={0} aria-valuemax={100} aria-label={`${emAnalisePercent}% em análise`}>
+                        <div className="bg-amber-500 h-full rounded-full transition-all duration-500" style={{ width: `${emAnalisePercent}%` }}></div>
                     </div>
                 </div>
 
                 <div role="listitem">
                     <div className="flex justify-between text-xs font-bold mb-1">
                         <span className="text-red-600 dark:text-red-400 flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5 rounded-full bg-red-500" aria-hidden="true"></span> Não Respondidos
+                            <span className="w-2.5 h-2.5 rounded-full bg-red-500" aria-hidden="true"></span> Pendentes
                         </span>
-                        <span className="text-zinc-900 dark:text-white">174 (14,0%)</span>
+                        <span className="text-zinc-900 dark:text-white">{kpis.pendentes} ({pendentesPercent}%)</span>
                     </div>
-                    <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-3 overflow-hidden" role="progressbar" aria-valuenow={14} aria-valuemin={0} aria-valuemax={100} aria-label="14% não respondidos">
-                        <div className="bg-red-500 h-full rounded-full" style={{ width: '14.0%' }}></div>
+                    <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden" role="progressbar" aria-valuenow={pendentesPercent} aria-valuemin={0} aria-valuemax={100} aria-label={`${pendentesPercent}% pendentes`}>
+                        <div className="bg-red-500 h-full rounded-full transition-all duration-500" style={{ width: `${pendentesPercent}%` }}></div>
+                    </div>
+                </div>
+
+                <div role="listitem">
+                    <div className="flex justify-between text-xs font-bold mb-1">
+                        <span className="text-zinc-600 dark:text-zinc-400 flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5 rounded-full bg-zinc-500" aria-hidden="true"></span> Rejeitados
+                        </span>
+                        <span className="text-zinc-900 dark:text-white">{kpis.rejeitados} ({rejeitadosPercent}%)</span>
+                    </div>
+                    <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden" role="progressbar" aria-valuenow={rejeitadosPercent} aria-valuemin={0} aria-valuemax={100} aria-label={`${rejeitadosPercent}% rejeitados`}>
+                        <div className="bg-zinc-500 h-full rounded-full transition-all duration-500" style={{ width: `${rejeitadosPercent}%` }}></div>
                     </div>
                 </div>
             </div>

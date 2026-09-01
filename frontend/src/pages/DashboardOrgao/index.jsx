@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router';
 import { PieChart, Settings, ListChecks, Layers, Clock4, Timer, ShieldCheck, Info, Loader2 } from 'lucide-react';
 import HeaderOrgao from '../../components/HeaderOrgao';
@@ -9,9 +9,31 @@ import NeighborhoodDemandsCard from '../../components/NeighborhoodDemandsCard';
 import TopCategoriesCard from '../../components/TopCategoriesCard';
 import NotificationSettingsCard from '../../components/NotificationSettingsCard';
 import SlaSettingsCard from '../../components/SlaSettingsCard';
+import Toast from '../../components/Toast';
 
 export default function DashboardOrgao() {
-    const { kpis, loading, orgao } = useOrgaoDashboard();
+    const { kpis, loading, orgao, profile, sla, setSla, salvarSlaConfig } = useOrgaoDashboard();
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+
+    const nomeOrgao = profile?.nome_completo || orgao?.nome || 'Órgão';
+
+    const handleSaveSla = async (novoPrazo) => {
+        try {
+            await salvarSlaConfig(novoPrazo);
+            setToast({
+                show: true,
+                type: 'success',
+                message: `Meta de SLA ajustada para ${novoPrazo} dias úteis com sucesso!`
+            });
+        } catch (err) {
+            console.error('Erro ao salvar SLA:', err);
+            setToast({
+                show: true,
+                type: 'error',
+                message: 'Erro ao ajustar o tempo de SLA. Tente novamente.'
+            });
+        }
+    };
 
     return (
         <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-blue-500 selection:text-white flex flex-col">
@@ -35,7 +57,7 @@ export default function DashboardOrgao() {
                             Dashboard Estratégico do Órgão
                         </h1>
                         <p className="text-zinc-500 dark:text-zinc-400 mt-2 max-w-xl">
-                            Acompanhe a métrica acumulada de chamados direcionados à COMLURB, taxa de resposta e SLA operacional.
+                            Acompanhe a métrica acumulada de chamados direcionados à/ao <strong className="font-bold text-zinc-900 dark:text-white">{nomeOrgao}</strong>, taxa de resposta e SLA operacional.
                         </p>
                     </div>
 
@@ -80,7 +102,7 @@ export default function DashboardOrgao() {
                             icon={Timer}
                             colorClass="text-amber-600 dark:text-amber-500"
                             bgColorClass="bg-amber-50 dark:bg-amber-950/30"
-                            badgeText="Meta: 3d"
+                            badgeText={`Meta: ${sla}d`}
                             badgeColorClass="text-amber-500"
                             tooltipText="Média de dias decorridos entre a abertura do relato até a conclusão ou resposta definitiva pelo órgão."
                         />
@@ -118,9 +140,9 @@ export default function DashboardOrgao() {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <StatusDistributionCard />
-                        <NeighborhoodDemandsCard />
-                        <TopCategoriesCard />
+                        <StatusDistributionCard kpis={kpis} />
+                        <NeighborhoodDemandsCard kpis={kpis} />
+                        <TopCategoriesCard kpis={kpis} />
                     </div>
                 </section>
 
@@ -134,8 +156,8 @@ export default function DashboardOrgao() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <NotificationSettingsCard />
-                        <SlaSettingsCard />
+                        <NotificationSettingsCard sla={sla} />
+                        <SlaSettingsCard sla={sla} setSla={setSla} onSave={handleSaveSla} />
                     </div>
                 </section>
 
@@ -148,6 +170,14 @@ export default function DashboardOrgao() {
                     <span>Ambiente seguro de monitoramento. Toda resposta e atualização da sua equipe é refletida automaticamente no Painel Público, garantindo transparência.</span>
                 </div>
             </footer>
+
+            {/* Toast Notification */}
+            <Toast 
+                show={toast.show} 
+                message={toast.message} 
+                type={toast.type} 
+                onClose={() => setToast(prev => ({ ...prev, show: false }))} 
+            />
         </div>
     );
 }

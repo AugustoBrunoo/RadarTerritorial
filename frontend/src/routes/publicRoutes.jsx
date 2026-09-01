@@ -10,9 +10,6 @@ const EmConstrucao = React.lazy(() => import('../pages/EmConstrucao/index.jsx'))
 const RelatoDetalhado = React.lazy(() => import('../pages/RelatoDetalhado/index.jsx'));
 const TermosDeUso = React.lazy(() => import('../pages/TermosDeUso/index.jsx'));
 const Dashboard = React.lazy(() => import('../pages/Dashboard/index.jsx'));
-const DashboardOrgao = React.lazy(() => import('../pages/DashboardOrgao/index.jsx'));
-const FilaOperacional = React.lazy(() => import('../pages/FilaOperacional/index.jsx'));
-
 const Fallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950">
     <Loader2 className="h-8 w-8 animate-spin text-zinc-500" />
@@ -27,11 +24,6 @@ export const publicRoutes = [
   { path: "/feed", element: <Suspense fallback={<Fallback />}><Feed /></Suspense> },
   { path: "/assistente-ia", element: <Suspense fallback={<Fallback />}><AiAssistant /></Suspense> },
   { path: "/dashboard", element: <Suspense fallback={<Fallback />}><Dashboard /></Suspense> },
-  { path: "/dashboard-orgao", element: <Suspense fallback={<Fallback />}><DashboardOrgao /></Suspense> },
-  { path: "/painel-orgao", element: <Suspense fallback={<Fallback />}><DashboardOrgao /></Suspense> },
-  { path: "/gestao", element: <Suspense fallback={<Fallback />}><DashboardOrgao /></Suspense> },
-  { path: "/gestao/operacional", element: <Suspense fallback={<Fallback />}><FilaOperacional /></Suspense> },
-  { path: "/fila-operacional", element: <Suspense fallback={<Fallback />}><FilaOperacional /></Suspense> },
   { path: "/em-construcao", element: <Suspense fallback={<Fallback />}><EmConstrucao /></Suspense> },
   { path: "/relato/:id", element: <Suspense fallback={<Fallback />}><RelatoDetalhado /></Suspense> },
   { path: "*", element: <Suspense fallback={<Fallback />}><EmConstrucao /></Suspense> },

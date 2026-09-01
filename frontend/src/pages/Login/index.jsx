@@ -136,6 +136,8 @@ export default function Login() {
           } else {
             if (response.profile?.role === 'admin' && redirectPath === '/central-cidadao') {
               navigate('/admin/dashboard');
+            } else if (response.profile?.role === 'gestor_publico' && redirectPath === '/central-cidadao') {
+              navigate('/gestao');
             } else {
               navigate(redirectPath);
             }

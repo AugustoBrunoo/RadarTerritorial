@@ -25,6 +25,7 @@ import {
   Lightbulb,
   Eye,
 } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 const operatorDatabaseMock = [
   {
@@ -91,6 +92,7 @@ const operatorDatabaseMock = [
 
 export default function FilaOperacional() {
   const navigate = useNavigate();
+  const { profile } = useAuth();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -156,7 +158,7 @@ export default function FilaOperacional() {
           
           <div className="flex items-center gap-4">
             <button
-              onClick={() => navigate('/dashboard-orgao')}
+              onClick={() => navigate('/gestao')}
               title="Voltar ao Dashboard Estratégico"
               className="flex items-center justify-center w-8 h-8 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full transition-all text-zinc-600 dark:text-zinc-400"
             >
@@ -164,7 +166,7 @@ export default function FilaOperacional() {
             </button>
             <div
               className="flex items-center gap-2 cursor-pointer group"
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/gestao')}
             >
               <div className="bg-red-600 p-1.5 rounded-full group-hover:scale-105 transition-transform">
                 <MapPin className="h-4 w-4 text-white" />
@@ -178,7 +180,7 @@ export default function FilaOperacional() {
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 px-4 py-1.5 rounded-full">
               <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                Órgão: <strong className="font-bold text-zinc-900 dark:text-white">COMLURB</strong>
+                Órgão: <strong className="font-bold text-zinc-900 dark:text-white">{profile?.nome_completo || 'Órgão'}</strong>
               </span>
             </div>
 
@@ -194,7 +196,7 @@ export default function FilaOperacional() {
                 <div className="absolute right-0 top-full mt-3 w-56 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-xl shadow-zinc-200/20 dark:shadow-black/40 py-2 transition-all duration-200 origin-top-right z-50">
                   <div className="px-2 space-y-1">
                     <button
-                      onClick={() => navigate('/dashboard-orgao')}
+                      onClick={() => navigate('/gestao')}
                       className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white rounded-xl transition-colors"
                     >
                       <PieChart className="h-4 w-4 text-zinc-400" /> Dashboard Estratégico

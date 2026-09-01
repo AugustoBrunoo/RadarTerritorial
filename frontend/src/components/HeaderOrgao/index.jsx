@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { MapPin, Menu, PieChart, Settings, BarChart3, LogOut } from 'lucide-react';
 import { signOutUser } from '../../services/authService';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function HeaderOrgao() {
+    const { profile } = useAuth();
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -45,7 +47,7 @@ export default function HeaderOrgao() {
             <header className="pointer-events-auto w-full max-w-6xl bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full px-4 sm:px-6 py-3 flex justify-between items-center shadow-lg transition-all duration-300">
                 
                 {/* Logo */}
-                <Link to="/" className="flex items-center gap-2 cursor-pointer group">
+                <Link to="/gestao" className="flex items-center gap-2 cursor-pointer group">
                     <div className="bg-red-600 p-2 rounded-full group-hover:scale-105 transition-transform">
                         <MapPin className="h-5 w-5 text-white" />
                     </div>
@@ -59,7 +61,7 @@ export default function HeaderOrgao() {
                     {/* Identificação do Órgão */}
                     <div className="hidden sm:flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 px-4 py-1.5 rounded-full">
                         <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                            Vinculado como: <strong className="font-bold text-zinc-900 dark:text-white">COMLURB</strong>
+                            Vinculado como: <strong className="font-bold text-zinc-900 dark:text-white">{profile?.nome_completo || 'Órgão'}</strong>
                         </span>
                     </div>
 

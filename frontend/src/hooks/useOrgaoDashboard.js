@@ -47,6 +47,7 @@ export function useOrgaoDashboard() {
         porcentagemNaoRespondidos: '0%',
         resolvidos: 0,
         taxaResolutividade: '0%',
+        tempoMedioAtendimento: 'N/D',
         bairroCritico: 'N/D',
         porBairro: { 'Campo Grande': 0, 'Cosmos': 0, 'Inhoaíba': 0 }
       };
@@ -65,12 +66,29 @@ export function useOrgaoDashboard() {
     // Identificação do bairro com maior volume de chamados
     const bairroCritico = Object.entries(contagemBairros).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/D';
 
+    // Cálculo do Tempo Médio de Atendimento (TMA) em dias
+    const relatosResolvidos = relatos.filter(r => r.status === 'resolvido');
+    let tmaDias = 0;
+    
+    if (relatosResolvidos.length > 0) {
+      const somaDias = relatosResolvidos.reduce((acc, relato) => {
+        const criado = new Date(relato.created_at);
+        const atualizado = new Date(relato.updated_at || relato.created_at);
+        const diffTempo = Math.abs(atualizado - criado);
+        const diffDias = Math.ceil(diffTempo / (1000 * 60 * 60 * 24));
+        return acc + diffDias;
+      }, 0);
+      
+      tmaDias = (somaDias / relatosResolvidos.length).toFixed(1);
+    }
+
     return {
       total,
       naoRespondidos,
       porcentagemNaoRespondidos: `${((naoRespondidos / total) * 100).toFixed(1)}%`,
       resolvidos,
       taxaResolutividade: `${((resolvidos / total) * 100).toFixed(1)}%`,
+      tempoMedioAtendimento: tmaDias > 0 ? `${tmaDias}d` : 'N/D',
       bairroCritico,
       porBairro: contagemBairros
     };

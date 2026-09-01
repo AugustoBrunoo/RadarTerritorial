@@ -3,6 +3,7 @@ import { useRoutes } from 'react-router';
 import { publicRoutes } from './publicRoutes';
 import { authRoutes } from './authRoutes';
 import { privateRoutes } from './privateRoutes';
+import { gestorRoutes } from './gestorRoutes';
 import AdminRoute from '../components/AdminRoute';
 import { Loader2 } from 'lucide-react';
 
@@ -51,6 +52,7 @@ export default function AppRoutes() {
     ...publicRoutes,
     ...authRoutes,
     ...privateRoutes,
+    ...gestorRoutes,
     ...adminRoutes,
   ]);
 

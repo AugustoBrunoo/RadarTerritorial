@@ -17,7 +17,7 @@ export function GestorRoute() {
   const isGestorValido = profile && (profile.role === 'gestor_publico' || profile.role === 'admin') && profile.orgao_id;
 
   if (!isGestorValido) {
-    return <Navigate replace to="/hub"/>;
+    return <Navigate replace to="/login"/>;
   }
 
   return <Outlet/>;

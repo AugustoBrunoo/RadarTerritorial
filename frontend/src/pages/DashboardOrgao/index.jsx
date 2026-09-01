@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { PieChart, Settings, ListChecks, Layers, Clock4, Timer, ShieldCheck, Info } from 'lucide-react';
+import { PieChart, Settings, ListChecks, Layers, Clock4, Timer, ShieldCheck, Info, Loader2 } from 'lucide-react';
 import HeaderOrgao from '../../components/HeaderOrgao';
+import { useOrgaoDashboard } from '../../hooks/useOrgaoDashboard';
 import KpiCardOrgao from '../../components/KpiCardOrgao';
 import StatusDistributionCard from '../../components/StatusDistributionCard';
 import NeighborhoodDemandsCard from '../../components/NeighborhoodDemandsCard';
@@ -10,9 +11,11 @@ import NotificationSettingsCard from '../../components/NotificationSettingsCard'
 import SlaSettingsCard from '../../components/SlaSettingsCard';
 
 export default function DashboardOrgao() {
+    const { kpis, loading, orgao } = useOrgaoDashboard();
+
     return (
         <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-blue-500 selection:text-white flex flex-col">
-            
+
             <HeaderOrgao />
 
             {/* === MAIN CONTENT === */}
@@ -44,50 +47,56 @@ export default function DashboardOrgao() {
                 </div>
 
                 {/* === KPIS MACRO PRINCIPAIS === */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                    <KpiCardOrgao 
-                        title="Relatos Atribuídos" 
-                        value="1.248" 
-                        subtitle="Mês Atual" 
-                        icon={Layers} 
-                        colorClass="text-blue-600 dark:text-blue-500" 
-                        bgColorClass="bg-blue-50 dark:bg-blue-950/30" 
-                        badgeText="Total Geral" 
-                        tooltipText="Volume total de ocorrências direcionadas a este órgão pelo sistema no período selecionado."
-                    />
-                    <KpiCardOrgao 
-                        title="Não Respondidos (%)" 
-                        value="28,4%" 
-                        subtitle="(354 chamados)" 
-                        icon={Clock4} 
-                        colorClass="text-red-600 dark:text-red-500" 
-                        bgColorClass="bg-red-50 dark:bg-red-950/30" 
-                        badgeText="Atenção" 
-                        tooltipText="Percentual de chamados pendentes que ainda não receberam primeira resposta oficial ou parecer técnico do órgão."
-                    />
-                    <KpiCardOrgao 
-                        title="Tempo Médio de Atendimento" 
-                        value="3,2d" 
-                        subtitle="dias úteis" 
-                        icon={Timer} 
-                        colorClass="text-amber-600 dark:text-amber-500" 
-                        bgColorClass="bg-amber-50 dark:bg-amber-950/30" 
-                        badgeText="Meta: 3d" 
-                        badgeColorClass="text-amber-500"
-                        tooltipText="Média de dias úteis decorridos entre a abertura do relato até a conclusão ou resposta definitiva pelo órgão."
-                    />
-                    <KpiCardOrgao 
-                        title="Resolvidos / Concluídos" 
-                        value="71,6%" 
-                        subtitle="(894 chamados)" 
-                        icon={ShieldCheck} 
-                        colorClass="text-emerald-600 dark:text-emerald-500" 
-                        bgColorClass="bg-emerald-50 dark:bg-emerald-950/30" 
-                        badgeText="Eficiência" 
-                        badgeColorClass="text-emerald-500"
-                        tooltipText="Taxa de eficácia calculada pela proporção de chamados finalizados com sucesso perante o total recebido."
-                    />
-                </div>
+                {loading ? (
+                    <div className="flex items-center justify-center h-32 animate-fade-in-up">
+                        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                        <KpiCardOrgao
+                            title="Relatos Atribuídos"
+                            value={kpis.total.toString()}
+                            subtitle="Total Geral"
+                            icon={Layers}
+                            colorClass="text-blue-600 dark:text-blue-500"
+                            bgColorClass="bg-blue-50 dark:bg-blue-950/30"
+                            badgeText="Total Geral"
+                            tooltipText="Volume total de ocorrências direcionadas a este órgão pelo sistema no período selecionado."
+                        />
+                        <KpiCardOrgao
+                            title="Não Respondidos (%)"
+                            value={kpis.porcentagemNaoRespondidos}
+                            subtitle={`(${kpis.naoRespondidos} chamados)`}
+                            icon={Clock4}
+                            colorClass="text-red-600 dark:text-red-500"
+                            bgColorClass="bg-red-50 dark:bg-red-950/30"
+                            badgeText="Atenção"
+                            tooltipText="Percentual de chamados pendentes que ainda não receberam primeira resposta oficial ou parecer técnico do órgão."
+                        />
+                        <KpiCardOrgao
+                            title="Tempo Médio de Atendimento"
+                            value={kpis.tempoMedioAtendimento}
+                            subtitle={kpis.tempoMedioAtendimento !== 'N/D' ? 'dias' : 'Sem dados suficientes'}
+                            icon={Timer}
+                            colorClass="text-amber-600 dark:text-amber-500"
+                            bgColorClass="bg-amber-50 dark:bg-amber-950/30"
+                            badgeText="Meta: 3d"
+                            badgeColorClass="text-amber-500"
+                            tooltipText="Média de dias decorridos entre a abertura do relato até a conclusão ou resposta definitiva pelo órgão."
+                        />
+                        <KpiCardOrgao
+                            title="Resolvidos / Concluídos"
+                            value={kpis.taxaResolutividade}
+                            subtitle={`(${kpis.resolvidos} chamados)`}
+                            icon={ShieldCheck}
+                            colorClass="text-emerald-600 dark:text-emerald-500"
+                            bgColorClass="bg-emerald-50 dark:bg-emerald-950/30"
+                            badgeText="Eficiência"
+                            badgeColorClass="text-emerald-500"
+                            tooltipText="Taxa de eficácia calculada pela proporção de chamados finalizados com sucesso perante o total recebido."
+                        />
+                    </div>
+                )}
 
                 {/* === SECTION 1: DASHBOARD DE DADOS COMPLETO (ANALYTICS) === */}
                 <section id="analytics-section" className="space-y-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>

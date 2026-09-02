@@ -71,70 +71,83 @@ export default function DemandaCard({ report, userInitials }) {
   }
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm hover:shadow-md transition-shadow animate-in zoom-in-95">
-      <div className="flex justify-between items-start gap-4 mb-4">
+    <div className="bg-white dark:bg-[#121214] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-5 sm:p-7 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgba(255,255,255,0.02)] transition-all duration-300 animate-in zoom-in-95 group overflow-hidden relative">
+      {/* Decorative gradient corner */}
+      <div className="absolute -top-16 -right-16 w-32 h-32 bg-zinc-100 dark:bg-zinc-800/50 rounded-full blur-3xl opacity-50 pointer-events-none group-hover:bg-blue-100 dark:group-hover:bg-blue-900/20 transition-colors duration-500"></div>
+
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-5 relative z-10">
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <span className={`px-2.5 py-1 rounded-lg border text-[10px] font-black uppercase tracking-widest ${statusProps.className} flex items-center gap-1.5`}>
-              <StatusIcon className="h-3 w-3" /> {statusProps.text}
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <span className={`px-2.5 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider ${statusProps.className} flex items-center gap-1.5 shadow-sm`}>
+              <StatusIcon className="h-3.5 w-3.5" /> {statusProps.text}
             </span>
             {report.protocolo_oficial && (
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded-lg">
-                {report.protocolo_oficial}
+              <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 px-2.5 py-1 rounded-full shadow-sm">
+                PROTOCOLO: {report.protocolo_oficial}
+              </span>
+            )}
+            {report.resposta_orgao && report.status !== 'resolvido' && report.status !== 'rejeitado' && (
+              <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                <CheckCircle className="h-3 w-3" /> Respondido
               </span>
             )}
           </div>
-          <h4 className="font-bold text-zinc-900 dark:text-white flex items-center gap-1.5 text-sm sm:text-base">
-            <MapPin className="h-4 w-4 text-red-600 flex-shrink-0" /> <span className="line-clamp-2">{locationStr}</span>
+          <h4 className="font-extrabold text-lg sm:text-xl text-zinc-900 dark:text-white flex items-start gap-2 leading-tight">
+            <MapPin className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" /> 
+            <span className="line-clamp-2">{locationStr}</span>
           </h4>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 flex items-center gap-1 font-semibold">
-            <CategoryIcon className="h-3 w-3" /> {report.categoria_nome || report.macro_eixo}
-          </p>
+          <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-xs text-zinc-600 dark:text-zinc-300 font-semibold border border-zinc-200 dark:border-zinc-700">
+              <CategoryIcon className="h-3.5 w-3.5" /> {report.categoria_nome || report.macro_eixo}
+            </div>
+          </div>
         </div>
         
-        <div className="ml-auto text-right flex flex-col items-end gap-1 flex-shrink-0">
-          <span className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">{timeStr}</span>
-          <span className="text-[9px] font-bold text-zinc-400 dark:text-zinc-500">{dateStr}</span>
+        <div className="text-left sm:text-right flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1 flex-shrink-0 w-full sm:w-auto bg-zinc-50 sm:bg-transparent dark:bg-zinc-800/30 sm:dark:bg-transparent p-2 sm:p-0 rounded-lg sm:rounded-none">
+          <Clock className="h-3.5 w-3.5 text-zinc-400 sm:hidden" />
+          <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{timeStr}</span>
+          <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">•</span>
+          <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">{dateStr}</span>
         </div>
       </div>
 
-      <div className={`pl-3 border-l-2 border-zinc-200 dark:border-zinc-800 text-sm leading-relaxed font-medium ${report.descricao ? 'text-zinc-700 dark:text-zinc-300' : 'text-zinc-400 dark:text-zinc-500 italic'}`}>
+      <div className={`pl-4 border-l-2 border-zinc-200 dark:border-zinc-700 text-sm sm:text-base leading-relaxed font-medium mb-6 ${report.descricao ? 'text-zinc-700 dark:text-zinc-300' : 'text-zinc-400 dark:text-zinc-500 italic'}`}>
         {report.descricao || "Sem detalhes adicionais fornecidos pelo usuário."}
       </div>
 
       {report.resposta_orgao && (
-        <div className="mt-5 bg-zinc-50 dark:bg-zinc-950/60 rounded-2xl p-4 sm:p-5 border border-zinc-100 dark:border-zinc-800 relative overflow-hidden shadow-inner">
-          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-green-500"></div>
+        <div className="mb-6 bg-gradient-to-br from-zinc-50 to-white dark:from-zinc-900/50 dark:to-[#18181b] rounded-2xl p-5 border border-zinc-200 dark:border-zinc-800 relative overflow-hidden shadow-sm">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500 dark:bg-blue-600"></div>
           
           <div className="flex items-center justify-between mb-3 pl-2">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white dark:bg-zinc-800 flex items-center justify-center overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-sm flex-shrink-0 relative">
-                <Building2 className="h-5 w-5 text-zinc-400" />
+              <div className="w-10 h-10 rounded-xl bg-white dark:bg-zinc-800 flex items-center justify-center overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-sm flex-shrink-0 relative">
+                <Building2 className="h-5 w-5 text-zinc-400 dark:text-zinc-500" />
               </div>
               <div>
                 <h5 className="text-sm font-black text-zinc-900 dark:text-white flex items-center gap-1.5">
-                  Órgão Responsável
+                  Resposta do Órgão Responsável
                   <BadgeCheck className="h-4 w-4 text-blue-500" title="Órgão Verificado" />
                 </h5>
                 {responseDateStr && (
-                  <p className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Respondido em {responseDateStr}</p>
+                  <p className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Em {responseDateStr}</p>
                 )}
               </div>
             </div>
           </div>
           
-          <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed pl-2 mb-5 font-medium italic">
-            "{report.resposta_orgao}"
+          <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed pl-2 mb-4 font-medium">
+            {report.resposta_orgao}
           </p>
 
           {report.status === 'resolvido' && (
-            <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800/80 pl-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <span className="text-xs font-black text-zinc-600 dark:text-zinc-400 uppercase tracking-wide">Essa solução foi boa para você?</span>
+            <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800 pl-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-zinc-50/50 dark:bg-zinc-900/50 -mx-5 -mb-5 px-5 pb-5 mt-2 rounded-b-2xl">
+              <span className="text-xs font-black text-zinc-600 dark:text-zinc-400 uppercase tracking-wide pt-1">Essa solução foi boa para você?</span>
               <div className="flex items-center gap-2">
-                <button className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:hover:bg-green-900/20 dark:hover:text-green-400 transition-all shadow-sm active:scale-95">
+                <button className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:hover:bg-green-900/30 dark:hover:text-green-400 transition-all shadow-sm active:scale-95">
                   <ThumbsUp className="h-4 w-4" /> Sim
                 </button>
-                <button className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-all shadow-sm active:scale-95">
+                <button className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:hover:bg-red-900/30 dark:hover:text-red-400 transition-all shadow-sm active:scale-95">
                   <ThumbsDown className="h-4 w-4" /> Não
                 </button>
               </div>
@@ -143,21 +156,21 @@ export default function DemandaCard({ report, userInitials }) {
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-5 mt-5 border-t border-zinc-150 dark:border-zinc-800/60 gap-4">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center font-black text-xs text-zinc-600 dark:text-zinc-300">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-4 border-t border-zinc-100 dark:border-zinc-800/80 gap-4 relative z-10">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center font-black text-xs text-zinc-700 dark:text-zinc-300 shadow-sm">
             {userInitials || 'VC'}
           </div>
           <span className="text-xs font-bold text-zinc-600 dark:text-zinc-400">Enviado por você</span>
         </div>
         
-        <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+        <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
           <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-500 dark:text-zinc-400">
             <Award className="h-4 w-4 text-red-600" /> {report.apoios_count || 0} <span className="hidden sm:inline">Apoios</span>
           </div>
           
-          <Link to={`/relato/${report.id}`} className="flex items-center gap-1.5 py-2 px-4 rounded-xl text-xs font-black tracking-wide bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-all border border-transparent">
-            <Eye className="h-4 w-4" /> Ver relato
+          <Link to={`/relato/${report.id}`} className="flex items-center gap-2 py-2 px-5 rounded-full text-xs font-bold bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-900 transition-all shadow-sm active:scale-95">
+            <Eye className="h-3.5 w-3.5" /> Ver relato detalhado
           </Link>
         </div>
       </div>

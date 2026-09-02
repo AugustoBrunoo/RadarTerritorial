@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router';
 import {
   ArrowLeft, Clock, Droplet, MapPin,
   Loader2, CheckCircle, Lightbulb, ShieldAlert, Bus,
-  Edit3, CheckCircle2
+  CheckCircle2
 } from 'lucide-react';
 import HeaderOrgao from '../../components/HeaderOrgao';
 import SimpleFooter from '../../components/SimpleFooter';
@@ -13,6 +13,8 @@ import RelatoHeader from '../../components/RelatoHeader';
 import RelatoMidia from '../../components/RelatoMidia';
 import RelatoLinhaDoTempo from '../../components/RelatoLinhaDoTempo';
 import RelatoComentarios from '../../components/RelatoComentarios';
+import GestaoPainelOperacional from '../../components/GestaoPainelOperacional';
+import { salvarRespostaOperacional } from '../../services/orgaoService';
 
 const getCategoryIcon = (macroEixo) => {
   const eixoStr = (macroEixo || "").toLowerCase();
@@ -54,6 +56,7 @@ export default function GestaoRelatoDetalhado() {
   const [protocolNumber, setProtocolNumber] = useState('');
   const [officialMessage, setOfficialMessage] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     async function loadData() {
@@ -75,6 +78,8 @@ export default function GestaoRelatoDetalhado() {
 
         setReport(relatoData);
         setNewStatus(relatoData.status);
+        if (relatoData.resposta_orgao) setOfficialMessage(relatoData.resposta_orgao);
+        if (relatoData.protocolo_oficial) setProtocolNumber(relatoData.protocolo_oficial);
 
         if (relatoData.is_anonimo) {
           setAuthorName("Usuário Anônimo");
@@ -110,15 +115,26 @@ export default function GestaoRelatoDetalhado() {
 
   const handleUpdateTicket = async () => {
     setIsUpdating(true);
-    // Aqui você faria o update real no supabase:
-    // await supabase.from('relatos').update({ status: newStatus }).eq('id', id);
-    
-    // Simulating API call
-    setTimeout(() => {
+    try {
+      const isAnonimo = report.is_anonimo || !report.user_id;
+      const updatedReport = await salvarRespostaOperacional({
+        relatoId: id,
+        novoStatus: newStatus,
+        respostaOrgao: officialMessage,
+        protocoloOficial: protocolNumber,
+        isAnonimo: isAnonimo,
+        gestorProfileId: currentUserId
+      });
+
+      setToastMessage('Resposta operacional registrada com sucesso!');
+      setReport(updatedReport); // Atualiza os dados do relato na tela em tempo real
+      setTimeout(() => setToastMessage(''), 4000);
+    } catch (err) {
+      console.error("Erro ao atualizar o ticket:", err);
+      // Aqui poderíamos exibir um toast de erro
+    } finally {
       setIsUpdating(false);
-      alert('Status do Ticket atualizado! O cidadão será notificado e o feed público será sincronizado.');
-      setReport(prev => ({ ...prev, status: newStatus })); // Update locally for fast feedback
-    }, 1000);
+    }
   };
 
   if (loading) {
@@ -204,72 +220,18 @@ export default function GestaoRelatoDetalhado() {
           <div className="space-y-6 min-w-0">
             
             {/* PAINEL DE CONTROLE DO GESTOR */}
-            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm flex flex-col gap-5">
-              <div className="flex items-center gap-3 border-b border-zinc-100 dark:border-zinc-800/60 pb-4">
-                <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-500 shrink-0">
-                  <Edit3 className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-black text-zinc-900 dark:text-white leading-tight">Painel Operacional</h3>
-                  <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Atualize o cidadão sobre o andamento</p>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2">Mudar Status Operacional</label>
-                <select 
-                  value={newStatus}
-                  onChange={(e) => setNewStatus(e.target.value)}
-                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3.5 text-sm font-bold text-zinc-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none shadow-sm transition-all hover:border-blue-400 cursor-pointer"
-                >
-                  <option value="pendente">Pendente (Aguardando Triagem)</option>
-                  <option value="em_analise">Em Análise (Triagem Técnica)</option>
-                  <option value="em_execucao">Em Execução (Equipe Despachada)</option>
-                  <option value="resolvido">Resolvido / Concluído</option>
-                  <option value="rejeitado">Rejeitado / Improcedente</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2">Enviar Protocolo (Opcional)</label>
-                <input 
-                  type="text"
-                  value={protocolNumber}
-                  onChange={(e) => setProtocolNumber(e.target.value)}
-                  placeholder="Ex: PROT-2026-8942"
-                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3.5 text-sm font-medium text-zinc-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none shadow-sm transition-all placeholder-zinc-400"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2 flex items-center justify-between">
-                  <span>Mensagem Oficial ao Cidadão</span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-900/50">Feed Público</span>
-                </label>
-                <textarea 
-                  rows="4" 
-                  value={officialMessage}
-                  onChange={(e) => setOfficialMessage(e.target.value)}
-                  placeholder="Ex: Informamos que a equipe foi despachada ao local e o problema será resolvido em até 48h..." 
-                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none resize-none shadow-sm transition-all placeholder-zinc-400 font-medium"
-                ></textarea>
-                <div className="mt-2 flex gap-2">
-                  <button onClick={() => setOfficialMessage("Informamos que a equipe foi despachada para o local. Previsão de atendimento em até 48h.")} className="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Em Rota</button>
-                  <button onClick={() => setOfficialMessage("Serviço concluído com sucesso. Agradecemos o relato e a colaboração com a cidade.")} className="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Concluído</button>
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <button 
-                  onClick={handleUpdateTicket}
-                  disabled={isUpdating}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3.5 rounded-xl text-sm font-black flex items-center justify-center gap-2 shadow-md shadow-blue-600/20 transition-all transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {isUpdating ? <Loader2 className="h-5 w-5 animate-spin" /> : <CheckCircle2 className="h-5 w-5" />}
-                  {isUpdating ? 'Atualizando...' : 'Atualizar Ticket e Notificar'}
-                </button>
-              </div>
-            </div>
+            <GestaoPainelOperacional
+              newStatus={newStatus}
+              setNewStatus={setNewStatus}
+              protocolNumber={protocolNumber}
+              setProtocolNumber={setProtocolNumber}
+              officialMessage={officialMessage}
+              setOfficialMessage={setOfficialMessage}
+              handleUpdateTicket={handleUpdateTicket}
+              isUpdating={isUpdating}
+              isAnonimo={report.is_anonimo || !report.user_id}
+              lastResponseDate={report.respondido_em}
+            />
 
             <RelatoComentarios report={report} currentUserId={currentUserId} />
           </div>
@@ -277,6 +239,16 @@ export default function GestaoRelatoDetalhado() {
       </main>
 
       <SimpleFooter />
+      
+      {/* TOAST NOTIFICATION */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 animate-[fadeInUp_0.3s_ease-out_forwards]">
+          <div className="bg-emerald-500 text-white px-5 py-3.5 rounded-2xl shadow-xl shadow-emerald-500/20 flex items-center gap-3 font-bold border border-emerald-400">
+            <CheckCircle2 className="h-5 w-5" />
+            <span>{toastMessage}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

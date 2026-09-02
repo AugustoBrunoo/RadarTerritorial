@@ -46,7 +46,47 @@ export async function buscarPainelOrgao(orgaoId) {
 }
 
 /**
+ * Salva a resposta oficial, altera o status e registra auditoria do gestor.
+ */
+export async function salvarRespostaOperacional({
+  relatoId,
+  novoStatus,
+  respostaOrgao,
+  protocoloOficial,
+  isAnonimo,
+  gestorProfileId
+}) {
+  if (!relatoId) throw new Error('ID do relato não fornecido.');
+  if (!respostaOrgao?.trim()) throw new Error('A mensagem oficial ao cidadão é obrigatória.');
+
+  const isResolvido = novoStatus === 'resolvido';
+  const agora = new Date().toISOString();
+
+  const payload = {
+    status: novoStatus,
+    resposta_orgao: respostaOrgao.trim(),
+    // Se o relato for anônimo, o protocolo DEVE ser null
+    protocolo_oficial: isAnonimo ? null : (protocoloOficial?.trim() || null),
+    respondido_em: agora,
+    respondido_por_id: gestorProfileId,
+    fechado_por: isResolvido ? 'orgao' : null,
+    fechado_em: isResolvido ? agora : null
+  };
+
+  const { data, error } = await supabase
+    .from('relatos')
+    .update(payload)
+    .eq('id', relatoId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
  * Atualiza o status e a resposta institucional do chamado.
+ * Mantido para retrocompatibilidade com useOrgaoDashboard.
  * @param {Object} params
  * @param {string} params.relatoId - UUID da ocorrência
  * @param {string} params.status - 'em_analise' | 'em_execucao' | 'resolvido' | 'rejeitado'

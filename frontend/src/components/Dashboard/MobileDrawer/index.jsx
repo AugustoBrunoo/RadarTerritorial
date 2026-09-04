@@ -8,11 +8,9 @@ export default function MobileDrawer({
   timeFilter, setTimeFilter,
   setIsExportModalOpen
 }) {
-  if (!isDrawerOpen) return null;
-
   return (
-    <div className="md:hidden fixed inset-0 z-[9999] flex items-end bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="w-full bg-white dark:bg-zinc-950 rounded-t-3xl shadow-2xl border-t border-zinc-200 dark:border-zinc-800 animate-in slide-in-from-bottom-full duration-300 flex flex-col max-h-[90vh]">
+    <div className={`md:hidden fixed inset-0 z-[9999] flex items-end bg-black/60 backdrop-blur-sm transition-all duration-300 ${isDrawerOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+      <div className={`w-full bg-white dark:bg-zinc-950 rounded-t-3xl shadow-2xl border-t border-zinc-200 dark:border-zinc-800 flex flex-col max-h-[90vh] transition-transform duration-300 ease-out ${isDrawerOpen ? 'translate-y-0' : 'translate-y-full'}`}>
         <div className="p-4 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-800 relative">
           <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full"></div>
           <h3 className="text-lg font-black text-zinc-900 dark:text-white mt-2 flex items-center gap-2">

@@ -2,23 +2,47 @@ import { supabase } from '../lib/supabaseClient'; // Adjusted path to match proj
 
 export async function getRelatosRealtime() {
   try {
-    const { data, error } = await supabase
-      .from('relatos')
-      .select('*')
-      .order('created_at', { ascending: false });
+    const [relatosResponse, orgaosResponse, profilesResponse] = await Promise.all([
+      supabase
+        .from('relatos')
+        .select('*')
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('orgaos')
+        .select('id, nome'),
+      supabase
+        .from('profiles')
+        .select('id, full_name, orgao_id, nome_completo')
+        .not('orgao_id', 'is', null)
+    ]);
 
-    if (error) throw error;
+    if (relatosResponse.error) throw relatosResponse.error;
+    if (orgaosResponse.error) throw orgaosResponse.error;
+    // profilesResponse might have an error, but let's just log it if so, or default to empty
+    const relatos = relatosResponse.data;
+    const orgaos = orgaosResponse.data || [];
+    const perfisOrgao = profilesResponse?.data || [];
 
     const hoje = new Date();
 
     // Mapeia os dados do Supabase para o formato consumido pelos componentes visuais
-    return data.map((item) => {
+    return relatos.map((item) => {
       const dataCriacao = new Date(item.created_at);
       const dataFim = item.fechado_em ? new Date(item.fechado_em) : hoje;
       
       // Cálculo exato de dias em aberto
       const diffTime = Math.abs(dataFim - dataCriacao);
       const diasAberto = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+
+      const orgao = orgaos.find(o => o.id == item.orgao_responsavel_id);
+      const perfilRepresentante = perfisOrgao.find(p => p.orgao_id == item.orgao_responsavel_id);
+      
+      let operadorNome = "Órgão Responsável";
+      if (perfilRepresentante && (perfilRepresentante.nome_completo || perfilRepresentante.full_name)) {
+        operadorNome = perfilRepresentante.nome_completo || perfilRepresentante.full_name;
+      } else if (orgao) {
+        operadorNome = orgao.nome;
+      }
 
       return {
         id: item.id,
@@ -39,8 +63,7 @@ export async function getRelatosRealtime() {
         descricao: item.descricao,
         protocolo: item.protocolo_oficial,
         respostaOrgao: item.resposta_orgao,
-        // Mantemos fallback do operador para não quebrar compatibilidade
-        operador: item.orgao_responsavel_id || "Órgão Competente" 
+        operador: operadorNome 
       };
     });
   } catch (err) {

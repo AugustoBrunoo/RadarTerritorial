@@ -110,13 +110,24 @@ export default function Dashboard() {
   const { filteredData, stats } = useMemo(() => {
     let fd = realDatabase;
 
+    const normalizeEixo = (eixo) => {
+      if (!eixo) return 'outros';
+      const e = String(eixo).toLowerCase();
+      if (e.includes('infra')) return 'infra';
+      if (e.includes('saneamento') || e.includes('limpeza') || e.includes('lixo') || e.includes('esgoto')) return 'saneamento';
+      if (e.includes('ilumina') || e.includes('luz')) return 'iluminacao';
+      if (e.includes('mobilidade') || e.includes('transporte')) return 'mobilidade';
+      if (e.includes('segurança') || e.includes('insegurança') || e.includes('território') || e.includes('ordem') || e.includes('seguranca')) return 'inseguranca';
+      return e;
+    };
+
     if (bairroFilter !== 'all') fd = fd.filter(d => d.bairro === bairroFilter);
     if (timeFilter !== 'all') {
         const limitDate = new Date(); 
         limitDate.setDate(limitDate.getDate() - parseInt(timeFilter));
         fd = fd.filter(d => d.dataCriacao >= limitDate);
     }
-    if (currentTab !== 'geral') { fd = fd.filter(d => d.eixo === currentTab); }
+    if (currentTab !== 'geral') { fd = fd.filter(d => normalizeEixo(d.eixo) === currentTab); }
 
     const st = { total: fd.length, resolvidos: 0, ativas: 0, slaEstourado: 0, somaDias: 0, reabertas: 0, subs: {}, eixos: {}, pontosCriticos: {}, ops: {}, comResposta: 0 };
 
@@ -126,8 +137,15 @@ export default function Dashboard() {
         if (d.reaberto) st.reabertas++;
         if (d.status === "Resolvido") st.somaDias += d.diasAberto;
         if (d.respostaOrgao || d.status === "Resolvido") st.comResposta++;
-        if (!st.subs[d.category]) st.subs[d.category] = 0; st.subs[d.category]++;
-        if (!st.eixos[d.eixo]) st.eixos[d.eixo] = 0; st.eixos[d.eixo]++;
+        
+        if (!st.subs[d.category]) st.subs[d.category] = 0; 
+        st.subs[d.category]++;
+        
+        const eixoNorm = normalizeEixo(d.eixo);
+        const eixoKey = ['infra', 'saneamento', 'iluminacao', 'mobilidade', 'inseguranca'].includes(eixoNorm) ? eixoNorm : (d.eixo || 'Outros');
+        if (!st.eixos[eixoKey]) st.eixos[eixoKey] = 0; 
+        st.eixos[eixoKey]++;
+        
         if (!st.ops[d.operador]) st.ops[d.operador] = { resolvido: 0, pendente: 0 };
         if (d.status === "Resolvido") st.ops[d.operador].resolvido++; else st.ops[d.operador].pendente++;
         if (d.status === "Não Resolvido") {
@@ -155,13 +173,19 @@ export default function Dashboard() {
   const topRuas = Object.entries(stats.pontosCriticos).sort((a, b) => b[1].apoios - a[1].apoios).slice(0, 5);
 
   // Specific Tab Data
-  let arvores = 0, icone = Activity, cor = 'red', tituloKpi = '', subtituloKpi = '';
-  if (currentTab === 'infra') { arvores = filteredData.filter(d => d.category === "Árvore com risco de queda" && d.status === "Não Resolvido").length; icone = TriangleAlert; cor = 'red'; tituloKpi = 'Árvores com Risco Iminente'; subtituloKpi = 'Aguardando intervenção emergencial na região.'; }
-  else if (currentTab === 'saneamento') { arvores = filteredData.filter(d => d.category === "Bueiro entupido" && d.status === "Não Resolvido").length; icone = CloudRain; cor = 'blue'; tituloKpi = 'Alerta de Alagamento (Bueiros)'; subtituloKpi = 'Pontos críticos para dias de chuva forte.'; }
-  else if (currentTab === 'iluminacao') { arvores = filteredData.filter(d => d.category === "Fios caídos na rua" && d.status === "Não Resolvido").length; icone = Zap; cor = 'amber'; tituloKpi = 'Risco de Choque Elétrico'; subtituloKpi = 'Fiações caídas aguardando reparo.'; }
-  else if (currentTab === 'mobilidade') { arvores = filteredData.filter(d => d.category === "Ponto de ônibus danificado" && d.status === "Não Resolvido").length; icone = Bus; cor = 'zinc'; tituloKpi = 'Índice de Desabrigo'; subtituloKpi = 'Pontos de ônibus destruídos na região.'; }
-  else if (currentTab === 'inseguranca') { arvores = filteredData.filter(d => d.category === "Barricada na via" && d.status === "Não Resolvido").length; icone = ShieldAlert; cor = 'red'; tituloKpi = 'Vias Bloqueadas (Barricadas)'; subtituloKpi = 'Cerceamento do direito de ir e vir.'; }
+  const tabColors = { infra: 'red', saneamento: 'blue', iluminacao: 'amber', mobilidade: 'zinc', inseguranca: 'red' };
+  const tabIcons = { infra: TriangleAlert, saneamento: CloudRain, iluminacao: Zap, mobilidade: Bus, inseguranca: ShieldAlert };
+  
+  const cor = tabColors[currentTab] || 'red';
+  const icone = tabIcons[currentTab] || Activity;
 
+  // Find most reported problem
+  const topCategoryEntry = Object.entries(stats.subs).sort((a, b) => b[1] - a[1])[0];
+  const topProblemName = topCategoryEntry ? topCategoryEntry[0] : 'Nenhum Registro Ativo';
+  const topProblemCount = topCategoryEntry ? topCategoryEntry[1] : 0;
+  const topProblemApoios = topCategoryEntry 
+    ? filteredData.filter(d => d.category === topProblemName).reduce((sum, d) => sum + (Number(d.apoios) || 0), 0)
+    : 0;
   const info = (CONTATOS_ORGAOS[currentTab] && CONTATOS_ORGAOS[currentTab][bairroFilter])
       ? CONTATOS_ORGAOS[currentTab][bairroFilter]
       : (CONTATOS_ORGAOS[currentTab] && CONTATOS_ORGAOS[currentTab]["Geral"] ? CONTATOS_ORGAOS[currentTab]["Geral"] : { orgao: "Órgão Competente", contato: "1746", link: "https://www.1746.rio", instrucoes: "Utilize os canais oficiais para reportar o problema à administração pública." });
@@ -185,7 +209,7 @@ export default function Dashboard() {
   const chartOpOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { display: true, position: 'bottom' } },
+    plugins: { legend: { display: true, position: 'bottom', align: 'start', labels: { boxWidth: 12, padding: 16, font: { size: 11 } } } },
     scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, border: { display: false } } }
   };
 
@@ -198,7 +222,7 @@ export default function Dashboard() {
     responsive: true,
     maintainAspectRatio: false,
     cutout: '70%',
-    plugins: { legend: { position: 'right' } }
+    plugins: { legend: { position: 'bottom', align: 'start', labels: { boxWidth: 12, padding: 16, font: { size: 11 } } } }
   };
 
   // Specific Tab charts
@@ -218,7 +242,7 @@ export default function Dashboard() {
   const subChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { display: subChartType === 'doughnut', position: 'right' } },
+    plugins: { legend: { display: subChartType === 'doughnut', position: 'bottom', align: 'start', labels: { boxWidth: 12, padding: 16, font: { size: 11 } } } },
     scales: subChartType === 'bar' ? { x: { grid: { display: false } }, y: { grid: { display: false } } } : {}
   };
 
@@ -292,9 +316,9 @@ export default function Dashboard() {
 
         htmlPDF += `
         <div class="border p-6 rounded-xl mb-8 text-center ${kpiClass}">
-            <h3 class="text-5xl font-black mb-2">${arvores}</h3>
-            <p class="text-lg font-bold">${tituloKpi}</p>
-            <p class="text-sm mt-1 opacity-80">${subtituloKpi}</p>
+            <h3 class="text-5xl font-black mb-2">${topProblemCount}</h3>
+            <p class="text-lg font-bold">${topProblemName}</p>
+            <p class="text-sm mt-1 opacity-80">Maior problema reportado neste eixo.</p>
         </div>`;
     }
 
@@ -462,10 +486,10 @@ export default function Dashboard() {
               chartEixosOptions={chartEixosOptions}
               chartEixosData={chartEixosData}
               cor={cor}
-              arvores={arvores}
-              tituloKpi={tituloKpi}
-              subtituloKpi={subtituloKpi}
               icone={icone}
+              topProblemName={topProblemName}
+              topProblemCount={topProblemCount}
+              topProblemApoios={topProblemApoios}
               subChartType={subChartType}
               subChartOptions={subChartOptions}
               subChartData={subChartData}

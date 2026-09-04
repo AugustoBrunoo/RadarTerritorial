@@ -1,18 +1,31 @@
 import React from 'react';
-import { MapPin, SunMoon } from 'lucide-react';
+import { MapPin, SunMoon, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 export default function Header({ toggleTheme, currentTime }) {
+  const navigate = useNavigate();
+  
   return (
     <header className="relative z-40 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 px-4 py-3 shadow-sm">
       <div className="max-w-7xl mx-auto flex justify-between items-center gap-4">
-        <div className="flex items-center gap-3">
-          <div className="bg-red-600 p-2.5 rounded-xl shadow-lg shadow-red-600/20">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <button 
+            onClick={() => navigate(-1)}
+            title="Voltar"
+            className="p-2.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl transition-colors shadow-sm shrink-0 mr-1 sm:mr-2"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          
+          <div className="bg-red-600 p-2.5 rounded-xl shadow-lg shadow-red-600/20 hidden sm:flex">
             <MapPin className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="font-black text-xl tracking-tight text-zinc-900 dark:text-white">Radar<span className="text-red-500">Territorial</span></h1>
+            <h1 className="font-black text-xl tracking-tight text-zinc-900 dark:text-white leading-none mt-1">
+              Radar<span className="text-red-500">Territorial</span>
+            </h1>
             <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 tracking-widest cursor-pointer dark:hover:text-white transition-colors">v1.1.0</span>
+              <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 tracking-widest cursor-pointer dark:hover:text-white transition-colors">v1.1.0</span>
             </div>
           </div>
         </div>

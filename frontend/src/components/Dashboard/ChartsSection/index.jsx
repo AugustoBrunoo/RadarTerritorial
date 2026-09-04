@@ -1,5 +1,5 @@
 import React from 'react';
-import { HelpCircle, Landmark, PhoneCall, Globe } from 'lucide-react';
+import { HelpCircle, Landmark, Users, Flame, PhoneCall, Globe } from 'lucide-react';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import TooltipWrapper from '../../TooltipWrapper';
 
@@ -10,10 +10,10 @@ export default function ChartsSection({
   chartEixosOptions,
   chartEixosData,
   cor,
-  arvores,
-  tituloKpi,
-  subtituloKpi,
   icone,
+  topProblemName,
+  topProblemCount,
+  topProblemApoios,
   subChartType,
   subChartOptions,
   subChartData,
@@ -51,16 +51,45 @@ export default function ChartsSection({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className={`bg-${cor}-50 dark:bg-${cor}-950/20 border border-${cor}-200 dark:border-${cor}-900/40 rounded-2xl p-6 shadow-lg flex flex-col justify-center items-center text-center relative`}>
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between relative min-w-0 group">
         <div className="absolute top-6 right-6">
-          <TooltipWrapper text="Destaque analítico automatizado sobre o perigo de maior relevância ativa encontrado na aba filtrada.">
+          <TooltipWrapper text="Destaque analítico do problema com maior número de registros ativos neste eixo.">
             <HelpCircle className="h-4 w-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-help transition-colors" />
           </TooltipWrapper>
         </div>
-        {React.createElement(icone, { className: `h-10 w-10 text-${cor}-500 mb-2` })}
-        <h2 className={`text-3xl font-black text-${cor}-600 dark:text-${cor}-400 mb-1`}>{arvores}</h2>
-        <p className="text-sm font-bold text-zinc-700 dark:text-zinc-300">{tituloKpi}</p>
-        <p className="text-xs text-zinc-500 mt-2">{subtituloKpi}</p>
+        
+        <div>
+          <div className="flex items-center gap-3 mb-6">
+            <div className={`bg-${cor}-50 dark:bg-${cor}-500/10 border border-${cor}-100 dark:border-${cor}-500/20 p-2.5 rounded-xl transition-transform group-hover:scale-105 duration-300`}>
+              {React.createElement(icone, { className: `h-5 w-5 text-${cor}-600 dark:text-${cor}-500` })}
+            </div>
+            <div>
+              <h2 className="text-sm font-bold text-zinc-900 dark:text-white leading-tight">Problema Mais Crítico</h2>
+              <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider mt-0.5">Maior Incidência</p>
+            </div>
+          </div>
+          
+          <div className="mb-2">
+            <h3 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white leading-tight mb-2 line-clamp-2">{topProblemName}</h3>
+            <div className="flex items-center gap-2">
+              <span className={`bg-${cor}-100 text-${cor}-700 dark:bg-${cor}-500/20 dark:text-${cor}-400 px-2 py-0.5 rounded-md font-black text-sm`}>
+                {topProblemCount}
+              </span>
+              <span className="text-xs font-semibold text-zinc-500">registros ativos</span>
+            </div>
+          </div>
+        </div>
+
+        {topProblemApoios > 0 && (
+          <div className="mt-5 bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-200/80 dark:border-zinc-800/80 p-3 rounded-xl flex items-center gap-3">
+            <div className="bg-blue-100 dark:bg-blue-500/20 p-1.5 rounded-lg shrink-0">
+              <Users className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+            </div>
+            <p className="text-[12px] font-medium text-zinc-700 dark:text-zinc-300 leading-tight">
+              <strong className="text-zinc-900 dark:text-white font-black">{topProblemApoios} {topProblemApoios === 1 ? 'apoio' : 'apoios'}</strong> nesse tipo de relato
+            </p>
+          </div>
+        )}
       </div>
       
       <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-lg relative">

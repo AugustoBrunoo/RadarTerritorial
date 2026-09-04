@@ -78,14 +78,15 @@ export async function getComentariosByRelato(relatoId) {
     const userIds = [...new Set(comentarios.map(c => c.user_id).filter(Boolean))];
     const { data: profiles } = await supabase
       .from('profiles')
-      .select('id, nome_completo')
+      .select('id, nome_completo, role')
       .in('id', userIds);
 
     return comentarios.map(comentario => {
       const prof = profiles?.find(p => p.id === comentario.user_id);
       return {
         ...comentario,
-        authorName: prof?.nome_completo || "Usuário"
+        authorName: prof?.nome_completo || "Usuário",
+        authorRole: prof?.role || "user"
       };
     });
   } catch (err) {
@@ -121,7 +122,21 @@ export async function adicionarComentario(relatoId, userId, texto) {
 
     if (error) throw error;
 
-    return { success: true, data };
+    // Buscar profile do usuário para retornar nome e role imediatamente
+    const { data: prof } = await supabase
+      .from('profiles')
+      .select('nome_completo, role')
+      .eq('id', userId)
+      .maybeSingle();
+
+    return { 
+      success: true, 
+      data: {
+        ...data,
+        authorName: prof?.nome_completo || "Você",
+        authorRole: prof?.role || "user"
+      } 
+    };
   } catch (err) {
     console.error("Erro ao adicionar comentário:", err);
     return { success: false, error: err.message };

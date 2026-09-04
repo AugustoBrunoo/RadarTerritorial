@@ -39,7 +39,12 @@ export default function Feed() {
         
         if (fallbackData) {
           const userIds = [...new Set(fallbackData.map(r => r.user_id).filter(Boolean))];
-          const { data: profiles } = await supabase.from('profiles').select('id, nome_completo').in('id', userIds);
+          const orgaosIds = [...new Set(fallbackData.map(r => r.orgao_responsavel_id).filter(Boolean))];
+
+          const [ { data: profiles }, { data: orgaos } ] = await Promise.all([
+            supabase.from('profiles').select('id, nome_completo').in('id', userIds),
+            orgaosIds.length > 0 ? supabase.from('orgaos').select('*').in('id', orgaosIds) : { data: [] }
+          ]);
           
           let userApoiosIds = [];
           if (user) {
@@ -48,8 +53,9 @@ export default function Feed() {
 
           const mapped = fallbackData.map(report => {
             const prof = profiles?.find(p => p.id === report.user_id);
+            const orgao = orgaos?.find(o => o.id == report.orgao_responsavel_id);
             const userVoted = userApoiosIds.includes(report.id);
-            return mapDBReportToFeedCard(report, prof, userVoted);
+            return mapDBReportToFeedCard(report, prof, userVoted, orgao);
           });
           setReports(mapped);
         }
@@ -90,7 +96,7 @@ export default function Feed() {
     return norm.replace(/\s+/g, '-') || 'all';
   };
 
-  const mapDBReportToFeedCard = (dbReport, profileData, userVoted = false) => {
+  const mapDBReportToFeedCard = (dbReport, profileData, userVoted = false, orgaoData = null) => {
     let author = "Usuário Anônimo";
     let initials = "CA";
     
@@ -170,6 +176,15 @@ export default function Feed() {
       statusIcon = 'CheckCircle';
     }
 
+    let formattedResponseDate = `${date} às ${time}`;
+    if (dbReport.fechado_em) {
+      const responseDateObj = new Date(dbReport.fechado_em);
+      formattedResponseDate = `${responseDateObj.toLocaleDateString('pt-BR')} às ${responseDateObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+    } else if (dbReport.updated_at && dbReport.resposta_orgao) {
+      const responseDateObj = new Date(dbReport.updated_at);
+      formattedResponseDate = `${responseDateObj.toLocaleDateString('pt-BR')} às ${responseDateObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+    }
+
     return {
       id: dbReport.id,
       author,
@@ -193,8 +208,8 @@ export default function Feed() {
       statusText,
       statusClass,
       statusIcon,
-      organName: dbReport.orgao_responsavel_id ? "Órgão Responsável" : null,
-      responseDate: dbReport.fechado_em ? new Date(dbReport.fechado_em).toLocaleDateString('pt-BR') : date,
+      organName: orgaoData ? (orgaoData.nome || orgaoData.name || "Órgão Responsável") : (dbReport.orgao_responsavel_id ? "Órgão Responsável" : null),
+      responseDate: formattedResponseDate,
       responseText: dbReport.resposta_orgao,
       comments: [],
       comentarios_count: dbReport.comentarios_count || 0,

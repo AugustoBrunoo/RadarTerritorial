@@ -62,7 +62,7 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
         ...prev
       ]);
       setCommentsCount(prev => prev + 1);
-      setCommentInput("");
+      setCommentInput("");1
     } else {
       alert("Erro ao enviar comentário: " + (error || "Tente novamente."));
     }
@@ -160,7 +160,7 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
         <p className={`text-sm sm:text-base leading-relaxed font-medium ${(!report.description || report.description.trim() === '' || report.description.trim() === '""') ? 'text-zinc-500 dark:text-zinc-400 italic' : 'text-zinc-700 dark:text-zinc-300'}`}>
           {(!report.description || report.description.trim() === '' || report.description.trim() === '""') 
             ? 'Sem detalhes adicionais fornecidos pelo usuário.' 
-            : report.description}
+            : report.description.replace(/^"|"$/g, '')}
         </p>
       </div>
       
@@ -185,7 +185,7 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
           </div>
           
           <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed pl-2 mb-5 font-medium italic">
-            "{report.responseText}"
+            {report.responseText}
           </p>
 
           <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800/80 pl-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">

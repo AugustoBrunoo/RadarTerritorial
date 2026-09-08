@@ -331,7 +331,11 @@ export function useAiLocation({
         }
 
         const rua = data?.rua || 'Rua não informada';
-        const bairro = data?.bairro || 'Bairro não informado';
+        const bairroRaw = data?.bairro || 'Bairro não informado';
+        const bairro = bairroRaw === 'campo-grande' ? 'Campo Grande' :
+                       bairroRaw === 'inhoaiba' ? 'Inhoaíba' :
+                       bairroRaw === 'cosmos' ? 'Cosmos' :
+                       bairroRaw;
         const cep = data?.cep || 'Não informado';
         const referencia = data?.numero_referencia || 'Sem número / Apenas a rua';
 

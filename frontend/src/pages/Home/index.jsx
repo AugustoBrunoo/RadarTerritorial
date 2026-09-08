@@ -40,13 +40,13 @@ export default function Home() {
         }, observerOptions);
 
         sections.forEach(section => observer.observe(section));
-        
+
         setTimeout(() => {
             const hash = window.location.hash || '#inicio';
             const id = hash.substring(1);
             setActiveSection(id);
         }, 100);
-        
+
         return () => {
             sections.forEach(section => observer.unobserve(section));
         };
@@ -69,16 +69,16 @@ export default function Home() {
 
     return (
         <div className={`min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white ${isDarkMode ? 'dark' : ''}`}>
-            
+
             {/* Skip Link para Acessibilidade */}
-            <a 
-                href="#main-content" 
+            <a
+                href="#main-content"
                 className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-red-600 focus:text-white focus:rounded-xl focus:font-bold focus:shadow-lg focus:outline-none focus:ring-4 focus:ring-red-500/50 transition-all"
             >
                 Pular para o conteúdo principal
             </a>
 
-            <Header 
+            <Header
                 activeSection={activeSection}
                 isDarkMode={isDarkMode}
                 toggleTheme={toggleTheme}
@@ -89,14 +89,14 @@ export default function Home() {
                 <Hero />
                 <ComoFunciona />
                 <AppPromo openInstallModal={openInstallModal} />
-                <Ecossistema />
+                {/* <Ecossistema /> */}
             </main>
-            
-            <InstallModal 
-                isOpen={isInstallModalOpen} 
-                onClose={closeInstallModal} 
+
+            <InstallModal
+                isOpen={isInstallModalOpen}
+                onClose={closeInstallModal}
             />
-            
+
             <Footer />
 
         </div>

@@ -25,9 +25,6 @@ export default function AnonymousForm({
   const step2Ref = useRef(null);
   return (
     <>
-      {/*  ==========================================
-             ETAPA 3: FORMULÁRIO INTELIGENTE (ORQUESTRADOR)
-             ==========================================  */}
       <div
         id="step-form"
         className={`w-full max-w-2xl flex-col gap-6${currentStep === 3 ? " flex" : " hidden"}`}

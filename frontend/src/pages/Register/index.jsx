@@ -154,14 +154,14 @@ export default function Register() {
 
             <form className="space-y-5" onSubmit={handleSubmit}>
               <div>
-                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1.5">Nome Completo</label>
+                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1.5">Nome de Usuário</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  placeholder="João da Silva"
+                  placeholder="Seu nome de usuário ou apelido"
                   className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none transition-all placeholder-zinc-400"
                 />
               </div>

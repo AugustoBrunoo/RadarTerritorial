@@ -87,6 +87,11 @@ export default function LocationSection({
               setCepWarning(true);
               setFormLocation({ gps: false, bairro: "", rua: "", ref: "", cep: "", sn: false, lat: null, lng: null });
               setCepValue("");
+              
+              if (!openAccordions["endereco-manual"]) {
+                toggleAccordion("endereco-manual");
+              }
+              
               return; // Do not save coordinates if outside allowed area
             } else {
               setCepWarning(false);

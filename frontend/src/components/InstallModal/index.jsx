@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Smartphone, TabletSmartphone } from 'lucide-react';
+import { X, Smartphone, TabletSmartphone, Compass, Share, PlusCircle, Globe, MoreVertical, Download } from 'lucide-react';
 
 export default function InstallModal({ isOpen, onClose }) {
     const [installStep, setInstallStep] = useState('selection');
@@ -14,8 +14,6 @@ export default function InstallModal({ isOpen, onClose }) {
             setWizardCurrentOS('');
         }
     }, [isOpen]);
-
-
 
     const startInstallFlow = (os) => {
         setWizardCurrentOS(os);
@@ -44,34 +42,34 @@ export default function InstallModal({ isOpen, onClose }) {
             {
                 title: "Abra no Safari",
                 desc: "Verifique se você está acessando a plataforma utilizando o navegador **Safari**. Fluxos de instalação para atalhos PWA no iOS não são suportados nativamente por navegadores de terceiros.",
-                icon: "compass"
+                Icon: Compass
             },
             {
                 title: "Menu de Compartilhamento",
                 desc: "Com o painel do Radar Territorial aberto, toque no botão de **Compartilhar** (o ícone de um quadrado com uma seta apontando para cima) localizado na barra inferior do Safari.",
-                icon: "share"
+                Icon: Share
             },
             {
                 title: "Adicionar à Tela de Início",
                 desc: "Role a lista de opções para baixo e selecione o item **'Adicionar à Tela de Início'**. Se desejar, personalize o nome do atalho e confirme tocando em **'Adicionar'** no canto superior direito.",
-                icon: "plus-circle"
+                Icon: PlusCircle
             }
         ],
         android: [
             {
                 title: "Abra no Google Chrome",
                 desc: "Certifique-se de carregar esta página de maneira nativa de dentro do aplicativo do **Google Chrome** no seu dispositivo Android.",
-                icon: "globe"
+                Icon: Globe
             },
             {
                 title: "Acesse as Opções",
                 desc: "Toque no ícone de **três pontos verticais** situado no canto superior direito do Chrome para expandir a lista de controle do navegador.",
-                icon: "more-vertical"
+                Icon: MoreVertical
             },
             {
                 title: "Instalar Aplicativo",
                 desc: "Toque na opção **'Instalar aplicativo'** (ou **'Adicionar à tela inicial'**). Um prompt de confirmação do sistema Android surgirá na tela, valide-o clicando em **'Instalar'**.",
-                icon: "download"
+                Icon: Download
             }
         ]
     };
@@ -79,11 +77,12 @@ export default function InstallModal({ isOpen, onClose }) {
     const renderWizardStep = () => {
         if (!wizardCurrentOS) return null;
         const data = stepsContent[wizardCurrentOS][wizardCurrentStep - 1];
+        const IconComponent = data.Icon;
         
         return (
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
                 <div className="bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 p-4 rounded-2xl flex-shrink-0 mb-3 sm:mb-0">
-                    <i data-lucide={data.icon} className="h-8 w-8"></i>
+                    <IconComponent className="h-8 w-8" />
                 </div>
                 <div>
                     <h4 className="text-xl font-bold mb-2">{data.title}</h4>

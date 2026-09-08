@@ -36,7 +36,7 @@ export default function AiAssistantHowItWorksModal({ isOpen, onClose }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
       <div className="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col">
-        
+
         {/* Header */}
         <div className="p-6 border-b border-zinc-100 dark:border-zinc-800/80 flex justify-between items-center bg-zinc-50 dark:bg-zinc-950/40">
           <div className="flex items-center gap-2.5">
@@ -45,10 +45,9 @@ export default function AiAssistantHowItWorksModal({ isOpen, onClose }) {
             </div>
             <div>
               <h3 className="font-black text-lg text-zinc-900 dark:text-white leading-none">Como funciona a IA?</h3>
-              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">Tecnologia NLP & Llama-3</p>
             </div>
           </div>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full transition-colors text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
           >
@@ -97,8 +96,8 @@ export default function AiAssistantHowItWorksModal({ isOpen, onClose }) {
           {/* Progress Indicators */}
           <div className="flex items-center gap-1.5 mt-8 justify-center">
             {[1, 2, 3].map((step) => (
-              <span 
-                key={step} 
+              <span
+                key={step}
                 className={`h-2 rounded-full transition-all duration-300 ${currentStep === step ? 'w-8 bg-red-600' : 'w-2.5 bg-zinc-200 dark:bg-zinc-800'}`}
               ></span>
             ))}
@@ -107,14 +106,14 @@ export default function AiAssistantHowItWorksModal({ isOpen, onClose }) {
 
         {/* Controls */}
         <div className="p-6 bg-zinc-50 dark:bg-zinc-950/40 border-t border-zinc-100 dark:border-zinc-800/80 flex justify-between items-center">
-          <button 
-            onClick={prevStep} 
+          <button
+            onClick={prevStep}
             disabled={currentStep === 1}
             className={`text-xs font-bold py-2 px-4 transition-colors ${currentStep === 1 ? 'text-zinc-400 cursor-not-allowed' : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white cursor-pointer'}`}
           >
             Anterior
           </button>
-          <button 
+          <button
             onClick={nextStep}
             className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-extrabold text-xs py-3 px-5 rounded-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5"
           >

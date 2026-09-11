@@ -89,7 +89,7 @@ export default function Home() {
                 <Hero />
                 <ComoFunciona />
                 <AppPromo openInstallModal={openInstallModal} />
-                {/* <Ecossistema /> */}
+                <Ecossistema />
             </main>
 
             <InstallModal

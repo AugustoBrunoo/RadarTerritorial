@@ -14,8 +14,10 @@ import { useAiCategory } from '../../hooks/useAiCategory';
 import { useAiSeverity } from '../../hooks/useAiSeverity';
 import { useAiDescription } from '../../hooks/useAiDescription';
 import { useAiReview } from '../../hooks/useAiReview';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function AiAssistant() {
+  const { user, profile, loading: authLoading } = useAuth();
   const [isHowModalOpen, setIsHowModalOpen] = useState(false);
 
   // 1. Chat State Hook
@@ -33,15 +35,7 @@ export default function AiAssistant() {
     setInputType,
     togglePasswordVisibility,
     chatViewportRef,
-  } = useAiChat([
-    {
-      id: 1,
-      sender: 'ai',
-      text: 'Olá! Sou o assistente do Radar Territorial. Para começarmos, como você prefere prosseguir o relato?',
-      extraData: { type: 'start_options' },
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    }
-  ]);
+  } = useAiChat([]);
 
   // 1.1 Description Logic Hook
   const {
@@ -158,7 +152,21 @@ export default function AiAssistant() {
     userEmail
   });
 
+  useEffect(() => {
+    if (authLoading) return;
+    if (messages.length > 0) return;
 
+    if (user) {
+      setChatStep('LOCATION_START');
+      const fullName = profile?.nome_completo || user.user_metadata?.username || 'Cidadão';
+      const firstName = fullName.split(' ')[0];
+      addMessage('ai', `Olá, **${firstName}**! Tudo bem? Já identifiquei que você está conectado. Para começarmos o seu relato, preciso saber onde aconteceu o problema.`, { type: 'location_start_options' });
+    } else {
+      setChatStep('START');
+      addMessage('ai', 'Olá! Sou o assistente do Radar Territorial. Para começarmos, como você prefere prosseguir o relato?', { type: 'start_options' });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authLoading, user, profile]);
 
   const handleStartDecision = (choice) => {
     setMessages(prev => prev.map(msg =>
@@ -322,8 +330,8 @@ export default function AiAssistant() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
-      <SimpleHeader backLink="/" />
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col font-sans">
+      <SimpleHeader backLink={-1} />
 
       <main className="flex-grow pt-32 pb-6 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full flex flex-col justify-center min-h-[90vh] animate-in slide-in-from-bottom-4 duration-500">
         <AiAssistantInfoCards onOpenHowItWorks={() => setIsHowModalOpen(true)} />

@@ -62,9 +62,9 @@ export default function RelatoComentarios({ report, currentUserId }) {
         </h3>
         
         {commentsCount > 0 && (
-          <div className="flex items-center justify-center px-3 py-1.5 bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/30 rounded-full">
-            <span className="text-xs font-black text-red-600 dark:text-red-400">
-              {commentsCount} {commentsCount === 1 ? 'comentário' : 'comentários'}
+          <div className="flex items-center justify-center w-7 h-7 bg-zinc-900 dark:bg-white rounded-full">
+            <span className="text-xs font-black text-white dark:text-zinc-900">
+              {commentsCount}
             </span>
           </div>
         )}
@@ -117,14 +117,14 @@ export default function RelatoComentarios({ report, currentUserId }) {
               
               return (
                 <div key={c.id} className="flex gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500 min-w-0 relative">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border shadow-sm relative z-10 overflow-hidden ${isGestor ? 'bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-950/50 border-blue-200 dark:border-blue-800' : 'bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 border-white dark:border-zinc-800'}`}>
-                    <span className={`font-black text-sm ${isGestor ? 'text-blue-700 dark:text-blue-400' : 'text-zinc-700 dark:text-zinc-300'}`}>
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border shadow-sm relative z-10 overflow-hidden ${isGestor ? 'bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-950 border-blue-300 dark:border-blue-800' : 'bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 border-white dark:border-zinc-800'}`}>
+                    <span className={`font-black text-sm ${isGestor ? 'text-blue-800 dark:text-blue-300' : 'text-zinc-700 dark:text-zinc-300'}`}>
                       {getInitials(c.authorName)}
                     </span>
                   </div>
-                  <div className={`flex-1 min-w-0 p-5 rounded-3xl rounded-tl-xl border shadow-sm transition-shadow duration-300 group ${isGestor ? 'bg-blue-50/50 dark:bg-blue-950/20 border-blue-100 dark:border-blue-900/50 hover:shadow-md hover:border-blue-200 dark:hover:border-blue-800/80' : 'bg-white dark:bg-zinc-900 border-zinc-200/80 dark:border-zinc-800 hover:shadow-md'}`}>
-                    <div className="flex justify-between items-start mb-3 gap-3 min-w-0">
-                      <div className="flex flex-col min-w-0">
+                  <div className={`flex-1 min-w-0 p-5 rounded-3xl rounded-tl-xl border shadow-sm transition-all duration-300 group ${isGestor ? 'bg-blue-50 dark:bg-blue-950/80 border-blue-200 dark:border-blue-900 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-800 shadow-blue-500/10 dark:shadow-blue-900/30' : 'bg-white dark:bg-zinc-900 border-zinc-200/80 dark:border-zinc-800 hover:shadow-md'}`}>
+                    <div className="flex flex-col items-start mb-3 min-w-0">
+                      <div className="flex flex-col min-w-0 w-full">
                         <span className={`font-bold text-sm sm:text-base truncate flex items-center gap-1.5 transition-colors ${isGestor ? 'text-blue-900 dark:text-blue-300' : 'text-zinc-900 dark:text-zinc-100 group-hover:text-red-600 dark:group-hover:text-red-400'}`}>
                           {c.authorName}
                           {isGestor && (
@@ -132,10 +132,10 @@ export default function RelatoComentarios({ report, currentUserId }) {
                           )}
                         </span>
                         {isGestor && (
-                          <span className="text-[10px] uppercase font-black tracking-wider text-blue-600/70 dark:text-blue-400/70 mt-0.5">Gestor Público</span>
+                          <span className="text-[10px] uppercase font-black tracking-wider text-blue-600/70 dark:text-blue-400/70 mt-0.5 mb-1">Gestor Público</span>
                         )}
                       </div>
-                      <span className={`text-[11px] whitespace-nowrap font-semibold flex-shrink-0 px-2 py-1 rounded-lg ${isGestor ? 'bg-blue-100/50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400' : 'bg-zinc-100 dark:bg-zinc-800/50 text-zinc-400 dark:text-zinc-500'}`}>
+                      <span className={`text-[11px] font-semibold mt-1 flex-shrink-0 ${isGestor ? 'text-blue-600/80 dark:text-blue-400/80' : 'text-zinc-400 dark:text-zinc-500'}`}>
                         {new Date(c.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} • {new Date(c.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>

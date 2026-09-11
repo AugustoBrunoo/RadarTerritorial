@@ -6,6 +6,7 @@ import {
   Filter, Check, HelpCircle
 } from 'lucide-react';
 import AdminPagination from '../../../components/AdminPagination';
+import { supabase } from '../../../lib/supabaseClient';
 
 export default function AdminModeracao() {
   const [selectedReport, setSelectedReport] = useState(null);
@@ -42,135 +43,122 @@ export default function AdminModeracao() {
     triggerToast('Alterações realizadas com sucesso!');
   };
 
-  const [denuncias, setDenuncias] = useState([
-    {
-      id: 'denuncia-1',
-      category: 'falso',
-      type: 'Falso / Fake News',
-      typeIcon: AlertTriangle,
-      colorClass: 'text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-950/50 border-red-200 dark:border-red-900/30 border-l-red-400 dark:border-l-red-600',
-      count: 3,
-      supportsCount: 15,
-      commentsCount: 2,
-      authorInitials: 'MT',
-      author: 'Marcos Teixeira',
-      bairro: 'campo-grande',
-      locationInfo: 'Em Campo Grande, há 2 dias',
-      timestamp: 1723800000000,
-      title: 'Barricada na Estrada do Campinho',
-      description: 'Tem uma barricada gigante na Estrada do Campinho, fecharam tudo e a polícia não faz nada! Absurdo total!',
-      img: null,
-      comments: [
-        { author: 'João D.', text: 'Passei lá agora pouco e está tudo normal, trânsito fluindo. É mentira.' },
-        { author: 'Ana P.', text: 'Notícia falsa para causar pânico.' }
-      ]
-    },
-    {
-      id: 'denuncia-2',
-      category: 'ofensivo',
-      type: 'Ofensivo / Ódio',
-      typeIcon: MessageSquareOff,
-      colorClass: 'text-amber-700 dark:text-amber-500 bg-amber-100 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900/30 border-l-amber-400 dark:border-l-amber-600',
-      count: 1,
-      supportsCount: 7,
-      commentsCount: 1,
-      authorInitials: 'CP',
-      author: 'Carlos Pedro',
-      bairro: 'inhoaiba',
-      locationInfo: 'Em Inhoaíba, há 5 horas',
-      timestamp: 1723900000000,
-      title: 'Acúmulo de Lixo - Vizinho',
-      description: 'O vizinho do 42 é um idiota que joga lixo na rua todo dia, vagabundo não quer trabalhar e suja a rua, tinha que apanhar na cara pra aprender. Se eu pegar na rua ele vai ver só.',
-      img: null,
-      comments: [
-        { author: 'Anônimo', text: 'Linguagem agressiva e ameaça direta a outro morador.' }
-      ]
-    },
-    {
-      id: 'denuncia-3',
-      category: 'spam',
-      type: 'Spam / Comercial',
-      typeIcon: ShoppingBag,
-      colorClass: 'text-blue-700 dark:text-blue-500 bg-blue-100 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900/30 border-l-blue-400 dark:border-l-blue-600',
-      count: 2,
-      supportsCount: 11,
-      commentsCount: 1,
-      authorInitials: 'LV',
-      author: 'Loja da Val',
-      bairro: 'cosmos',
-      locationInfo: 'Em Cosmos, ontem',
-      timestamp: 1723850000000,
-      title: 'Promoção de Roupas de Frio!',
-      description: 'Aproveite a promoção de inverno da nossa loja na Rua Guarujá! Casacos a partir de R$49,90. Venha conferir, não perca essa oportunidade!! Tudo em até 3x sem juros.',
-      img: 'https://placehold.co/800x400/18181b/52525b?text=Foto+da+Loja',
-      comments: [
-        { author: 'Luiza', text: 'Usando o aplicativo para fazer propaganda comercial, poluindo o feed de problemas.' }
-      ]
-    },
-    {
-      id: 'denuncia-4',
-      category: 'falso',
-      type: 'Falso / Fake News',
-      typeIcon: AlertTriangle,
-      colorClass: 'text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-950/50 border-red-200 dark:border-red-900/30 border-l-red-400 dark:border-l-red-600',
-      count: 4,
-      supportsCount: 4,
-      commentsCount: 3,
-      authorInitials: 'RA',
-      author: 'Rodrigo Alves',
-      bairro: 'campo-grande',
-      locationInfo: 'Em Campo Grande, há 3 dias',
-      timestamp: 1723750000000,
-      title: 'Falta total de água há 3 semanas na Cesário de Melo',
-      description: 'Estamos sem uma gota de água há quase um mês na altura do número 2000. Nenhuma equipe veio ao local verificar.',
-      img: null,
-      comments: [
-        { author: 'Clara S.', text: 'Moro no 2050 e a água está caindo normalmente, isso é informação incorreta.' }
-      ]
-    },
-    {
-      id: 'denuncia-5',
-      category: 'outro',
-      type: 'Outro Motivo',
-      typeIcon: HelpCircle,
-      colorClass: 'text-purple-700 dark:text-purple-400 bg-purple-100 dark:bg-purple-950/50 border-purple-200 dark:border-purple-900/30 border-l-purple-400 dark:border-l-purple-600',
-      count: 2,
-      supportsCount: 22,
-      commentsCount: 5,
-      authorInitials: 'FA',
-      author: 'Fernanda Andrade',
-      bairro: 'inhoaiba',
-      locationInfo: 'Em Inhoaíba, há 4 dias',
-      timestamp: 1723700000000,
-      title: 'Postagem duplicada repetidas vezes',
-      description: 'Relato postado repetidamente sobre o mesmo buraco na via férrea por contas secundárias.',
-      img: null,
-      comments: [
-        { author: 'Paulo M.', text: 'Mesmo problema postado 4 vezes no mesmo minuto.' }
-      ]
-    },
-    {
-      id: 'denuncia-6',
-      category: 'ofensivo',
-      type: 'Ofensivo / Ódio',
-      typeIcon: MessageSquareOff,
-      colorClass: 'text-amber-700 dark:text-amber-500 bg-amber-100 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900/30 border-l-amber-400 dark:border-l-amber-600',
-      count: 2,
-      supportsCount: 8,
-      commentsCount: 2,
-      authorInitials: 'GS',
-      author: 'Gabriel Santos',
-      bairro: 'cosmos',
-      locationInfo: 'Em Cosmos, há 1 dia',
-      timestamp: 1723820000000,
-      title: 'Ataques verbais e difamação a comerciante local',
-      description: 'O texto do relato contém xingamentos nominais contra o proprietário da mercearia da esquina.',
-      img: null,
-      comments: [
-        { author: 'Mariana B.', text: 'Difamação pessoal direta no aplicativo.' }
-      ]
+  const [denuncias, setDenuncias] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Helper para mapear motivo para a categoria/tipo/cores e ícone apropriados
+  const mapMotivoToCategory = (motivo) => {
+    switch (motivo?.toLowerCase()) {
+      case 'falso':
+        return {
+          category: 'falso',
+          type: 'Falso / Fake News',
+          typeIcon: AlertTriangle,
+          colorClass: 'text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-950/50 border-red-200 dark:border-red-900/30 border-l-red-400 dark:border-l-red-600'
+        };
+      case 'ofensivo':
+        return {
+          category: 'ofensivo',
+          type: 'Ofensivo / Ódio',
+          typeIcon: MessageSquareOff,
+          colorClass: 'text-amber-700 dark:text-amber-500 bg-amber-100 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900/30 border-l-amber-400 dark:border-l-amber-600'
+        };
+      case 'spam':
+        return {
+          category: 'spam',
+          type: 'Spam / Comercial',
+          typeIcon: ShoppingBag,
+          colorClass: 'text-blue-700 dark:text-blue-500 bg-blue-100 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900/30 border-l-blue-400 dark:border-l-blue-600'
+        };
+      default:
+        return {
+          category: 'outro',
+          type: 'Outro Motivo',
+          typeIcon: HelpCircle,
+          colorClass: 'text-purple-700 dark:text-purple-400 bg-purple-100 dark:bg-purple-950/50 border-purple-200 dark:border-purple-900/30 border-l-purple-400 dark:border-l-purple-600'
+        };
     }
-  ]);
+  };
+
+  const getInitials = (name) => {
+    if (!name) return '??';
+    const parts = name.split(' ');
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    return name.substring(0, 2).toUpperCase();
+  };
+
+  useEffect(() => {
+    async function fetchDenuncias() {
+      try {
+        setIsLoading(true);
+        // 1. Fetch all pending denuncias (Assuming all in denuncias table are pending)
+        const { data: rawDenuncias, error: denError } = await supabase.from('denuncias').select('*');
+        if (denError) throw denError;
+        if (!rawDenuncias || rawDenuncias.length === 0) {
+          setDenuncias([]);
+          return;
+        }
+
+        // Group denuncias by relato_id
+        const grouped = rawDenuncias.reduce((acc, curr) => {
+          if (!acc[curr.relato_id]) acc[curr.relato_id] = [];
+          acc[curr.relato_id].push(curr);
+          return acc;
+        }, {});
+
+        const relatoIds = Object.keys(grouped);
+
+        // 2. Fetch the actual relatos
+        const { data: relatos, error: relError } = await supabase.from('relatos').select('*').in('id', relatoIds);
+        if (relError) throw relError;
+
+        const userIds = [...new Set(relatos.map(r => r.user_id).filter(Boolean))];
+
+        // 3. Fetch profiles of authors
+        const { data: profiles, error: profError } = await supabase.from('profiles').select('id, nome_completo').in('id', userIds);
+        if (profError) throw profError;
+
+        // Map to UI objects
+        const formatted = relatos.map(relato => {
+          const densForRelato = grouped[relato.id];
+          const prof = profiles?.find(p => p.id === relato.user_id);
+          const authorName = prof?.nome_completo || 'Usuário Desconhecido';
+          
+          // Use the most frequent motivo, or just the first one for simplicity
+          const primaryMotivo = densForRelato[0]?.motivo || 'outro';
+          const { category, type, typeIcon, colorClass } = mapMotivoToCategory(primaryMotivo);
+
+          return {
+            id: relato.id,
+            category,
+            type,
+            typeIcon,
+            colorClass,
+            count: densForRelato.length,
+            supportsCount: 0, // Simplified for now
+            commentsCount: 0, // Simplified for now
+            authorInitials: getInitials(authorName),
+            author: authorName,
+            bairro: relato.bairro || 'Sem Bairro',
+            locationInfo: `Em ${relato.bairro || 'local desconhecido'}`,
+            timestamp: new Date(relato.created_at).getTime(),
+            title: relato.titulo,
+            description: relato.descricao,
+            img: relato.imagem_url || null,
+            comments: densForRelato.map(d => ({ author: 'Denunciante', text: d.descricao || 'Sem descrição' }))
+          };
+        });
+
+        setDenuncias(formatted);
+      } catch (error) {
+        console.error("Erro ao buscar dados de moderação:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchDenuncias();
+  }, []);
 
   // Resetar página quando os filtros mudarem
   useEffect(() => {
@@ -202,11 +190,12 @@ export default function AdminModeracao() {
   // Filtragem e Ordenação dinâmica
   const filteredDenuncias = denuncias
     .filter(d => {
+      const q = searchQuery.toLowerCase();
       const matchesSearch = 
-        d.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        d.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        d.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        d.id.toLowerCase().includes(searchQuery.toLowerCase());
+        (d.title || '').toLowerCase().includes(q) ||
+        (d.description || '').toLowerCase().includes(q) ||
+        (d.author || '').toLowerCase().includes(q) ||
+        (d.id || '').toLowerCase().includes(q);
       const matchesCategory = selectedCategory ? d.category === selectedCategory : true;
       const matchesBairro = selectedBairro ? d.bairro === selectedBairro : true;
       return matchesSearch && matchesCategory && matchesBairro;

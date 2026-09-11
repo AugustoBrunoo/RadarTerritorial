@@ -1,5 +1,6 @@
 import React from "react";
-import { Navigation, Map, ChevronDown, AlertTriangle, CheckCircle, Loader2 } from "lucide-react";
+import { Navigation, Map, ChevronDown, AlertTriangle, CheckCircle, Loader2, Sparkles, X } from "lucide-react";
+import { useNavigate } from "react-router";
 import { validateAndGeocodeStreet, searchStreetSuggestions, refineAddressWithNumber } from "../../../services/geocodingService";
 
 /**
@@ -14,6 +15,9 @@ export default function LocationSection({
   toggleAccordion,
   step2Ref,
 }) {
+  const navigate = useNavigate();
+  const [isAiModalOpen, setIsAiModalOpen] = React.useState(false);
+
   const [cepWarning, setCepWarning] = React.useState(false);
   const [cepValue, setCepValue] = React.useState("");
 
@@ -261,11 +265,21 @@ export default function LocationSection({
         id="form-sec-1"
         className={`bg-white transition-all duration-500 ${activeFormSection >= 1 ? "opacity-100 pointer-events-auto" : "opacity-40 pointer-events-none"}  dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 shadow-sm`}
       >
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center font-bold text-zinc-500">
-            1
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center font-bold text-zinc-500">
+              1
+            </div>
+            <h3 className="text-xl font-bold">Onde está o problema?</h3>
           </div>
-          <h3 className="text-xl font-bold">Onde está o problema?</h3>
+          <button 
+            type="button"
+            onClick={() => setIsAiModalOpen(true)}
+            className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md shadow-purple-500/20 hover:scale-105 transition-transform"
+          >
+            <Sparkles className="h-4 w-4" />
+            Usar Inteligência Artificial
+          </button>
         </div>
 
         <div className="space-y-4">
@@ -634,6 +648,43 @@ export default function LocationSection({
           </div>
         </div>
       </div>
+
+      {/* Modal de Aviso IA */}
+      {isAiModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-zinc-900 rounded-[2rem] p-6 max-w-md w-full shadow-2xl border border-zinc-200 dark:border-zinc-800 flex flex-col gap-4 relative animate-in fade-in zoom-in duration-200">
+            <button
+              onClick={() => setIsAiModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-full transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center mx-auto">
+              <Sparkles className="h-8 w-8" />
+            </div>
+            <h4 className="text-xl font-black text-center text-zinc-900 dark:text-white mt-2">
+              Assistente de IA (Beta)
+            </h4>
+            <p className="text-zinc-600 dark:text-zinc-400 text-center font-medium text-sm leading-relaxed">
+              Você será redirecionado para a nossa nova tecnologia de Inteligência Artificial em versão beta. Ela foi criada para facilitar e agilizar o seu relato de forma conversacional!
+            </p>
+            <div className="flex gap-3 mt-2">
+              <button
+                onClick={() => setIsAiModalOpen(false)}
+                className="flex-1 px-4 py-3 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl font-bold transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => navigate('/assistente-ia')}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white rounded-xl font-bold shadow-md shadow-purple-500/20 hover:scale-105 transition-all"
+              >
+                Continuar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

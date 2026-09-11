@@ -188,17 +188,7 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
             {report.responseText}
           </p>
 
-          <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800/80 pl-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <span className="text-xs font-black text-zinc-600 dark:text-zinc-400 uppercase tracking-wide">Essa solução foi boa para você?</span>
-            <div className="flex items-center gap-2">
-              <button className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:hover:bg-green-900/20 dark:hover:text-green-400 transition-all shadow-sm active:scale-95">
-                <ThumbsUp className="h-4 w-4" /> Sim
-              </button>
-              <button className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-all shadow-sm active:scale-95">
-                <ThumbsDown className="h-4 w-4" /> Não
-              </button>
-            </div>
-          </div>
+
         </div>
       )}
 
@@ -251,24 +241,39 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
                 <Loader2 className="h-5 w-5 animate-spin text-zinc-400" />
               </div>
             ) : comments.length > 0 ? (
-              comments.map((c) => (
-                <div key={c.id} className="flex gap-2.5 animate-in fade-in slide-in-from-bottom-2">
-                  <div className="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center shrink-0 border border-zinc-300 dark:border-zinc-700 shadow-sm">
-                    <span className="font-extrabold text-[10px] text-zinc-600 dark:text-zinc-400">
-                      {getInitials(c.authorName)}
-                    </span>
-                  </div>
-                  <div className="flex-1 bg-zinc-50 dark:bg-zinc-950/50 p-3 rounded-2xl rounded-tl-sm border border-zinc-100 dark:border-zinc-800/80 shadow-sm">
-                    <div className="flex justify-between items-start mb-1 gap-2">
-                      <span className="text-xs font-bold text-zinc-900 dark:text-white truncate">{c.authorName}</span>
-                      <span className="text-[9px] font-semibold text-zinc-400 whitespace-nowrap">
-                        {new Date(c.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} às {new Date(c.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+              comments.map((c) => {
+                const isGestor = c.authorRole === 'gestor_publico' || c.authorRole === 'admin';
+                return (
+                  <div key={c.id} className="flex gap-2.5 animate-in fade-in slide-in-from-bottom-2">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border shadow-sm ${isGestor ? 'bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-950 border-blue-300 dark:border-blue-800' : 'bg-zinc-200 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700'}`}>
+                      <span className={`font-extrabold text-[10px] ${isGestor ? 'text-blue-800 dark:text-blue-300' : 'text-zinc-600 dark:text-zinc-400'}`}>
+                        {getInitials(c.authorName)}
                       </span>
                     </div>
-                    <p className="text-[13px] text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap">{c.texto}</p>
+                    <div className={`flex-1 p-3 rounded-2xl rounded-tl-sm border shadow-sm ${isGestor ? 'bg-blue-50 dark:bg-blue-950/80 border-blue-200 dark:border-blue-900 shadow-blue-500/10 dark:shadow-blue-900/30' : 'bg-zinc-50 dark:bg-zinc-950/50 border-zinc-100 dark:border-zinc-800/80'}`}>
+                      <div className="flex flex-col items-start mb-1 min-w-0">
+                        <div className="flex flex-col min-w-0 w-full">
+                          <span className={`text-xs font-bold truncate flex items-center gap-1 ${isGestor ? 'text-blue-900 dark:text-blue-300' : 'text-zinc-900 dark:text-white'}`}>
+                            {c.authorName}
+                            {isGestor && (
+                              <BadgeCheck className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" title="Gestor Público Verificado" />
+                            )}
+                          </span>
+                          {isGestor && (
+                            <span className="text-[9px] uppercase font-black tracking-wider text-blue-600/70 dark:text-blue-400/70 mt-0.5 mb-1">Gestor Público</span>
+                          )}
+                        </div>
+                        <span className={`text-[9px] font-semibold mt-0.5 flex-shrink-0 ${isGestor ? 'text-blue-600/80 dark:text-blue-400/80' : 'text-zinc-400'}`}>
+                          {new Date(c.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} às {new Date(c.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                      <p className={`text-[13px] leading-relaxed whitespace-pre-wrap break-words [overflow-wrap:anywhere] mt-1 ${isGestor ? 'text-blue-800/90 dark:text-blue-200/90 font-medium' : 'text-zinc-700 dark:text-zinc-300'}`}>
+                        {c.texto}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <p className="text-xs text-zinc-400 italic text-center py-4 bg-zinc-50/50 dark:bg-zinc-950/30 rounded-2xl">
                 Nenhum comentário ainda. Seja o primeiro a opinar!

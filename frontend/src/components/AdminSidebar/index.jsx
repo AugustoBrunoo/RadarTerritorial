@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import {
   ShieldCheck, LayoutDashboard, Flag, Building2, Users, ListTree, LogOut
 } from 'lucide-react';
 import { signOutUser } from '../../services/authService';
 import AdminLogoutModal from '../AdminLogoutModal';
+import { supabase } from '../../lib/supabaseClient';
 
 export default function AdminSidebar() {
   const location = useLocation();
@@ -12,6 +13,24 @@ export default function AdminSidebar() {
   const pathname = location.pathname;
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [denunciasCount, setDenunciasCount] = useState(0);
+
+  useEffect(() => {
+    async function fetchDenunciasCount() {
+      try {
+        const { count } = await supabase
+          .from('denuncias')
+          .select('*', { count: 'exact', head: true });
+        
+        if (count !== null) {
+          setDenunciasCount(count);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar contador de denúncias:", error);
+      }
+    }
+    fetchDenunciasCount();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -60,7 +79,9 @@ export default function AdminSidebar() {
                 : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/40 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 border border-transparent'
               }`}>
               <Flag className={`h-4 w-4 ${pathname.includes('/admin/moderacao') ? 'text-red-600' : 'group-hover:text-red-500'} transition-colors`} /> Moderação
-              <span className="ml-auto bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">3</span>
+              {denunciasCount > 0 && (
+                <span className="ml-auto bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{denunciasCount}</span>
+              )}
             </Link>
 
             <Link to="/admin/orgaos" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-sm transition-colors group ${pathname.includes('/admin/orgaos')

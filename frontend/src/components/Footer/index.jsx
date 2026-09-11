@@ -4,8 +4,11 @@ import jccLogoImg from '../../assets/images/home/JCC - LOGO PRINCIPAL.png';
 import naveLogoImg from '../../assets/images/home/Logo-Nave-CG.png';
 import NodaLogo from '../NodaLogo';
 import { Award, MapPin } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function Footer() {
+    const { user } = useAuth();
+
     useEffect(() => {
         const yearSpan = document.getElementById('current-year');
         if (yearSpan) yearSpan.textContent = new Date().getFullYear();
@@ -23,7 +26,7 @@ export default function Footer() {
                             Pronto para <br className="hidden sm:block" />melhorar <br className="hidden sm:block" />
                             <span className="text-zinc-400">o seu bairro?</span>
                         </h2>
-                        <Link to="/reportar"
+                        <Link to={user ? "/reportar-logado" : "/reportar"}
                             className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition-transform inline-flex items-center justify-center gap-2 shadow-lg shadow-zinc-900/20 dark:shadow-white/10 w-full sm:w-auto">
                             Começar Agora
                         </Link>

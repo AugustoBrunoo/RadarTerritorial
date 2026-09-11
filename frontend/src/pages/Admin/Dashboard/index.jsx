@@ -1,14 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Flag, Building2, TrendingUp, Layers, Bot, ShieldAlert, Briefcase } from 'lucide-react';
 import AdminKpiCard from '../../../components/AdminKpiCard';
 import AdminActionCard from '../../../components/AdminActionCard';
+import { supabase } from '../../../lib/supabaseClient';
 
 export default function AdminDashboard() {
-  const [metrics] = useState({
-    denunciasCount: 4,
-    solicitacoesCount: 1,
-    relatosCount: 1248
+  const [metrics, setMetrics] = useState({
+    denunciasCount: 0,
+    solicitacoesCount: 0,
+    relatosCount: 0
   });
+
+  useEffect(() => {
+    async function fetchMetrics() {
+      try {
+        // 1. Denúncias Pendentes
+        const { count: denunciasCount } = await supabase
+          .from('denuncias')
+          .select('*', { count: 'exact', head: true });
+
+        // 2. Relatos (Mês Atual)
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
+
+        const { count: relatosCount } = await supabase
+          .from('relatos')
+          .select('*', { count: 'exact', head: true })
+          .gte('created_at', startOfMonth.toISOString());
+
+        setMetrics({
+          denunciasCount: denunciasCount || 0,
+          solicitacoesCount: 0,
+          relatosCount: relatosCount || 0
+        });
+      } catch (error) {
+        console.error("Erro ao buscar métricas do dashboard:", error);
+      }
+    }
+    
+    fetchMetrics();
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -27,9 +59,10 @@ export default function AdminDashboard() {
         
         <AdminKpiCard 
           title="Solicitações de Órgãos"
-          value={metrics.solicitacoesCount}
+          value="--"
           icon={Building2}
-          colorScheme="amber"
+          colorScheme="zinc"
+          comingSoon={true}
         />
 
         <AdminKpiCard 
@@ -82,6 +115,7 @@ export default function AdminDashboard() {
             actionLink="/admin/orgaos"
             colorClass="text-amber-600 bg-amber-50 dark:bg-amber-950/30 border-amber-100 dark:border-amber-900/30"
             btnClass="bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-white dark:hover:bg-zinc-200 dark:text-zinc-900"
+            comingSoon={true}
           />
         </div>
       </section>

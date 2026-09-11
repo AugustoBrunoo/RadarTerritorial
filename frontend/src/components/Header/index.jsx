@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router';
 import { MapPin, Plus, Menu, Megaphone, LogIn, LayoutDashboard, Layers, Sun, Moon } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function Header({ activeSection, isDarkMode, toggleTheme, openInstallModal }) {
+    const { user } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navPillRef = useRef(null);
 
@@ -70,7 +72,7 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
                 {/* Actions (Botoes de acao de acesso rapido e Menu Hamburguer) */}
                 <div className="flex items-center gap-3">
                     {/* Botão de Ação Direta no Desktop */}
-                    <Link to="/reportar"
+                    <Link to={user ? "/reportar-logado" : "/reportar"}
                         className="hidden sm:flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-md shadow-red-500/10 hover:shadow-red-500/20 active:scale-95 pointer-events-auto focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                         <span>Reportar</span>
                         <Plus className="h-4 w-4" aria-hidden="true" />
@@ -102,7 +104,7 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
 
                             {/* Opções Principais do App */}
                             <nav aria-label="Ações rápidas" className="px-2 space-y-1">
-                                <Link to="/reportar"
+                                <Link to={user ? "/reportar-logado" : "/reportar"}
                                     className="sm:hidden flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors focus:outline-none focus:bg-red-50 dark:focus:bg-red-900/10">
                                     <Megaphone className="h-4 w-4" aria-hidden="true" /> Reportar Problema
                                 </Link>

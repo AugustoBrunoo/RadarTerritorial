@@ -25,6 +25,24 @@ const renderFormattedText = (text) => {
   });
 };
 
+const TypewriterMessage = ({ text, isLatest }) => {
+  const [displayedText, setDisplayedText] = React.useState(isLatest ? '' : text);
+
+  React.useEffect(() => {
+    if (!isLatest) return;
+    let index = 0;
+    const intervalId = setInterval(() => {
+      setDisplayedText(text.slice(0, index));
+      index++;
+      if (index > text.length) clearInterval(intervalId);
+    }, 10); // velocidade da digitação (10ms por caractere)
+    return () => clearInterval(intervalId);
+  }, [text, isLatest]);
+
+  return <>{renderFormattedText(displayedText)}</>;
+};
+
+
 export default function AiAssistantChatMessages({
   messages,
   isTyping,
@@ -63,9 +81,12 @@ export default function AiAssistantChatMessages({
   const navigate = useNavigate();
 
   return (
-    <div ref={chatViewportRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
-      {messages.map((msg) => (
-        <div key={msg.id} className={`flex items-start gap-3 max-w-[85%] animate-in slide-in-from-bottom-2 fade-in duration-300 ${msg.sender === 'user' ? 'ml-auto justify-end' : ''}`}>
+    <div ref={chatViewportRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent pb-10">
+      {messages.map((msg, index) => {
+        const isLatest = index === messages.length - 1;
+        
+        return (
+        <div key={msg.id} className={`flex items-start gap-3 max-w-[85%] animate-in fade-in duration-500 ${msg.sender === 'user' ? 'ml-auto justify-end slide-in-from-bottom-8 ease-out' : 'slide-in-from-bottom-2'}`}>
           {msg.sender === 'ai' && (
             <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center flex-shrink-0 mt-1">
               <Sparkles className="h-5 w-5 text-red-600" />
@@ -75,7 +96,11 @@ export default function AiAssistantChatMessages({
           <div className={`space-y-1 ${msg.sender === 'user' ? 'text-right' : 'w-full'}`}>
             {msg.text && (
               <div className={`${msg.sender === 'user' ? 'bg-red-600 text-white rounded-tr-sm' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 rounded-tl-sm'} p-4 rounded-3xl text-sm sm:text-base leading-relaxed font-semibold whitespace-pre-wrap`}>
-                {renderFormattedText(msg.text)}
+                {msg.sender === 'ai' ? (
+                  <TypewriterMessage text={msg.text} isLatest={isLatest} />
+                ) : (
+                  renderFormattedText(msg.text)
+                )}
               </div>
             )}
 
@@ -574,7 +599,7 @@ export default function AiAssistantChatMessages({
             </div>
           )}
         </div>
-      ))}
+      )})}
 
       {isTyping && (
         <div className="flex items-start gap-3 max-w-[85%] px-4 sm:px-0 pb-4 animate-in slide-in-from-bottom-2 fade-in duration-300">

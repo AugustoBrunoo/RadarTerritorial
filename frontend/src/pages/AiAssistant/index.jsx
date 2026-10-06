@@ -153,17 +153,45 @@ export default function AiAssistant() {
   });
 
   useEffect(() => {
+    if (messages.length === 0) {
+      setIsTyping(true);
+    }
+    
     if (authLoading) return;
-    if (messages.length > 0) return;
 
-    if (user) {
-      setChatStep('LOCATION_START');
-      const fullName = profile?.nome_completo || user.user_metadata?.username || 'Cidadão';
-      const firstName = fullName.split(' ')[0];
-      addMessage('ai', `Olá, **${firstName}**! Tudo bem? Já identifiquei que você está conectado. Para começarmos o seu relato, preciso saber onde aconteceu o problema.`, { type: 'location_start_options' });
-    } else {
-      setChatStep('START');
-      addMessage('ai', 'Olá! Sou o assistente do Radar Territorial. Para começarmos, como você prefere prosseguir o relato?', { type: 'start_options' });
+    if (messages.length === 0) {
+      // Delay natural para não piscar a tela e parecer mais fluido
+      const timeoutId = setTimeout(() => {
+        setIsTyping(false);
+        if (user) {
+          setChatStep('LOCATION_START');
+          const fullName = profile?.nome_completo || user.user_metadata?.username || 'Cidadão';
+          const firstName = fullName.split(' ')[0];
+          
+          setMessages([
+            {
+              id: Date.now(),
+              sender: 'ai',
+              text: `Olá, **${firstName}**! Tudo bem? Já identifiquei que você está conectado. Para começarmos o seu relato, preciso saber onde aconteceu o problema.`,
+              extraData: { type: 'location_start_options' },
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ]);
+        } else {
+          setChatStep('START');
+          setMessages([
+            {
+              id: Date.now(),
+              sender: 'ai',
+              text: 'Olá! Sou o assistente do Radar Territorial. Para começarmos, como você prefere prosseguir o relato?',
+              extraData: { type: 'start_options' },
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ]);
+        }
+      }, 600);
+
+      return () => clearTimeout(timeoutId);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading, user, profile]);
@@ -330,13 +358,12 @@ export default function AiAssistant() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col font-sans">
+    <div className="h-screen overflow-hidden bg-white dark:bg-zinc-950 flex flex-col font-sans">
       <SimpleHeader backLink={-1} />
 
-      <main className="flex-grow pt-32 pb-6 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full flex flex-col justify-center min-h-[90vh] animate-in slide-in-from-bottom-4 duration-500">
-        <AiAssistantInfoCards onOpenHowItWorks={() => setIsHowModalOpen(true)} />
+      <main className="flex-1 min-h-0 w-full max-w-5xl mx-auto flex flex-col px-4 sm:px-6 lg:px-8 pb-4 pt-32 animate-in slide-in-from-bottom-4 duration-500">
 
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2.5rem] shadow-xl overflow-hidden flex flex-col h-[520px] relative">
+        <div className="flex flex-col flex-1 relative min-h-0 w-full">
           <AiAssistantChatMessages
             messages={messages}
             isTyping={isTyping}
@@ -391,19 +418,10 @@ export default function AiAssistant() {
             suggestions={suggestions}
             selectSuggestion={selectSuggestion}
             isSubmitDisabled={isSubmitDisabled()}
+            onOpenHowItWorks={() => setIsHowModalOpen(true)}
           />
         </div>
       </main>
-
-      <footer className="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#09090B] mt-auto">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-zinc-500 text-sm font-medium">
-          <div className="flex items-center gap-3">
-            <MapPin className="h-4 w-4 text-red-600" />
-            <span className="text-zinc-900 dark:text-white font-bold tracking-tight">Radar<span className="text-red-600">Territorial</span></span>
-            <span>© {new Date().getFullYear()}</span>
-          </div>
-        </div>
-      </footer>
 
       <AiAssistantHowItWorksModal isOpen={isHowModalOpen} onClose={() => setIsHowModalOpen(false)} />
     </div>

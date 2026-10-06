@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { MapPin, Circle, CheckCircle2 } from 'lucide-react';
 import AiAssistantHowItWorksModal from '../../components/AiAssistantHowItWorksModal';
-import AiAssistantInfoCards from '../../components/AiAssistantInfoCards';
+import AiAssistantBetaModal from '../../components/AiAssistantBetaModal';
 import AiAssistantChatMessages from '../../components/AiAssistantChatMessages';
 import AiAssistantInputBar from '../../components/AiAssistantInputBar';
 import SimpleHeader from '../../components/SimpleHeader';
@@ -19,6 +19,15 @@ import { useAuth } from '../../hooks/useAuth';
 export default function AiAssistant() {
   const { user, profile, loading: authLoading } = useAuth();
   const [isHowModalOpen, setIsHowModalOpen] = useState(false);
+  const [isBetaModalOpen, setIsBetaModalOpen] = useState(false);
+
+  useEffect(() => {
+    const hasSeenBetaModal = localStorage.getItem('seenAiBetaModal');
+    if (!hasSeenBetaModal) {
+      setIsBetaModalOpen(true);
+      localStorage.setItem('seenAiBetaModal', 'true');
+    }
+  }, []);
 
   // 1. Chat State Hook
   const {
@@ -258,7 +267,7 @@ export default function AiAssistant() {
   const isInputEnabled = ['LOGIN_EMAIL', 'LOGIN_PASSWORD', 'INPUT_LOCATION_MANUAL', 'INPUT_NUMBER_REF', 'REGISTER_NAME', 'REGISTER_EMAIL', 'REGISTER_PASSWORD', 'REGISTER_CONFIRM_PASSWORD', 'CATEGORY_AI_TEXT', 'DESCRIPTION_START'].includes(chatStep);
   const showPasswordToggle = ['LOGIN_PASSWORD', 'REGISTER_PASSWORD', 'REGISTER_CONFIRM_PASSWORD'].includes(chatStep);
 
-  let placeholderText = "Aguarde as opções da IA...";
+  let placeholderText = "Aguarde as opções...";
   if (['LOGIN_EMAIL', 'REGISTER_EMAIL'].includes(chatStep)) placeholderText = "Digite seu e-mail...";
   else if (showPasswordToggle) placeholderText = "Digite sua senha...";
   else if (chatStep === 'REGISTER_NAME') placeholderText = "Digite seu nome...";
@@ -361,7 +370,7 @@ export default function AiAssistant() {
     <div className="h-screen overflow-hidden bg-white dark:bg-zinc-950 flex flex-col font-sans">
       <SimpleHeader backLink={-1} />
 
-      <main className="flex-1 min-h-0 w-full max-w-5xl mx-auto flex flex-col px-4 sm:px-6 lg:px-8 pb-4 pt-32 animate-in slide-in-from-bottom-4 duration-500">
+      <main className="flex-1 min-h-0 w-full max-w-5xl mx-auto flex flex-col px-2 sm:px-6 lg:px-8 pb-2 sm:pb-4 pt-20 sm:pt-28 animate-in slide-in-from-bottom-4 duration-500">
 
         <div className="flex flex-col flex-1 relative min-h-0 w-full">
           <AiAssistantChatMessages
@@ -420,10 +429,17 @@ export default function AiAssistant() {
             isSubmitDisabled={isSubmitDisabled()}
             onOpenHowItWorks={() => setIsHowModalOpen(true)}
           />
+
+          <div className="text-center pb-2">
+            <p className="text-[10px] sm:text-xs text-zinc-400 dark:text-zinc-500 font-medium px-4">
+              A Inteligência Artificial do Radar Territorial está em fase Beta (v2.0.0) e pode apresentar erros ou inconsistências.
+            </p>
+          </div>
         </div>
       </main>
 
       <AiAssistantHowItWorksModal isOpen={isHowModalOpen} onClose={() => setIsHowModalOpen(false)} />
+      <AiAssistantBetaModal isOpen={isBetaModalOpen} onClose={() => setIsBetaModalOpen(false)} />
     </div>
   );
 }

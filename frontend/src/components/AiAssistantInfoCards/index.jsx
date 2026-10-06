@@ -1,7 +1,7 @@
 import React from 'react';
 import { Info, MessageSquare, Sparkles, ArrowRight } from 'lucide-react';
 
-export default function AiAssistantInfoCards({ onOpenHowItWorks }) {
+export default function AiAssistantInfoCards({ onStart }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
       <div className="bg-white dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80 rounded-3xl p-5 flex flex-col justify-between shadow-sm relative overflow-hidden group">
@@ -36,15 +36,15 @@ export default function AiAssistantInfoCards({ onOpenHowItWorks }) {
           <div>
             <div className="flex items-center gap-2.5 mb-2 text-red-500">
               <Sparkles className="h-5 w-5 animate-pulse" />
-              <span className="font-extrabold text-xs uppercase tracking-widest text-red-400">Processamento Natural</span>
+              <span className="font-extrabold text-xs uppercase tracking-widest text-red-400">Tudo pronto!</span>
             </div>
-            <h4 className="font-black text-white text-base tracking-tight leading-tight">Quer entender a nossa tecnologia?</h4>
+            <h4 className="font-black text-white text-base tracking-tight leading-tight">Pronto para iniciar?</h4>
           </div>
           <button 
-            onClick={onOpenHowItWorks}
+            onClick={onStart}
             className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5 active:scale-95 shadow-lg shadow-red-600/20"
           >
-            <span>Como Funciona o Assistente?</span>
+            <span>Começar o meu relato</span>
             <ArrowRight className="h-4 w-4" />
           </button>
         </div>

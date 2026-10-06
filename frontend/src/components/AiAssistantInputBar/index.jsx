@@ -35,7 +35,7 @@ export default function AiAssistantInputBar({
   }, [chatStep]);
 
   return (
-    <div className="p-2 sm:p-3 relative flex items-center gap-2 mb-4 mx-2 sm:mx-4 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full shadow-lg shadow-zinc-200/20 dark:shadow-black/40">
+    <div className="p-1.5 sm:p-3 relative flex items-center gap-1 sm:gap-2 mb-2 sm:mb-4 mx-2 sm:mx-4 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full shadow-lg shadow-zinc-200/20 dark:shadow-black/40">
       
       {/* SUGGESTIONS DROPDOWN */}
       {showSuggestions && chatStep === 'INPUT_LOCATION_MANUAL' && (
@@ -71,10 +71,10 @@ export default function AiAssistantInputBar({
           <Info className="h-5 w-5" />
         </button>
 
-        <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max transition-all duration-700 ease-in-out pointer-events-none ${showTooltip ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
+        <div className={`absolute bottom-full left-0 sm:left-1/2 translate-x-0 sm:-translate-x-1/2 mb-2 w-max transition-all duration-700 ease-in-out pointer-events-none ${showTooltip ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
           <div className="bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] sm:text-xs font-bold py-1.5 px-3 rounded-xl shadow-xl relative flex items-center">
             Dúvidas? Como funciona?
-            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-t-zinc-800 dark:border-t-zinc-100"></div>
+            <div className="absolute -bottom-1 left-6 sm:left-1/2 -translate-x-1/2 border-4 border-transparent border-t-zinc-800 dark:border-t-zinc-100"></div>
           </div>
         </div>
       </div>
@@ -90,7 +90,7 @@ export default function AiAssistantInputBar({
           }}
           disabled={!isInputEnabled}
           placeholder={placeholderText}
-          className="w-full bg-transparent border-transparent pl-4 pr-12 py-2 sm:py-3 text-sm sm:text-base outline-none focus:ring-0 focus:border-transparent transition-all placeholder-zinc-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed text-zinc-900 dark:text-zinc-100"
+          className="w-full bg-transparent border-transparent pl-2 sm:pl-4 pr-8 sm:pr-12 py-2 sm:py-3 text-[13px] sm:text-base outline-none focus:ring-0 focus:border-transparent transition-all placeholder-zinc-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed text-zinc-900 dark:text-zinc-100 truncate"
         />
 
         {showPasswordToggle && (
@@ -107,7 +107,7 @@ export default function AiAssistantInputBar({
       <button
         onClick={sendUserMessage}
         disabled={!isInputEnabled || inputValue.trim() === '' || isSubmitDisabled}
-        className="p-3 sm:p-3 bg-red-600 hover:bg-red-700 disabled:bg-zinc-400 disabled:cursor-not-allowed active:scale-95 text-white rounded-full transition-all duration-150 shadow-md shadow-red-600/20 flex items-center justify-center shrink-0"
+        className="p-2.5 sm:p-3 bg-red-600 hover:bg-red-700 disabled:bg-zinc-400 disabled:cursor-not-allowed active:scale-95 text-white rounded-full transition-all duration-150 shadow-md shadow-red-600/20 flex items-center justify-center shrink-0"
       >
         <ArrowRight className="h-5 w-5" />
       </button>

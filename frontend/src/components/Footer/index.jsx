@@ -46,7 +46,7 @@ export default function Footer() {
                                 <a href="https://jovenscientistas.ciedseduca.org.br/" target="_blank"
                                     className="group relative flex items-center justify-center h-24 w-52 bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 transition-transform hover:scale-105 p-4">
                                     <img src={jccLogoImg} alt="Programa Jovens Cientistas Cariocas"
-                                        loading="lazy" width="208" height="96" fetchpriority="low"
+                                        loading="lazy" width="208" height="96" fetchPriority="low"
                                         className="relative z-10 h-full w-full object-contain aspect-[26/12]" />
                                 </a>
 
@@ -55,7 +55,7 @@ export default function Footer() {
                                 <a href="https://www.navedoconhecimento.rio/" target="_blank"
                                     className="group relative flex items-center justify-center h-24 w-52 bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 transition-transform hover:scale-105 p-1">
                                     <img src={naveLogoImg} alt="Nave do Conhecimento de Campo Grande"
-                                        loading="lazy" width="208" height="96" fetchpriority="low"
+                                        loading="lazy" width="208" height="96" fetchPriority="low"
                                         className="relative z-10 h-full w-full object-contain scale-110 aspect-[26/12]" />
                                 </a>
                             </div>

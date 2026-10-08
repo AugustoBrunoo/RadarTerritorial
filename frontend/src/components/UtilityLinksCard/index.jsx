@@ -9,7 +9,7 @@ export default function UtilityLinksCard({ onOpenModal }) {
           <ExternalLink className="h-4 w-4" />
           <span className="text-[10px] font-black uppercase tracking-wider">Ouvidorias & Serviços</span>
         </div>
-        <h3 className="text-xl font-black tracking-tight mb-2 text-zinc-900 dark:text-white">Utilidade Pública</h3>
+        <h2 className="text-xl font-black tracking-tight mb-2 text-zinc-900 dark:text-white">Utilidade Pública</h2>
         <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium mb-4">
           Para casos de perigo de vida ou problemas de responsabilidade de concessionárias oficiais, utilize os atalhos rápidos:
         </p>
@@ -29,8 +29,8 @@ export default function UtilityLinksCard({ onOpenModal }) {
           href="tel:190"
           className="w-full flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950/40 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/60 rounded-2xl transition-all"
         >
-          <span className="text-xs font-bold text-red-600 dark:text-red-400">Polícia Militar (190)</span>
-          <Phone className="h-4 w-4 text-red-600 dark:text-red-400" />
+          <span className="text-xs font-bold text-red-700 dark:text-red-400">Polícia Militar (190)</span>
+          <Phone className="h-4 w-4 text-red-700 dark:text-red-400" />
         </a>
         <button
           onClick={onOpenModal}

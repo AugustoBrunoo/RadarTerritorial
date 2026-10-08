@@ -58,7 +58,7 @@ export default function Hero() {
                         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-red-600/10 dark:bg-red-900/20 blur-[80px] rounded-full pointer-events-none">
                     </div>
                     <img src={mapaCampoGrandeImg} alt="Mapa da região de Campo Grande, Cosmos e Inhoaíba"
-                        width="480" height="480" fetchpriority="high"
+                        width="480" height="480" fetchPriority="high"
                         className="relative z-10 w-full max-w-[320px] sm:max-w-[400px] lg:max-w-[480px] h-auto aspect-square object-contain drop-shadow-2xl animate-float transition-transform duration-500 hover:scale-[1.03]" />
                 </div>
 

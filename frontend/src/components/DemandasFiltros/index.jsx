@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Filter, 
   ArrowDownUp, 
@@ -25,6 +25,8 @@ export default function DemandasFiltros({
     currentOrder !== 'recent' || 
     currentBairro !== 'all' || 
     currentEixo !== 'all';
+
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
   const mainTabs = [
     { 
@@ -70,25 +72,34 @@ export default function DemandasFiltros({
             <SlidersHorizontal className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white leading-tight">
+            <h2 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-white leading-tight">
               Filtros da Demanda
-            </h3>
-            <p className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
+            </h2>
+            <p className="text-[11px] font-medium text-zinc-600 dark:text-zinc-400">
               Gerencie a visualização por status, ordem e localização
             </p>
           </div>
         </div>
 
-        {hasActiveFilters && (
+        <div className="flex items-center gap-2">
+          {hasActiveFilters && (
+            <button
+              onClick={onResetFilters}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-red-600 hover:text-red-700 dark:text-red-400 bg-red-50 hover:bg-red-100/80 dark:bg-red-950/30 dark:hover:bg-red-900/40 border border-red-200/60 dark:border-red-900/40 transition-all shadow-sm active:scale-95"
+              title="Restaurar todos os filtros"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Limpar filtros</span>
+            </button>
+          )}
           <button
-            onClick={onResetFilters}
-            className="self-start sm:self-auto flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-red-600 hover:text-red-700 dark:text-red-400 bg-red-50 hover:bg-red-100/80 dark:bg-red-950/30 dark:hover:bg-red-900/40 border border-red-200/60 dark:border-red-900/40 transition-all shadow-sm active:scale-95"
-            title="Restaurar todos os filtros"
+            onClick={() => setIsMobileFiltersOpen(!isMobileFiltersOpen)}
+            className="md:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-zinc-600 hover:text-zinc-700 dark:text-zinc-400 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 transition-all shadow-sm"
           >
-            <RotateCcw className="h-3.5 w-3.5" />
-            <span>Limpar filtros</span>
+            <span>{isMobileFiltersOpen ? 'Ocultar Filtros' : 'Mais Filtros'}</span>
+            <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isMobileFiltersOpen ? 'rotate-180' : ''}`} />
           </button>
-        )}
+        </div>
       </div>
 
       {/* Abas de Status Principal (1 coluna no mobile para legibilidade total, 4 colunas em telas maiores) */}
@@ -121,14 +132,15 @@ export default function DemandasFiltros({
       </div>
 
       {/* Grid de Filtros Complementares (4 colunas no Desktop, 2 no Tablet, 1 no Mobile) */}
-      <div className="mt-5 pt-5 border-t border-zinc-100 dark:border-zinc-800/80 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <div className={`mt-5 pt-5 border-t border-zinc-100 dark:border-zinc-800/80 gap-3.5 ${isMobileFiltersOpen ? 'grid' : 'hidden'} md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`}>
         {/* Status Detalhado / Fase */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+          <label htmlFor="filter-status" className="text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 flex items-center gap-1.5">
             <Filter className="h-3 w-3 text-blue-500" /> Status Detalhado
           </label>
           <div className="relative">
             <select
+              id="filter-status"
               value={currentFilter}
               onChange={(e) => onFilterChange(e.target.value)}
               className="w-full bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 rounded-xl pl-3.5 pr-8 py-2.5 text-xs sm:text-sm font-semibold text-zinc-800 dark:text-zinc-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer"
@@ -147,11 +159,12 @@ export default function DemandasFiltros({
 
         {/* Ordem */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+          <label htmlFor="filter-order" className="text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 flex items-center gap-1.5">
             <ArrowDownUp className="h-3 w-3 text-amber-500" /> Ordenar por
           </label>
           <div className="relative">
             <select 
+              id="filter-order"
               value={currentOrder}
               onChange={(e) => onOrderChange(e.target.value)}
               className="w-full bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 rounded-xl pl-3.5 pr-8 py-2.5 text-xs sm:text-sm font-semibold text-zinc-800 dark:text-zinc-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer"
@@ -166,11 +179,12 @@ export default function DemandasFiltros({
 
         {/* Bairro */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+          <label htmlFor="filter-bairro" className="text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 flex items-center gap-1.5">
             <MapPin className="h-3 w-3 text-red-500" /> Filtrar por Bairro
           </label>
           <div className="relative">
             <select 
+              id="filter-bairro"
               value={currentBairro}
               onChange={(e) => onBairroChange(e.target.value)}
               className="w-full bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 rounded-xl pl-3.5 pr-8 py-2.5 text-xs sm:text-sm font-semibold text-zinc-800 dark:text-zinc-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer"
@@ -186,11 +200,12 @@ export default function DemandasFiltros({
 
         {/* Macro-eixo */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+          <label htmlFor="filter-eixo" className="text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 flex items-center gap-1.5">
             <Layers className="h-3 w-3 text-purple-500" /> Macro-eixo
           </label>
           <div className="relative">
             <select 
+              id="filter-eixo"
               value={currentEixo}
               onChange={(e) => onEixoChange(e.target.value)}
               className="w-full bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 rounded-xl pl-3.5 pr-8 py-2.5 text-xs sm:text-sm font-semibold text-zinc-800 dark:text-zinc-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer"

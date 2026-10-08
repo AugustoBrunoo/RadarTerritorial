@@ -14,9 +14,9 @@ export default function QuickReportCard() {
       </div>
 
       <div className="relative z-10 mt-8 mb-6">
-        <h3 className="text-3xl font-black text-white leading-tight mb-3">
+        <h2 className="text-3xl font-black text-white leading-tight mb-3">
           Encontrou algum problema na sua rua hoje?
-        </h3>
+        </h2>
         <p className="text-sm text-zinc-400 leading-relaxed font-medium max-w-md">
           Abra um relato de buraco, iluminação pública, saneamento ou trânsito em menos de um minuto e acelere a resolução.
         </p>

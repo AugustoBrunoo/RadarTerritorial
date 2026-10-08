@@ -115,6 +115,7 @@ export default function LoggedHeader() {
               <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Modo Escuro</span>
               <button
                 onClick={toggleDarkMode}
+                aria-label="Alternar modo escuro"
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${isDarkMode ? 'bg-red-500' : 'bg-zinc-300 dark:bg-zinc-700'}`}
               >
                 <span className={`${isDarkMode ? 'translate-x-6' : 'translate-x-1'} inline-flex h-4 w-4 transform rounded-full bg-white transition-transform items-center justify-center`}>

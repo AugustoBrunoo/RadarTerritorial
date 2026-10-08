@@ -12,7 +12,7 @@ export default function LocalIndicatorsCard() {
             <span className="text-[10px] font-black uppercase tracking-wider">Zeladoria e Eficiência</span>
           </div>
         </div>
-        <h3 className="text-xl font-black tracking-tight mb-2 text-zinc-900 dark:text-white">Indicadores Locais</h3>
+        <h2 className="text-xl font-black tracking-tight mb-2 text-zinc-900 dark:text-white">Indicadores Locais</h2>
         <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium mb-4">
           O Radar monitora o tempo de resposta da prefeitura para a Zona Oeste e mapeia as soluções por distrito.
         </p>

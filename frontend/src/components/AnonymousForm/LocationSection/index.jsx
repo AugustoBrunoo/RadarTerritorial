@@ -348,7 +348,7 @@ export default function LocationSection({
                   {/*  Grid para Bairro e CEP  */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1.5">
+                      <label htmlFor="input-bairro" className="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1.5">
                         Bairro *
                       </label>
                       <select
@@ -370,7 +370,7 @@ export default function LocationSection({
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1.5">
+                      <label htmlFor="input-cep" className="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1.5">
                         CEP (Opcional)
                       </label>
                       <input
@@ -402,7 +402,7 @@ export default function LocationSection({
 
                   {/*  Rua/Logradouro  */}
                   <div className="relative" ref={dropdownRef}>
-                    <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1.5">
+                    <label htmlFor="input-rua" className="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1.5">
                       Rua / Praça / Estrada *
                     </label>
                     <input
@@ -509,7 +509,7 @@ export default function LocationSection({
 
                   {/*  Referência  */}
                   <div>
-                    <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1.5">
+                    <label htmlFor="input-ref" className="block text-xs font-bold text-zinc-500 uppercase tracking-wide mb-1.5">
                       Ponto de Referência / Número *
                     </label>
                     

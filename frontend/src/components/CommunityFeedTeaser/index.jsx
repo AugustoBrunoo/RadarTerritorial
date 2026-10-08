@@ -36,7 +36,7 @@ export default function CommunityFeedTeaser() {
             <span className="text-[10px] font-black uppercase tracking-wider">Radar da Vizinhança</span>
           </div>
         </div>
-        <h3 className="text-xl font-black tracking-tight mb-2 text-zinc-900 dark:text-white">Feed de Relatos</h3>
+        <h2 className="text-xl font-black tracking-tight mb-2 text-zinc-900 dark:text-white">Feed de Relatos</h2>
         <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium mb-6">
           Descubra o que os moradores estão relatando perto de você em Cosmos, Inhoaíba e Campo Grande. Vote e comente para dar força às causas locais.
         </p>

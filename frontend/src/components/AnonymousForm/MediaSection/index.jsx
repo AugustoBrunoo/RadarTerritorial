@@ -51,7 +51,7 @@ export default function MediaSection({
           <div>
             <label
               htmlFor="input-desc"
-              className="block text-sm font-semibold text-zinc-600 dark:text-zinc-400 mb-2"
+              className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2"
             >
               Descreva livremente (Opcional)
             </label>
@@ -61,7 +61,7 @@ export default function MediaSection({
               value={formDescription}
               onChange={(e) => setFormDescription(e.target.value)}
               placeholder="Ex: O buraco já está quase engolindo a calçada e idosos têm dificuldade de passar..."
-              className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3.5 text-zinc-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none transition-all resize-none"
+              className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3.5 text-zinc-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none transition-all resize-none placeholder-zinc-500"
             ></textarea>
           </div>
 
@@ -70,7 +70,7 @@ export default function MediaSection({
               id="btn-review"
               type="button"
               onClick={handleReviewClick}
-              className="w-full py-4 rounded-xl font-black text-lg transition-all flex justify-center items-center gap-2 bg-red-600 hover:bg-red-700 text-white hover:-translate-y-1 shadow-lg shadow-red-600/30"
+              className="w-full py-4 rounded-xl font-black text-lg transition-all flex justify-center items-center gap-2 bg-red-700 hover:bg-red-800 text-white hover:-translate-y-1 shadow-lg shadow-red-700/30"
             >
               <Send className="h-5 w-5" /> Revisar Relato Seguro
             </button>

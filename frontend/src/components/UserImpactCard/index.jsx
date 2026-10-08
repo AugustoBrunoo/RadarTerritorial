@@ -64,7 +64,7 @@ export default function UserImpactCard() {
           <Activity className="h-4 w-4" />
           <span className="text-[10px] font-black uppercase tracking-wider">Seu impacto comunitário</span>
         </div>
-        <h3 className="text-2xl font-black tracking-tight mb-2 text-zinc-900 dark:text-white">Suas Demandas</h3>
+        <h2 className="text-2xl font-black tracking-tight mb-2 text-zinc-900 dark:text-white">Suas Demandas</h2>
         <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed font-medium mb-6">
           Confira o status consolidado das solicitações que você registrou na plataforma.
         </p>

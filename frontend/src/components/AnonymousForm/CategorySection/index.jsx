@@ -211,10 +211,10 @@ export default function CategorySection({
               <Sparkles className="h-5 w-5" />
             </div>
             <div className="flex-grow">
-              <strong className="block text-sm text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
+              <strong className="block text-sm text-zinc-900 dark:text-zinc-300 group-hover:text-red-700 dark:group-hover:text-white transition-colors">
                 Não encontrou a categoria certa?
               </strong>
-              <span className="text-xs text-zinc-500 block mt-0.5">
+              <span className="text-xs text-zinc-600 dark:text-zinc-500 block mt-0.5">
                 Descreva o problema e nossa IA fará o enquadramento automático.
               </span>
             </div>

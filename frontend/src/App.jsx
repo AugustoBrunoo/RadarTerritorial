@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import AppRoutes from './routes';
 import BetaWarningModal from './components/BetaWarningModal';
-import './App.css';
 
 function App() {
   useEffect(() => {

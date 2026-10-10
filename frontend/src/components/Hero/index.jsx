@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import mapaCampoGrandeImg from '../../assets/images/home/mapa-campo-grande.png';
+import mapaCampoGrandeImg from '../../assets/images/home/mapa-campo-grande.webp';
 import { ArrowUpRight, BarChart3, Newspaper } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 

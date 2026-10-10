@@ -13,7 +13,7 @@ export default function ComoFunciona() {
                     </p>
                 </div>
                 <div className="hidden md:block">
-                    <span className="text-red-600 font-bold tracking-widest uppercase text-sm flex items-center gap-2">
+                    <span className="text-red-700 dark:text-red-500 font-bold tracking-widest uppercase text-sm flex items-center gap-2">
                         <Activity className="h-4 w-4" /> Fluxo em Tempo Real
                     </span>
                 </div>
@@ -27,7 +27,7 @@ export default function ComoFunciona() {
                         <Smartphone className="h-6 w-6 text-zinc-900 dark:text-white" />
                     </div>
                     <div>
-                        <span className="text-red-600 font-bold text-sm mb-2 block">PASSO 01</span>
+                        <span className="text-red-700 dark:text-red-500 font-bold text-sm mb-2 block">PASSO 01</span>
                         <h3 className="text-2xl font-bold mb-3">Acesse ou Escaneie</h3>
                         <p className="text-zinc-600 dark:text-zinc-400 text-base leading-relaxed">
                             Abra o site diretamente no seu celular em qualquer lugar da Zona Oeste ou, se preferir, aponte a

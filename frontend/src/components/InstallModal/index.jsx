@@ -96,7 +96,7 @@ export default function InstallModal({ isOpen, onClose }) {
         <div id="install-modal" className={`fixed inset-0 z-[100] items-center justify-center bg-black/60 backdrop-blur-md transition-opacity duration-300 px-4 ${isOpen ? "flex opacity-100" : "opacity-0 pointer-events-none"}`}>
             <div id="install-modal-content" className={`bg-white dark:bg-zinc-900 w-full max-w-lg rounded-[2.5rem] p-6 sm:p-8 shadow-2xl border border-zinc-200 dark:border-zinc-800 transform transition-transform duration-300 relative text-zinc-900 dark:text-white ${isOpen ? "scale-100" : "scale-95"}`}>
 
-                <button onClick={onClose}
+                <button onClick={onClose} aria-label="Fechar"
                     className="absolute top-6 right-6 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 p-2 rounded-full transition-colors">
                     <X className="h-5 w-5" />
                 </button>

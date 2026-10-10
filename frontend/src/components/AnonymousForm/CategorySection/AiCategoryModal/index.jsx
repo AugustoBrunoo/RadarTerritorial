@@ -31,6 +31,7 @@ export default function AiCategoryModal({
         {/* Botão Fechar */}
         <button
           onClick={onClose}
+          aria-label="Fechar"
           className="absolute top-6 right-6 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 p-2 rounded-full transition-colors focus:outline-none"
         >
           <X className="h-4 w-4" />

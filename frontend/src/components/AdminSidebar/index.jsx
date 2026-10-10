@@ -56,7 +56,7 @@ export default function AdminSidebar() {
                 <ShieldCheck className="h-5 w-5 text-white" />
               </div>
               <span className="font-black text-lg tracking-tight text-zinc-900 dark:text-white">
-                Radar<span className="text-red-600">Admin</span>
+                Radar<span className="text-red-700 dark:text-red-600">Admin</span>
               </span>
             </Link>
           </div>

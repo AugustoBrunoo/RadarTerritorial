@@ -98,7 +98,7 @@ export default function Footer() {
                             <MapPin className="h-5 w-5 text-white" />
                         </div>
                         <span className="font-bold text-lg sm:text-xl tracking-tight text-zinc-900 dark:text-white">
-                            Radar<span className="text-red-600">Territorial</span>
+                            Radar<span className="text-red-700 dark:text-red-600">Territorial</span>
                         </span>
                         <span className="ml-1 text-zinc-500 dark:text-zinc-400">© <span id="current-year"></span></span>
                     </div>

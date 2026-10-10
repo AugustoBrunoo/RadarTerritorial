@@ -8,7 +8,7 @@ export default function Ecossistema() {
             <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center mb-16">
 
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mb-6" style={{ textWrap: 'balance' }}>
-                    Inovação nascida em <span className="text-red-600">Campo Grande.</span>
+                    Inovação nascida em <span className="text-red-700 dark:text-red-500">Campo Grande.</span>
                 </h2>
 
                 <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto"

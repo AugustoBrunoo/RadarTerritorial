@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Hammer, TestTube2, AlertTriangle, ChevronRight, ChevronLeft, X } from 'lucide-react';
 
-export default function BetaWarningModal() {
-  const [isOpen, setIsOpen] = useState(false);
+export default function BetaWarningModal({ onClose }) {
+  const [isVisible, setIsVisible] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
-    // Verifica se já viu o modal nesta sessão
-    const hasSeen = sessionStorage.getItem('hasSeenBetaModal');
-    if (!hasSeen) {
-      setIsOpen(true);
-    }
+    // Aciona a transição de entrada suave logo após a montagem
+    const timer = setTimeout(() => setIsVisible(true), 50);
+    return () => clearTimeout(timer);
   }, []);
 
-  const closeModal = () => {
+  const handleClose = () => {
     sessionStorage.setItem('hasSeenBetaModal', 'true');
-    setIsOpen(false);
+    setIsVisible(false);
+    setTimeout(() => {
+      if (onClose) onClose();
+    }, 450);
   };
-
-  if (!isOpen) return null;
 
   const slides = [
     {
@@ -48,7 +47,7 @@ export default function BetaWarningModal() {
     if (currentSlide < slides.length - 1) {
       setCurrentSlide(currentSlide + 1);
     } else {
-      closeModal();
+      handleClose();
     }
   };
 
@@ -59,13 +58,17 @@ export default function BetaWarningModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all duration-500 animate-in fade-in">
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2.5rem] w-full max-w-lg overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-500 flex flex-col">
+    <div className={`fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-opacity duration-500 ease-out ${
+      isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+    }`}>
+      <div className={`bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2.5rem] w-full max-w-lg overflow-hidden shadow-2xl relative flex flex-col transition-all duration-500 ease-out transform ${
+        isVisible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-4"
+      }`}>
         
         {/* Header / Botão Fechar */}
         <div className="absolute top-4 right-4 z-10">
           <button 
-            onClick={closeModal}
+            onClick={handleClose}
             aria-label="Fechar aviso de versão beta"
             className="p-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-full transition-colors"
           >

@@ -9,7 +9,15 @@ function App() {
   useEffect(() => {
     const hasSeen = typeof window !== 'undefined' ? sessionStorage.getItem('hasSeenBetaModal') : 'true';
     if (!hasSeen) {
-      const timer = setTimeout(() => setShowModal(true), 600);
+      // 1.5s garante que o carregamento inicial (FCP/LCP) conclua totalmente antes de solicitar o modal
+      const timer = setTimeout(() => {
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(() => setShowModal(true));
+        } else {
+          setShowModal(true);
+        }
+      }, 1500);
+
       return () => clearTimeout(timer);
     }
   }, []);
@@ -18,7 +26,7 @@ function App() {
     <>
       {showModal && (
         <Suspense fallback={null}>
-          <BetaWarningModal />
+          <BetaWarningModal onClose={() => setShowModal(false)} />
         </Suspense>
       )}
       <AppRoutes />

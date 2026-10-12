@@ -9,19 +9,16 @@ import Footer from '../../components/Footer';
 const InstallModal = lazy(() => import('../../components/InstallModal'));
 
 export default function Home() {
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        if (typeof document !== 'undefined') {
+            return document.documentElement.classList.contains('dark');
+        }
+        return false;
+    });
     const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
     const [activeSection, setActiveSection] = useState('inicio');
 
     useEffect(() => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-            setIsDarkMode(true);
-        } else {
-            document.documentElement.classList.remove('dark');
-            setIsDarkMode(false);
-        }
 
         const sections = document.querySelectorAll('section[id], footer[id]');
         const observerOptions = {

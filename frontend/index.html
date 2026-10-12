@@ -14,6 +14,18 @@
   <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
   <meta name="description" content="O Radar Territorial é uma plataforma focada em zeladoria urbana inteligente, acompanhamento de indicadores e ação comunitária colaborativa para melhoria das cidades." />
   <title>RadarTerritorial</title>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        if (saved === 'dark' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 
 <body>

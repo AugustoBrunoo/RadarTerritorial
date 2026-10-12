@@ -66,6 +66,7 @@ export default function BetaWarningModal() {
         <div className="absolute top-4 right-4 z-10">
           <button 
             onClick={closeModal}
+            aria-label="Fechar aviso de versão beta"
             className="p-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-full transition-colors"
           >
             <X className="h-5 w-5" />
@@ -98,18 +99,20 @@ export default function BetaWarningModal() {
         <div className="px-8 pb-8 pt-4 flex flex-col sm:flex-row items-center justify-between gap-6 border-t border-zinc-100 dark:border-zinc-800/60 bg-zinc-50 dark:bg-zinc-950/30">
           
           {/* Indicadores */}
-          <div className="flex gap-2 justify-center sm:justify-start order-2 sm:order-1">
+          <div className="flex gap-1 justify-center sm:justify-start order-2 sm:order-1 items-center">
             {slides.map((_, index) => (
               <button 
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`h-2 rounded-full transition-all duration-300 ${
+                className="p-2 flex items-center justify-center focus:outline-none"
+                aria-label={`Ir para o slide ${index + 1}`}
+              >
+                <span className={`h-2 rounded-full transition-all duration-300 block ${
                   index === currentSlide 
                     ? "w-8 bg-red-600" 
                     : "w-2 bg-zinc-300 dark:bg-zinc-700 hover:bg-zinc-400"
-                }`}
-                aria-label={`Ir para o slide ${index + 1}`}
-              />
+                }`} />
+              </button>
             ))}
           </div>
 
@@ -118,6 +121,7 @@ export default function BetaWarningModal() {
             {currentSlide > 0 && (
               <button 
                 onClick={prevSlide}
+                aria-label="Slide anterior"
                 className="p-3.5 rounded-2xl font-bold bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition-all flex items-center justify-center"
               >
                 <ChevronLeft className="h-5 w-5" />

@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, Suspense, lazy } from 'react';
 import AppRoutes from './routes';
-import BetaWarningModal from './components/BetaWarningModal';
+
+const BetaWarningModal = lazy(() => import('./components/BetaWarningModal'));
 
 function App() {
   useEffect(() => {
@@ -17,7 +18,9 @@ function App() {
 
   return (
     <>
-      <BetaWarningModal />
+      <Suspense fallback={null}>
+        <BetaWarningModal />
+      </Suspense>
       <AppRoutes />
     </>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router';
-import jccLogoImg from '../../assets/images/home/JCC - LOGO PRINCIPAL.png';
-import naveLogoImg from '../../assets/images/home/Logo-Nave-CG.png';
+import jccLogoImg from '../../assets/images/home/JCC - LOGO PRINCIPAL.webp';
+import naveLogoImg from '../../assets/images/home/Logo-Nave-CG.webp';
 import NodaLogo from '../NodaLogo';
 import { Award, MapPin } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -97,8 +97,8 @@ export default function Footer() {
                         <div className="bg-red-600 p-2 rounded-full group-hover:scale-105 transition-transform">
                             <MapPin className="h-5 w-5 text-white" />
                         </div>
-                        <span className="font-bold text-lg sm:text-xl tracking-tight text-zinc-900 dark:text-white">
-                            Radar<span className="text-red-700 dark:text-red-600">Territorial</span>
+                        <span className="font-bold text-xl tracking-tight text-zinc-900 dark:text-white">
+                            Radar<span className="text-red-600">Territorial</span>
                         </span>
                         <span className="ml-1 text-zinc-500 dark:text-zinc-400">© <span id="current-year"></span></span>
                     </div>

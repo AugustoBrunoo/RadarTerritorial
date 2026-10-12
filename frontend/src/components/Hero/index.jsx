@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import mapaCampoGrandeImg from '../../assets/images/home/mapa-campo-grande.webp';
+import mapaCampoGrande640 from '../../assets/images/home/mapa-campo-grande-640.webp';
 import { ArrowUpRight, BarChart3, Newspaper } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -57,9 +58,17 @@ export default function Hero() {
                     <div
                         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-red-600/10 dark:bg-red-900/20 blur-[80px] rounded-full pointer-events-none">
                     </div>
-                    <img src={mapaCampoGrandeImg} alt="Mapa da região de Campo Grande, Cosmos e Inhoaíba"
-                        width="480" height="480" fetchPriority="high"
-                        className="relative z-10 w-full max-w-[320px] sm:max-w-[400px] lg:max-w-[480px] h-auto aspect-square object-contain drop-shadow-2xl animate-float transition-transform duration-500 hover:scale-[1.03]" />
+                    <img
+                        src={mapaCampoGrande640}
+                        srcSet={`${mapaCampoGrande640} 640w, ${mapaCampoGrandeImg} 1024w`}
+                        sizes="(max-width: 640px) 320px, (max-width: 1024px) 400px, 480px"
+                        alt="Mapa da região de Campo Grande, Cosmos e Inhoaíba"
+                        width="480"
+                        height="480"
+                        fetchPriority="high"
+                        decoding="async"
+                        className="relative z-10 w-full max-w-[320px] sm:max-w-[400px] lg:max-w-[480px] h-auto aspect-square object-contain drop-shadow-2xl animate-float transition-transform duration-500 hover:scale-[1.03]"
+                    />
                 </div>
 
             </div>

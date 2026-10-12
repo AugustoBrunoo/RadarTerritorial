@@ -47,8 +47,8 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
                     <div className="bg-red-600 p-2 rounded-full group-hover:scale-105 transition-transform">
                         <MapPin className="h-5 w-5 text-white" />
                     </div>
-                    <span className="font-bold text-lg sm:text-xl tracking-tight">
-                        Radar<span className="text-red-700 dark:text-red-600">Territorial</span>
+                    <span className="font-bold text-xl tracking-tight">
+                        Radar<span className="text-red-600">Territorial</span>
                     </span>
                 </div>
 

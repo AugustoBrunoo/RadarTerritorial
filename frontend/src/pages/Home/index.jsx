@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
 
 import Header from '../../components/Header';
 import Hero from '../../components/Hero';
 import ComoFunciona from '../../components/ComoFunciona';
 import AppPromo from '../../components/AppPromo';
-import InstallModal from '../../components/InstallModal';
-import Ecossistema from '../../components/Ecossistema';
 import Footer from '../../components/Footer';
+
+const InstallModal = lazy(() => import('../../components/InstallModal'));
 
 export default function Home() {
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -92,10 +92,14 @@ export default function Home() {
                 {/* <Ecossistema /> */}
             </main>
 
-            <InstallModal
-                isOpen={isInstallModalOpen}
-                onClose={closeInstallModal}
-            />
+            {isInstallModalOpen && (
+                <Suspense fallback={null}>
+                    <InstallModal
+                        isOpen={isInstallModalOpen}
+                        onClose={closeInstallModal}
+                    />
+                </Suspense>
+            )}
 
             <Footer />
 

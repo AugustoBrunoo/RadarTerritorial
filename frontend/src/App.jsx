@@ -1,26 +1,26 @@
-import { useEffect, Suspense, lazy } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import AppRoutes from './routes';
 
 const BetaWarningModal = lazy(() => import('./components/BetaWarningModal'));
 
 function App() {
+  const [showModal, setShowModal] = useState(false);
+
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (
-      savedTheme === 'dark' || 
-      (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    const hasSeen = typeof window !== 'undefined' ? sessionStorage.getItem('hasSeenBetaModal') : 'true';
+    if (!hasSeen) {
+      const timer = setTimeout(() => setShowModal(true), 600);
+      return () => clearTimeout(timer);
     }
   }, []);
 
   return (
     <>
-      <Suspense fallback={null}>
-        <BetaWarningModal />
-      </Suspense>
+      {showModal && (
+        <Suspense fallback={null}>
+          <BetaWarningModal />
+        </Suspense>
+      )}
       <AppRoutes />
     </>
   );

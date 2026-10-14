@@ -21,7 +21,12 @@ export default function AiAssistantBetaModal({ isOpen, onClose }) {
 
   return (
     <div className={`fixed inset-0 z-[110] flex items-center justify-center p-4 bg-zinc-900/60 dark:bg-black/80 backdrop-blur-md transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
-      <div className={`bg-white dark:bg-zinc-950 w-full max-w-2xl rounded-3xl sm:rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden transition-transform duration-300 transform ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-8'} flex flex-col`}>
+      <div 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="beta-modal-title"
+        className={`bg-white dark:bg-zinc-950 w-full max-w-2xl rounded-3xl sm:rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden transition-transform duration-300 transform ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-8'} flex flex-col`}
+      >
         
         {/* Header */}
         <div className="p-4 sm:p-6 border-b border-zinc-100 dark:border-zinc-800/80 flex justify-between items-center bg-zinc-50 dark:bg-zinc-900/40 shrink-0">
@@ -30,12 +35,13 @@ export default function AiAssistantBetaModal({ isOpen, onClose }) {
               <Beaker className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-black text-lg sm:text-xl text-zinc-900 dark:text-white leading-none">Assistente Beta (v2.0.0)</h3>
+              <h2 id="beta-modal-title" className="font-black text-lg sm:text-xl text-zinc-900 dark:text-white leading-none">Assistente Beta (v2.0.0)</h2>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full transition-colors text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+            aria-label="Fechar aviso do modo beta"
+            className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full transition-colors text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>

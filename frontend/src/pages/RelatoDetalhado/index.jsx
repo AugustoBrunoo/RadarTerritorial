@@ -8,12 +8,14 @@ import LoggedHeader from '../../components/LoggedHeader';
 import SimpleHeader from '../../components/SimpleHeader';
 import SimpleFooter from '../../components/SimpleFooter';
 import { supabase } from '../../lib/supabaseClient';
+import { safeNavigateBack } from '../../utils/navigation';
 
 import RelatoHeader from '../../components/RelatoHeader';
 import RelatoMidia from '../../components/RelatoMidia';
 import RelatoLinhaDoTempo from '../../components/RelatoLinhaDoTempo';
 import RelatoAcoes from '../../components/RelatoAcoes';
 import RelatoComentarios from '../../components/RelatoComentarios';
+import RelatoDetalhadoSkeleton from '../../components/RelatoDetalhadoSkeleton';
 
 const getCategoryIcon = (macroEixo) => {
   const eixoStr = (macroEixo || "").toLowerCase();
@@ -56,17 +58,17 @@ export default function RelatoDetalhado() {
       if (!id) return;
       setLoading(true);
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const [userResult, relatoResult] = await Promise.all([
+          supabase.auth.getUser(),
+          supabase.from('relatos').select('*').eq('id', id).single()
+        ]);
+
+        const user = userResult?.data?.user;
         if (user) {
           setCurrentUserId(user.id);
         }
 
-        const { data: relatoData, error } = await supabase
-          .from('relatos')
-          .select('*')
-          .eq('id', id)
-          .single();
-
+        const { data: relatoData, error } = relatoResult;
         if (error) throw error;
 
         setReport(relatoData);
@@ -76,26 +78,25 @@ export default function RelatoDetalhado() {
 
         if (relatoData.is_anonimo) {
           setAuthorName("Usuário Anônimo");
-        } else if (relatoData.user_id) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('nome_completo')
-            .eq('id', relatoData.user_id)
-            .single();
-          setAuthorName(profile?.nome_completo || "Usuário Anônimo");
-        } else {
+        }
+
+        const [profileResult, orgaoResult] = await Promise.all([
+          (!relatoData.is_anonimo && relatoData.user_id)
+            ? supabase.from('profiles').select('nome_completo').eq('id', relatoData.user_id).maybeSingle()
+            : Promise.resolve({ data: null }),
+          relatoData.orgao_responsavel_id
+            ? supabase.from('orgaos').select('*').eq('id', relatoData.orgao_responsavel_id).maybeSingle()
+            : Promise.resolve({ data: null })
+        ]);
+
+        if (profileResult?.data?.nome_completo) {
+          setAuthorName(profileResult.data.nome_completo);
+        } else if (!relatoData.is_anonimo) {
           setAuthorName("Usuário Anônimo");
         }
 
-        if (relatoData.orgao_responsavel_id) {
-          const { data: orgao } = await supabase
-            .from('orgaos')
-            .select('*')
-            .eq('id', relatoData.orgao_responsavel_id)
-            .single();
-          if (orgao) {
-            setOrgaoResponsavel(orgao);
-          }
+        if (orgaoResult?.data) {
+          setOrgaoResponsavel(orgaoResult.data);
         }
       } catch (err) {
         console.error("Erro ao carregar relato:", err);
@@ -107,16 +108,7 @@ export default function RelatoDetalhado() {
   }, [id]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
-        {currentUserId ? <LoggedHeader /> : <SimpleHeader backLink="/feed" />}
-        <main className="flex-grow pt-40 pb-16 px-4 flex flex-col items-center justify-center">
-          <Loader2 className="h-10 w-10 text-red-600 animate-spin mb-4" />
-          <p className="font-bold">Buscando relato...</p>
-        </main>
-        <SimpleFooter />
-      </div>
-    );
+    return <RelatoDetalhadoSkeleton currentUserId={currentUserId} />;
   }
 
   if (!report) {
@@ -138,24 +130,26 @@ export default function RelatoDetalhado() {
   const StatusIcon = statusDetails.Icon;
 
   const createdDate = new Date(report.created_at);
-  const dateStr = createdDate.toLocaleDateString('pt-BR');
+  const isValidDate = !isNaN(createdDate.getTime());
+  const dateStr = isValidDate ? createdDate.toLocaleDateString('pt-BR') : '';
+  const timeStr = isValidDate ? createdDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
 
   let locationParts = [report.rua, report.bairro, report.cep ? `CEP: ${report.cep}` : null].filter(Boolean);
   let locationStr = locationParts.join(', ') || 'Localização não informada';
   if (report.referencia) locationStr += ` • Ref: ${report.referencia}`;
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
+    <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col w-full overflow-x-hidden">
       {currentUserId ? <LoggedHeader /> : <SimpleHeader backLink="/feed" />}
 
-      <main className="flex-grow pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <main className="flex-grow pt-20 sm:pt-28 md:pt-32 pb-12 sm:pb-16 px-3.5 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full animate-in fade-in duration-300">
 
         {/* Navigation (Exclusivo para usuários logados, já que não logados possuem o botão no SimpleHeader) */}
         {currentUserId && (
-          <div className="mb-6 flex flex-wrap gap-3">
+          <div className="mb-4 sm:mb-6 flex flex-wrap gap-3">
             <button
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-2 text-sm font-bold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-4 py-2 rounded-xl shadow-sm hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all"
+              onClick={() => safeNavigateBack(navigate, '/feed')}
+              className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl shadow-sm hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all cursor-pointer"
             >
               <ArrowLeft className="h-4 w-4" />
               Voltar
@@ -163,12 +157,13 @@ export default function RelatoDetalhado() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
           {/* COLUNA DA ESQUERDA (Detalhes do Relato) */}
-          <div className="lg:col-span-2 space-y-8 min-w-0">
+          <div className="lg:col-span-2 space-y-6 sm:space-y-8 min-w-0">
             <RelatoHeader
               report={report}
               dateStr={dateStr}
+              timeStr={timeStr}
               isOwner={isOwner}
               authorName={authorName}
               CategoryIcon={CategoryIcon}
@@ -182,12 +177,13 @@ export default function RelatoDetalhado() {
             <RelatoLinhaDoTempo
               report={report}
               dateStr={dateStr}
+              timeStr={timeStr}
               orgao={orgaoResponsavel}
             />
           </div>
 
           {/* COLUNA DA DIREITA (Apoio e Comentários) */}
-          <div className="space-y-6 min-w-0">
+          <div className="space-y-5 sm:space-y-6 min-w-0">
             <RelatoAcoes report={report} isOwner={isOwner} currentUserId={currentUserId} />
             <RelatoComentarios report={report} currentUserId={currentUserId} />
           </div>

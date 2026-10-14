@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import SimpleHeader from "../../components/SimpleHeader";
 import SimpleFooter from "../../components/SimpleFooter";
 import AnonymousTutorial from "../../components/AnonymousTutorial";
 import AnonymousAcceptance from "../../components/AnonymousAcceptance";
 import AnonymousForm from "../../components/AnonymousForm";
+import { useAuth } from "../../hooks/useAuth";
+import { safeNavigateBack } from "../../utils/navigation";
 
 export default function AnonymousReport() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
   const [currentStep, setCurrentStep] = useState(1);
   const [currentSlide, setCurrentSlide] = useState(1);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -41,9 +46,25 @@ export default function AnonymousReport() {
   const toggleAccordion = (id) =>
     setOpenAccordions((prev) => ({ ...prev, [id]: !prev[id] }));
 
+  const handleBack = (e) => {
+    e?.preventDefault();
+    safeNavigateBack(navigate, user ? "/central-cidadao" : "/reportar");
+  };
+
+  const handleLogoClick = (e) => {
+    if (user) {
+      e?.preventDefault();
+      navigate("/central-cidadao");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
-      <SimpleHeader backLink="/reportar" />
+      <SimpleHeader 
+        backLink={-1} 
+        onBackClick={handleBack}
+        onLogoClick={handleLogoClick}
+      />
 
       <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto w-full flex flex-col items-center justify-center min-h-[90vh]">
         <AnonymousTutorial

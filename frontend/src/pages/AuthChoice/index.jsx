@@ -1,14 +1,24 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { LogIn, UserPlus, MapPin } from 'lucide-react';
 import SimpleHeader from '../../components/SimpleHeader';
 import SimpleFooter from '../../components/SimpleFooter';
 import AuthCard from '../../components/AuthCard';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function AuthChoice() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate('/reportar-logado', { replace: true });
+    }
+  }, [user, loading, navigate]);
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white flex flex-col">

@@ -7,7 +7,13 @@ function App() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    const hasSeen = typeof window !== 'undefined' ? sessionStorage.getItem('hasSeenBetaModal') : 'true';
+    let hasSeen = 'true';
+    try {
+      hasSeen = typeof window !== 'undefined' ? sessionStorage.getItem('hasSeenBetaModal') : 'true';
+    } catch {
+      hasSeen = 'true';
+    }
+
     if (!hasSeen) {
       // 1.5s garante que o carregamento inicial (FCP/LCP) conclua totalmente antes de solicitar o modal
       const timer = setTimeout(() => {

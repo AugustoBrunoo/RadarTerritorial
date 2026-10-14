@@ -10,7 +10,7 @@ import { supabase } from "../../lib/supabaseClient";
 
 export default function LoggedReport() {
   const [userName, setUserName] = useState("Cidadão");
-  
+
   const [openAccordions, setOpenAccordions] = useState({});
   const [activeFormSection, setActiveFormSection] = useState(1);
   const [formLocation, setFormLocation] = useState({
@@ -76,7 +76,7 @@ export default function LoggedReport() {
 
       <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto w-full flex flex-col items-center justify-center min-h-[90vh]">
         <div id="step-form" className="w-full max-w-2xl flex flex-col gap-6">
-          
+
           {/* Cabeçalho Informativo */}
           <div className="mb-2 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm border border-zinc-200 dark:border-zinc-800 p-6 rounded-[2rem] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>

@@ -19,32 +19,34 @@ export default function RelatoMidia({ report, locationStr }) {
   const hasCoordinates = report.latitude && report.longitude;
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-4 sm:space-y-6">
       {report.imagem_url ? (
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 shadow-sm">
-          <h2 className="text-xl font-bold flex items-center gap-2 text-zinc-900 dark:text-white mb-4">
-            <ImageIcon className="h-5 w-5 text-zinc-400" /> Foto do Local
+        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm">
+          <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2 text-zinc-900 dark:text-white mb-3 sm:mb-4">
+            <ImageIcon className="h-4 w-4 sm:h-5 sm:w-5 text-zinc-400" /> Foto do Local
           </h2>
-          <div className="w-full h-64 sm:h-80 rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 relative group">
+          <div className="w-full h-48 sm:h-64 md:h-80 rounded-xl sm:rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 relative group">
             <img 
               src={report.imagem_url}
-              alt="Foto do problema"
+              alt={report.categoria_nome ? `Foto do problema: ${report.categoria_nome} em ${report.bairro || 'local'}` : "Foto do problema relatado pelo cidadão"}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
             />
           </div>
         </div>
       ) : null}
 
-      <div className="bg-zinc-50 dark:bg-zinc-900/50 p-6 sm:p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
-        <h2 className="text-xl font-bold flex items-center gap-2 text-zinc-900 dark:text-white mb-2">
-          <MapPin className="h-5 w-5 text-red-600" /> Localização Exata
+      <div className="bg-zinc-50 dark:bg-zinc-900/50 p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+        <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2 text-zinc-900 dark:text-white mb-1.5 sm:mb-2">
+          <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" /> Localização Exata
         </h2>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
+        <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mb-4 sm:mb-6 break-words">
           {locationStr}
         </p>
 
         {hasCoordinates ? (
-          <div className="w-full h-64 rounded-2xl overflow-hidden shadow-inner border border-zinc-200 dark:border-zinc-700 relative z-0">
+          <div className="w-full h-52 sm:h-64 rounded-xl sm:rounded-2xl overflow-hidden shadow-inner border border-zinc-200 dark:border-zinc-700 relative z-0">
             <MapContainer 
               center={[report.latitude, report.longitude]} 
               zoom={15} 
@@ -59,10 +61,10 @@ export default function RelatoMidia({ report, locationStr }) {
             </MapContainer>
           </div>
         ) : (
-          <div className="w-full h-64 border border-zinc-200 dark:border-zinc-800 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-            <div className="flex flex-col items-center opacity-50">
-              <MapPin className="h-10 w-10 text-zinc-400 mb-2" />
-              <span className="font-bold text-sm text-zinc-500">Coordenadas não disponíveis neste relato</span>
+          <div className="w-full h-48 sm:h-64 border border-zinc-200 dark:border-zinc-800 rounded-xl sm:rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+            <div className="flex flex-col items-center opacity-50 px-4 text-center">
+              <MapPin className="h-8 w-8 sm:h-10 sm:w-10 text-zinc-400 mb-2" />
+              <span className="font-bold text-xs sm:text-sm text-zinc-500">Coordenadas não disponíveis neste relato</span>
             </div>
           </div>
         )}

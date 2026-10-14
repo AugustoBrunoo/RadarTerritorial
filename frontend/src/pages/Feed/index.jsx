@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
 import LoggedHeader from '../../components/LoggedHeader';
 import SimpleHeader from '../../components/SimpleHeader';
 import SimpleFooter from '../../components/SimpleFooter';
 import FeedHeader from '../../components/FeedHeader';
 import FeedFilters from '../../components/FeedFilters';
 import FeedList from '../../components/FeedList';
+import FeedSkeleton from '../../components/FeedSkeleton';
 import { supabase } from '../../lib/supabaseClient';
 import { getUserApoios, toggleApoio } from '../../services/interacoesService';
 
@@ -28,33 +28,35 @@ export default function Feed() {
     async function fetchData() {
       try {
         setLoading(true);
-        const { data: { user } } = await supabase.auth.getUser();
+        // Busca usuário autenticado e lista de relatos concorrentemente (elimina cascata de requisições)
+        const [userResponse, relatosResponse] = await Promise.all([
+          supabase.auth.getUser(),
+          supabase.from('relatos').select('*').order('created_at', { ascending: false })
+        ]);
+
+        const user = userResponse?.data?.user;
         if (user) {
           setCurrentUserId(user.id);
         }
-        // Buscamos os relatos manualmente e depois mapeamos os perfis para evitar erro de Foreign Key
-        const { data: fallbackData, error } = await supabase.from('relatos').select('*').order('created_at', { ascending: false });
-        
-        if (error) throw error;
+
+        const fallbackData = relatosResponse?.data;
+        if (relatosResponse?.error) throw relatosResponse.error;
         
         if (fallbackData) {
           const userIds = [...new Set(fallbackData.map(r => r.user_id).filter(Boolean))];
           const orgaosIds = [...new Set(fallbackData.map(r => r.orgao_responsavel_id).filter(Boolean))];
 
-          const [ { data: profiles }, { data: orgaos } ] = await Promise.all([
-            supabase.from('profiles').select('id, nome_completo').in('id', userIds),
-            orgaosIds.length > 0 ? supabase.from('orgaos').select('*').in('id', orgaosIds) : { data: [] }
+          // Busca perfis, órgãos e apoios do usuário concorrentemente
+          const [ { data: profiles }, { data: orgaos }, userApoiosIds ] = await Promise.all([
+            userIds.length > 0 ? supabase.from('profiles').select('id, nome_completo').in('id', userIds) : Promise.resolve({ data: [] }),
+            orgaosIds.length > 0 ? supabase.from('orgaos').select('*').in('id', orgaosIds) : Promise.resolve({ data: [] }),
+            user ? getUserApoios(user.id) : Promise.resolve([])
           ]);
-          
-          let userApoiosIds = [];
-          if (user) {
-            userApoiosIds = await getUserApoios(user.id);
-          }
 
           const mapped = fallbackData.map(report => {
             const prof = profiles?.find(p => p.id === report.user_id);
             const orgao = orgaos?.find(o => o.id == report.orgao_responsavel_id);
-            const userVoted = userApoiosIds.includes(report.id);
+            const userVoted = (userApoiosIds || []).includes(report.id);
             return mapDBReportToFeedCard(report, prof, userVoted, orgao);
           });
           setReports(mapped);
@@ -318,10 +320,7 @@ export default function Feed() {
           />
 
           {loading ? (
-             <div className="lg:col-span-8 flex flex-col items-center justify-center text-center py-20 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2.5rem]">
-               <Loader2 className="h-10 w-10 text-red-600 animate-spin mb-4" />
-               <h3 className="text-xl font-bold mb-1">Carregando Feed Comunitário...</h3>
-             </div>
+            <FeedSkeleton count={itemsPerPage} />
           ) : (
             <FeedList 
               filteredData={filteredData}

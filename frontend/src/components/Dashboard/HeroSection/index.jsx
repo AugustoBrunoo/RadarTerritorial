@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft, Megaphone, HelpCircle } from 'lucide-react';
 import TooltipWrapper from '../../TooltipWrapper';
+import { safeNavigateBack } from '../../../utils/navigation';
 
 export default function HeroSection({ eixoData, notaBairro, notaProgressPct, notaColor, hasScore }) {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export default function HeroSection({ eixoData, notaBairro, notaProgressPct, not
             {eixoData.desc}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <button onClick={() => navigate(-1)} className="inline-flex justify-center items-center gap-2 px-5 py-3 bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 font-bold rounded-xl transition-all shadow-sm active:scale-95 text-sm">
+            <button onClick={() => safeNavigateBack(navigate, '/')} className="inline-flex justify-center items-center gap-2 px-5 py-3 bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 font-bold rounded-xl transition-all shadow-sm active:scale-95 text-sm">
               <ArrowLeft className="h-4 w-4" /> Voltar
             </button>
             <button className="inline-flex justify-center items-center gap-2 px-5 py-3 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl transition-all shadow-sm active:scale-95 text-sm">

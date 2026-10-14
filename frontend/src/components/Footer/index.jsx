@@ -23,8 +23,8 @@ export default function Footer() {
                     {/* Lado Esquerdo */}
                     <div className="flex flex-col items-center md:items-start">
                         <h2 className="text-4xl sm:text-5xl font-black tracking-tighter mb-6">
-                            Pronto para <br className="hidden sm:block" />melhorar <br className="hidden sm:block" />
-                            <span className="text-zinc-400">o seu bairro?</span>
+                            Pronto para <br />melhorar <br />
+                            <span className="block text-zinc-400">o seu bairro?</span>
                         </h2>
                         <Link to={user ? "/reportar-logado" : "/reportar"}
                             className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition-transform inline-flex items-center justify-center gap-2 shadow-lg shadow-zinc-900/20 dark:shadow-white/10 w-full sm:w-auto">

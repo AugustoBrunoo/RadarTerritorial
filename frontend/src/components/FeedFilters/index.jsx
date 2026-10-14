@@ -13,6 +13,8 @@ export default function FeedFilters({
       <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-5 lg:p-6 shadow-sm">
         <button 
           onClick={() => setShowMobileFilters(!showMobileFilters)}
+          aria-expanded={showMobileFilters}
+          aria-label="Alternar painel de filtros"
           className="w-full flex items-center justify-between lg:hidden font-bold text-zinc-900 dark:text-white"
         >
           <div className="flex items-center gap-2">
@@ -26,9 +28,10 @@ export default function FeedFilters({
           
           {/* Search */}
           <div>
-            <label className="block text-xs font-black uppercase tracking-widest text-zinc-400 mb-2">Buscar por palavra-chave</label>
+            <label htmlFor="feed-search-input" className="block text-xs font-black uppercase tracking-widest text-zinc-400 mb-2">Buscar por palavra-chave</label>
             <div className="relative">
               <input 
+                id="feed-search-input"
                 type="text" 
                 placeholder="Ex: esgoto, buraco..."
                 value={filters.search}
@@ -43,7 +46,7 @@ export default function FeedFilters({
 
           {/* Region */}
           <div>
-            <label className="block text-xs font-black uppercase tracking-widest text-zinc-400 mb-2.5">Bairro / Distrito</label>
+            <span className="block text-xs font-black uppercase tracking-widest text-zinc-400 mb-2.5">Bairro / Distrito</span>
             <div className="grid grid-cols-2 gap-2">
               {[
                 { id: 'all', label: 'Todos' },
@@ -54,6 +57,7 @@ export default function FeedFilters({
                 <button 
                   key={region.id}
                   onClick={() => setFilters(prev => ({ ...prev, region: region.id }))}
+                  aria-pressed={filters.region === region.id}
                   className={`text-xs font-bold py-2.5 px-3 rounded-xl border text-center transition-all ${filters.region === region.id ? 'border-zinc-900 bg-zinc-900 text-white dark:border-white dark:bg-white dark:text-zinc-900' : 'border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-800'}`}
                 >
                   {region.label}
@@ -64,8 +68,9 @@ export default function FeedFilters({
 
           {/* Category */}
           <div>
-            <label className="block text-xs font-black uppercase tracking-widest text-zinc-400 mb-2.5">Tipo de Ocorrência</label>
+            <label htmlFor="feed-category-select" className="block text-xs font-black uppercase tracking-widest text-zinc-400 mb-2.5">Tipo de Ocorrência</label>
             <select 
+              id="feed-category-select"
               value={filters.category}
               onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
               className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none transition-all cursor-pointer font-medium shadow-sm"
@@ -81,8 +86,9 @@ export default function FeedFilters({
 
           {/* Urgency */}
           <div>
-            <label className="block text-xs font-black uppercase tracking-widest text-zinc-400 mb-2.5">Nível de Urgência</label>
+            <label htmlFor="feed-urgency-select" className="block text-xs font-black uppercase tracking-widest text-zinc-400 mb-2.5">Nível de Urgência</label>
             <select 
+              id="feed-urgency-select"
               value={filters.urgency}
               onChange={(e) => setFilters(prev => ({ ...prev, urgency: e.target.value }))}
               className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none transition-all cursor-pointer font-medium shadow-sm"
@@ -98,7 +104,8 @@ export default function FeedFilters({
           {/* Clear Filters */}
           <button 
             onClick={clearFilters}
-            className="w-full flex items-center justify-center gap-2 py-3 border border-dashed border-zinc-200 dark:border-zinc-800 text-xs font-bold text-zinc-400 hover:text-red-500 hover:border-red-500 dark:hover:border-red-900/50 rounded-xl transition-all"
+            aria-label="Limpar todos os filtros"
+            className="w-full flex items-center justify-center gap-2 py-3 border border-dashed border-zinc-200 dark:border-zinc-800 text-xs font-bold text-zinc-400 hover:text-red-500 hover:border-red-500 dark:hover:border-red-900/50 rounded-xl transition-all cursor-pointer"
           >
             <RefreshCw className="h-3.5 w-3.5" /> Limpar Filtros
           </button>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router';
 import { ArrowLeft, LayoutDashboard, PlusCircle } from 'lucide-react';
+import { safeNavigateBack } from '../../utils/navigation';
 
 export default function FeedHeader({ isLoggedIn }) {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ export default function FeedHeader({ isLoggedIn }) {
       {isLoggedIn && (
         <div className="mb-6 flex flex-wrap gap-3">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => safeNavigateBack(navigate, isLoggedIn ? '/central-cidadao' : '/')}
             className="flex items-center gap-2 text-sm font-bold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-4 py-2 rounded-xl shadow-sm hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all"
           >
             <ArrowLeft className="h-4 w-4" />

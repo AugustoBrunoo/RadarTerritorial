@@ -1,5 +1,7 @@
 import React from "react";
+import { Link } from "react-router";
 import { AlertCircle, XCircle } from 'lucide-react';
+import { useAuth } from "../../hooks/useAuth";
 
 export default function AnonymousAcceptance({
   currentStep,
@@ -7,6 +9,7 @@ export default function AnonymousAcceptance({
   acceptedTerms,
   setAcceptedTerms,
 }) {
+  const { user } = useAuth();
   return (
     <>
       {/*  ==========================================
@@ -82,12 +85,12 @@ export default function AnonymousAcceptance({
         </button>
         <p className="mt-4 text-xs text-zinc-500">
           Se prefere ter acesso total,{" "}
-          <a
-            href="escolhaReporte.html"
+          <Link
+            to={user ? "/reportar-logado" : "/acesso"}
             className="text-red-600 font-bold underline hover:text-red-700"
           >
-            volte e crie uma conta.
-          </a>
+            {user ? "faça o relato com a sua conta." : "volte e acesse sua conta."}
+          </Link>
         </p>
       </div>
     </>

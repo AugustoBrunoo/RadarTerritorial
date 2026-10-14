@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Loader2 } from 'lucide-react';
 
-import Home from '../pages/Home/index.jsx';
+const Home = React.lazy(() => import('../pages/Home/index.jsx'));
 const SelectReport = React.lazy(() => import('../pages/SelectReport/index.jsx'));
 const AnonymousReport = React.lazy(() => import('../pages/AnonymousReport/index.jsx'));
 const Feed = React.lazy(() => import('../pages/Feed/index.jsx'));
@@ -17,7 +17,7 @@ const Fallback = () => (
 );
 
 export const publicRoutes = [
-  { path: "/", element: <Home /> },
+  { path: "/", element: <Suspense fallback={<Fallback />}><Home /></Suspense> },
   { path: "/reportar", element: <Suspense fallback={<Fallback />}><SelectReport /></Suspense> },
   { path: "/reportar/anonimo", element: <Suspense fallback={<Fallback />}><AnonymousReport /></Suspense> },
   { path: "/termos", element: <Suspense fallback={<Fallback />}><TermosDeUso /></Suspense> },

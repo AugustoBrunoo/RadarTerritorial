@@ -61,7 +61,11 @@ export default function BetaWarningModal({ onClose }) {
     <div className={`fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-opacity duration-500 ease-out ${
       isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
     }`}>
-      <div className={`bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2.5rem] w-full max-w-lg overflow-hidden shadow-2xl relative flex flex-col transition-all duration-500 ease-out transform ${
+      <div 
+        role="dialog"
+        aria-modal="true"
+        aria-label="Aviso de versão em construção"
+        className={`bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2.5rem] w-full max-w-lg overflow-hidden shadow-2xl relative flex flex-col transition-all duration-500 ease-out transform ${
         isVisible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-4"
       }`}>
         

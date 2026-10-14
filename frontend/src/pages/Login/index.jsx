@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import SimpleHeader from '../../components/SimpleHeader';
 import SimpleFooter from '../../components/SimpleFooter';
+import { supabase } from '../../lib/supabaseClient';
 import { signInUser, resendConfirmationEmail } from '../../services/authService';
 import { 
   sanitizeInput, 
@@ -48,6 +49,15 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isResending, setIsResending] = useState(false);
   const [resendSuccessMessage, setResendSuccessMessage] = useState('');
+
+  // Se o usuário já estiver logado, redireciona diretamente para a central do cidadão
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        navigate(redirectPath || '/central-cidadao', { replace: true });
+      }
+    });
+  }, [navigate, redirectPath]);
 
   // Checa status de bloqueio por tentativas excessivas ao montar
   useEffect(() => {

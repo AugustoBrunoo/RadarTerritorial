@@ -9,9 +9,11 @@ import CommunityFeedTeaser from "../../components/CommunityFeedTeaser";
 import LocalIndicatorsCard from "../../components/LocalIndicatorsCard";
 import UtilityLinksCard from "../../components/UtilityLinksCard";
 import UtilityModal from "../../components/UtilityModal";
+import ReportChoiceModal from "../../components/ReportChoiceModal";
 
 export default function CentralCidadao() {
   const [isUtilityModalOpen, setIsUtilityModalOpen] = useState(false);
+  const [isReportChoiceModalOpen, setIsReportChoiceModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
@@ -23,7 +25,7 @@ export default function CentralCidadao() {
 
         {/* LINHA 1: BENTO GRID DE ATALHOS E AÇÃO PRINCIPAL */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
-          <QuickReportCard />
+          <QuickReportCard onOpenReportModal={() => setIsReportChoiceModalOpen(true)} />
           <UserImpactCard />
         </div>
 
@@ -40,6 +42,11 @@ export default function CentralCidadao() {
       <UtilityModal 
         isOpen={isUtilityModalOpen} 
         onClose={() => setIsUtilityModalOpen(false)} 
+      />
+
+      <ReportChoiceModal
+        isOpen={isReportChoiceModalOpen}
+        onClose={() => setIsReportChoiceModalOpen(false)}
       />
     </div>
   );

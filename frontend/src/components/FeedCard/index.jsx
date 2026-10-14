@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { Link } from 'react-router';
 import { 
   MapPin, Flag, Clock, MessageSquare, Award, CheckCircle, 
-  ArrowUp, Building2, BadgeCheck, ThumbsUp, ThumbsDown, Send,
+  ArrowUp, Building2, BadgeCheck, Send,
   Cone, AlertCircle, AlertTriangle, Lightbulb, Droplet, Bus, ShieldAlert, History, Info, Loader2
 } from 'lucide-react';
-import AutoSupportModal from '../AutoSupportModal';
-import DenunciaModal from '../DenunciaModal';
-import AuthRequiredModal from '../AuthRequiredModal';
 import { getComentariosByRelato, adicionarComentario } from '../../services/interacoesService';
+
+const AutoSupportModal = lazy(() => import('../AutoSupportModal'));
+const DenunciaModal = lazy(() => import('../DenunciaModal'));
+const AuthRequiredModal = lazy(() => import('../AuthRequiredModal'));
 
 const iconMap = {
   Cone, AlertCircle, AlertTriangle, Lightbulb, Droplet, Bus, ShieldAlert, History, Info, CheckCircle
@@ -62,7 +63,7 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
         ...prev
       ]);
       setCommentsCount(prev => prev + 1);
-      setCommentInput("");1
+      setCommentInput("");
     } else {
       alert("Erro ao enviar comentário: " + (error || "Tente novamente."));
     }
@@ -101,14 +102,14 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
   const StatusIcon = iconMap[report.statusIcon] || Info;
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm hover:shadow-md transition-all duration-300 animate-in zoom-in-95">
+    <article className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-6 shadow-sm hover:shadow-md transition-all duration-300 animate-in zoom-in-95">
       {/* Cabeçalho do Card */}
       <div className="flex items-start sm:items-center gap-2 sm:gap-3 mb-5">
         <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${report.avatarBg} flex items-center justify-center font-black text-sm flex-shrink-0`}>
           <span>{report.initials}</span>
         </div>
         <div className="flex-1 min-w-0">
-          <h4 className="font-bold text-zinc-900 dark:text-white leading-tight text-sm sm:text-base truncate">{report.author}</h4>
+          <h2 className="font-bold text-zinc-900 dark:text-white leading-tight text-sm sm:text-base truncate">{report.author}</h2>
           <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 flex items-center gap-1 font-semibold">
             <MapPin className="h-3 w-3 flex-shrink-0" /> 
             <span className="truncate" title={report.location}>{report.location}</span>
@@ -123,7 +124,8 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
           </div>
           <button 
             onClick={() => setShowReportModal(true)}
-            className="text-zinc-400 hover:text-red-500 transition-colors p-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 hover:bg-red-50 dark:hover:bg-red-900/20 border border-transparent hover:border-red-200 dark:hover:border-red-900/30 flex-shrink-0" 
+            aria-label="Denunciar publicação"
+            className="text-zinc-500 dark:text-zinc-400 hover:text-red-500 dark:hover:text-red-400 transition-colors p-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-950 hover:bg-red-50 dark:hover:bg-red-900/20 border border-transparent hover:border-red-200 dark:hover:border-red-900/30 flex-shrink-0 cursor-pointer" 
             title="Denunciar publicação"
           >
             <Flag className="h-3.5 w-3.5" />
@@ -175,10 +177,10 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
                 <Building2 className="h-5 w-5 text-zinc-400" />
               </div>
               <div>
-                <h5 className="text-sm font-black text-zinc-900 dark:text-white flex items-center gap-1.5">
+                <h3 className="text-sm font-black text-zinc-900 dark:text-white flex items-center gap-1.5">
                   {report.organName}
                   <BadgeCheck className="h-4 w-4 text-blue-500" title="Órgão Verificado" />
-                </h5>
+                </h3>
                 <p className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Respondido em {report.responseDate}</p>
               </div>
             </div>
@@ -187,8 +189,6 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
           <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed pl-2 mb-5 font-medium italic">
             {report.responseText}
           </p>
-
-
         </div>
       )}
 
@@ -207,7 +207,8 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
         <div className="flex flex-wrap items-stretch gap-2 justify-end sm:justify-end w-full sm:w-auto">
           <button 
             onClick={toggleComments}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-black tracking-wide bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 transition-all"
+            aria-label={`${commentsCount} comentários. Clique para ${showComments ? 'ocultar' : 'exibir'}`}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-black tracking-wide bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 transition-all cursor-pointer"
           >
             <MessageSquare className="h-4 w-4" />
             <span className="whitespace-nowrap">{commentsCount}</span>
@@ -222,7 +223,8 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
           
           <button 
             onClick={handleSupportClick}
-            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-black tracking-wide border transition-all ${supportedClass}`}
+            aria-label={report.userHasVoted ? "Você já apoiou este relato. Clique para remover apoio" : "Apoiar este relato"}
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-black tracking-wide border transition-all cursor-pointer ${supportedClass}`}
           >
             <SupportIcon className="h-4 w-4" />
             <span className="whitespace-nowrap inline">{supportText}</span>
@@ -233,7 +235,7 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
       {/* Sessão de Comentários */}
       {showComments && (
         <div className="flex flex-col gap-4 mt-5 pt-5 border-t border-zinc-100 dark:border-zinc-800/50 animate-in slide-in-from-top-2">
-          <h5 className="text-xs font-black uppercase tracking-widest text-zinc-400">Comentários Locais</h5>
+          <h3 className="text-xs font-black uppercase tracking-widest text-zinc-400">Comentários Locais</h3>
           
           <div className="space-y-3 max-h-56 overflow-y-auto custom-scroll pr-1">
             {isLoadingComments ? (
@@ -275,7 +277,7 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
                 );
               })
             ) : (
-              <p className="text-xs text-zinc-400 italic text-center py-4 bg-zinc-50/50 dark:bg-zinc-950/30 rounded-2xl">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 italic text-center py-4 bg-zinc-50/50 dark:bg-zinc-950/30 rounded-2xl">
                 Nenhum comentário ainda. Seja o primeiro a opinar!
               </p>
             )}
@@ -288,12 +290,14 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
               onChange={(e) => setCommentInput(e.target.value)}
               placeholder={currentUserId ? "Escreva seu comentário..." : "Faça login para comentar"} 
               disabled={!currentUserId || isSubmittingComment}
+              aria-label="Escreva seu comentário"
               className="w-full bg-zinc-50 dark:bg-zinc-950 border-transparent rounded-xl pl-4 pr-12 py-3 text-sm text-zinc-900 dark:text-white focus:ring-2 focus:ring-zinc-200 dark:focus:ring-zinc-800 focus:bg-white dark:focus:bg-zinc-900 outline-none transition-all placeholder-zinc-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <button 
               onClick={handleComentar}
               disabled={!currentUserId || !commentInput.trim() || isSubmittingComment} 
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-zinc-400 flex items-center justify-center"
+              aria-label="Enviar comentário"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-zinc-400 flex items-center justify-center cursor-pointer"
             >
               {isSubmittingComment ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </button>
@@ -301,9 +305,21 @@ export default function FeedCard({ report, onSupport, currentUserId }) {
         </div>
       )}
 
-      <AutoSupportModal isOpen={showModal} onClose={() => setShowModal(false)} />
-      <DenunciaModal isOpen={showReportModal} onClose={() => setShowReportModal(false)} reportId={report.id} currentUserId={currentUserId} />
-      <AuthRequiredModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} message="Crie uma conta para interagir com relatos." />
-    </div>
+      {showModal && (
+        <Suspense fallback={null}>
+          <AutoSupportModal isOpen={showModal} onClose={() => setShowModal(false)} />
+        </Suspense>
+      )}
+      {showReportModal && (
+        <Suspense fallback={null}>
+          <DenunciaModal isOpen={showReportModal} onClose={() => setShowReportModal(false)} reportId={report.id} currentUserId={currentUserId} />
+        </Suspense>
+      )}
+      {showAuthModal && (
+        <Suspense fallback={null}>
+          <AuthRequiredModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} message="Crie uma conta para interagir com relatos." />
+        </Suspense>
+      )}
+    </article>
   );
 }

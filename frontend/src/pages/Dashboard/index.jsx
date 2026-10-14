@@ -25,7 +25,12 @@ export default function Dashboard() {
   const [timeFilter, setTimeFilter] = useState('all');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof document !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return true;
+  });
   const [currentTime, setCurrentTime] = useState('');
   
   const [realDatabase, setRealDatabase] = useState([]);
@@ -66,6 +71,9 @@ export default function Dashboard() {
     html.classList.toggle('dark');
     const isDark = html.classList.contains('dark');
     setIsDarkMode(isDark);
+    try {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    } catch (e) {}
     ChartJS.defaults.color = isDark ? '#a1a1aa' : '#52525b';
     ChartJS.defaults.scale.grid.color = isDark ? '#27272a' : '#e4e4e7';
     ChartJS.defaults.plugins.tooltip.backgroundColor = isDark ? 'rgba(9, 9, 11, 0.9)' : 'rgba(255, 255, 255, 0.9)';

@@ -48,6 +48,7 @@ export default function AiAssistantChatMessages({
   isTyping,
   chatStep,
   handleStartDecision,
+  handleLoggedStartDecision,
   handleDisclaimerDecision,
   handleLocationDecision,
   handleLocationConfirmDecision,
@@ -115,6 +116,28 @@ export default function AiAssistantChatMessages({
                 <button onClick={() => handleStartDecision('REGISTER')} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3.5 px-4 rounded-xl text-xs sm:text-sm transition-transform active:scale-95 shadow-md flex items-center justify-center gap-2">
                   <Sparkles className="h-4 w-4" /> Criar nova conta
                 </button>
+              </div>
+            )}
+
+            {msg.extraData?.type === 'logged_start_options' && !msg.extraData.hideOptions && (
+              <div className="flex flex-col gap-2.5 mt-2 w-full">
+                <div className="flex flex-col sm:flex-row gap-2.5 w-full">
+                  <button 
+                    onClick={() => handleLoggedStartDecision && handleLoggedStartDecision('ACCOUNT')} 
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white font-extrabold py-3.5 px-4 rounded-xl text-xs sm:text-sm transition-transform active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <UserCheck className="h-4 w-4" /> Continuar com minha conta
+                  </button>
+                  <button 
+                    onClick={() => handleLoggedStartDecision && handleLoggedStartDecision('ANONYMOUS')} 
+                    className="flex-1 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-100 font-extrabold py-3.5 px-4 rounded-xl text-xs sm:text-sm transition-transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <EyeOff className="h-4 w-4" /> Enviar como Anônimo
+                  </button>
+                </div>
+                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 text-center sm:text-left font-medium">
+                  💡 No modo anônimo, sua identidade é 100% protegida e o relato não será vinculado às suas demandas.
+                </p>
               </div>
             )}
 
@@ -404,7 +427,11 @@ export default function AiAssistantChatMessages({
                     {/* Cabeçalho do Post */}
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 border-2 border-red-100 dark:border-red-900/30 flex items-center justify-center flex-shrink-0">
-                        <ShieldCheck className="h-5 w-5 text-red-600" />
+                        {userName === "Cidadão Anônimo" || !userName ? (
+                          <EyeOff className="h-5 w-5 text-zinc-500 dark:text-zinc-400" />
+                        ) : (
+                          <ShieldCheck className="h-5 w-5 text-red-600" />
+                        )}
                       </div>
                       <div>
                         <h4 className="font-bold text-zinc-900 dark:text-white leading-tight text-sm">

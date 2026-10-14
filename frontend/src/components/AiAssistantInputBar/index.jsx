@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, Eye, EyeOff, ArrowRight, Info } from 'lucide-react';
 
 export default function AiAssistantInputBar({
@@ -20,6 +20,7 @@ export default function AiAssistantInputBar({
   onOpenHowItWorks
 }) {
   const [showTooltip, setShowTooltip] = useState(true);
+  const textareaRef = useRef(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -34,8 +35,17 @@ export default function AiAssistantInputBar({
     }
   }, [chatStep]);
 
+  // Auto-resize textarea height when input value changes
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = `${Math.min(Math.max(scrollHeight, 38), 140)}px`;
+    }
+  }, [inputValue, showPasswordToggle]);
+
   return (
-    <div className="p-1.5 sm:p-3 relative flex items-center gap-1 sm:gap-2 mb-2 sm:mb-4 mx-2 sm:mx-4 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full shadow-lg shadow-zinc-200/20 dark:shadow-black/40">
+    <div className="p-1.5 sm:p-2.5 relative flex items-end gap-1 sm:gap-2 mb-2 sm:mb-4 mx-2 sm:mx-4 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-3xl sm:rounded-[2rem] shadow-lg shadow-zinc-200/20 dark:shadow-black/40 transition-all">
       
       {/* SUGGESTIONS DROPDOWN */}
       {showSuggestions && chatStep === 'INPUT_LOCATION_MANUAL' && (
@@ -61,12 +71,13 @@ export default function AiAssistantInputBar({
         </div>
       )}
 
-      <div className="relative shrink-0">
+      <div className="relative shrink-0 mb-0.5 sm:mb-1">
         <button
           type="button"
           onClick={onOpenHowItWorks}
+          aria-label="Como funciona a IA?"
           title="Como funciona a IA?"
-          className="p-3 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full transition-colors focus:outline-none"
+          className="p-2.5 sm:p-3 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 hover:bg-zinc-200/60 dark:hover:bg-zinc-800 rounded-full transition-colors focus:outline-none cursor-pointer"
         >
           <Info className="h-5 w-5" />
         </button>
@@ -79,35 +90,63 @@ export default function AiAssistantInputBar({
         </div>
       </div>
 
-      <div className="flex-1 relative flex items-center">
-        <input
-          type={inputType}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={(e) => {
-            if (isSubmitDisabled && e.key === 'Enter') return;
-            if (handleKeyPress) handleKeyPress(e);
-          }}
-          disabled={!isInputEnabled}
-          placeholder={placeholderText}
-          className="w-full bg-transparent border-transparent pl-2 sm:pl-4 pr-8 sm:pr-12 py-2 sm:py-3 text-[13px] sm:text-base outline-none focus:ring-0 focus:border-transparent transition-all placeholder-zinc-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed text-zinc-900 dark:text-zinc-100 truncate"
-        />
-
-        {showPasswordToggle && (
-          <button
-            type="button"
-            onClick={togglePasswordVisibility}
-            className="absolute right-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
-          >
-            {inputType === 'password' ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
-          </button>
+      <div className="flex-1 relative flex items-center min-w-0 py-0.5 sm:py-1">
+        {showPasswordToggle ? (
+          <div className="w-full relative flex items-center">
+            <input
+              type={inputType}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  if (isSubmitDisabled || !isInputEnabled) return;
+                  if (handleKeyPress) handleKeyPress(e);
+                  else sendUserMessage();
+                }
+              }}
+              aria-label={inputType === 'password' ? 'Digite sua senha' : (placeholderText || 'Mensagem para o assistente')}
+              disabled={!isInputEnabled}
+              placeholder={placeholderText}
+              className="w-full bg-transparent border-transparent pl-2 sm:pl-3 pr-10 py-2 sm:py-2.5 text-[13px] sm:text-base outline-none focus:ring-0 focus:border-transparent transition-all placeholder-zinc-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed text-zinc-900 dark:text-zinc-100"
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              aria-label={inputType === 'password' ? 'Mostrar senha' : 'Ocultar senha'}
+              className="absolute right-2 sm:right-3 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors cursor-pointer"
+            >
+              {inputType === 'password' ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+            </button>
+          </div>
+        ) : (
+          <textarea
+            ref={textareaRef}
+            rows={1}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (isSubmitDisabled || !isInputEnabled || inputValue.trim() === '') return;
+                if (handleKeyPress) handleKeyPress(e);
+                else sendUserMessage();
+                return;
+              }
+            }}
+            aria-label={placeholderText || 'Escreva sua mensagem para o assistente'}
+            disabled={!isInputEnabled}
+            placeholder={placeholderText}
+            className="w-full bg-transparent border-none pl-2 sm:pl-3 pr-2 py-2 sm:py-2.5 text-[13px] sm:text-base outline-none focus:ring-0 focus:border-transparent transition-all placeholder-zinc-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed text-zinc-900 dark:text-zinc-100 resize-none max-h-36 overflow-y-auto break-words [overflow-wrap:anywhere] leading-relaxed"
+            style={{ minHeight: '38px', height: '38px' }}
+          />
         )}
       </div>
 
       <button
         onClick={sendUserMessage}
         disabled={!isInputEnabled || inputValue.trim() === '' || isSubmitDisabled}
-        className="p-2.5 sm:p-3 bg-red-600 hover:bg-red-700 disabled:bg-zinc-400 disabled:cursor-not-allowed active:scale-95 text-white rounded-full transition-all duration-150 shadow-md shadow-red-600/20 flex items-center justify-center shrink-0"
+        aria-label="Enviar mensagem"
+        className="p-2.5 sm:p-3 bg-red-600 hover:bg-red-700 disabled:bg-zinc-400 dark:disabled:bg-zinc-700 disabled:cursor-not-allowed active:scale-95 text-white rounded-full transition-all duration-150 shadow-md shadow-red-600/20 flex items-center justify-center shrink-0 mb-0.5 sm:mb-1 cursor-pointer"
       >
         <ArrowRight className="h-5 w-5" />
       </button>

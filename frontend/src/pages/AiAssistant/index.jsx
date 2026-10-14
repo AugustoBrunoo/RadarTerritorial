@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { MapPin, Circle, CheckCircle2 } from 'lucide-react';
 import AiAssistantHowItWorksModal from '../../components/AiAssistantHowItWorksModal';
 import AiAssistantBetaModal from '../../components/AiAssistantBetaModal';
+import AiAssistantExitModal from '../../components/AiAssistantExitModal';
 import AiAssistantChatMessages from '../../components/AiAssistantChatMessages';
 import AiAssistantInputBar from '../../components/AiAssistantInputBar';
 import SimpleHeader from '../../components/SimpleHeader';
@@ -15,17 +16,26 @@ import { useAiSeverity } from '../../hooks/useAiSeverity';
 import { useAiDescription } from '../../hooks/useAiDescription';
 import { useAiReview } from '../../hooks/useAiReview';
 import { useAuth } from '../../hooks/useAuth';
+import { safeNavigateBack } from '../../utils/navigation';
 
 export default function AiAssistant() {
+  const navigate = useNavigate();
   const { user, profile, loading: authLoading } = useAuth();
   const [isHowModalOpen, setIsHowModalOpen] = useState(false);
   const [isBetaModalOpen, setIsBetaModalOpen] = useState(false);
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+  const [pendingExitTarget, setPendingExitTarget] = useState(null);
+  const [isAnonymousSession, setIsAnonymousSession] = useState(false);
 
   useEffect(() => {
-    const hasSeenBetaModal = localStorage.getItem('seenAiBetaModal');
-    if (!hasSeenBetaModal) {
-      setIsBetaModalOpen(true);
-      localStorage.setItem('seenAiBetaModal', 'true');
+    try {
+      const hasSeenBetaModal = localStorage.getItem('seenAiBetaModal');
+      if (!hasSeenBetaModal) {
+        setIsBetaModalOpen(true);
+        localStorage.setItem('seenAiBetaModal', 'true');
+      }
+    } catch {
+      // Ignora erro caso o armazenamento local esteja bloqueado no navegador mobile
     }
   }, []);
 
@@ -143,6 +153,7 @@ export default function AiAssistant() {
   });
 
   // 4. Review Logic Hook
+  const effectiveUserEmail = isAnonymousSession ? '' : (user?.email || userEmail);
   const {
     handleReviewDecision,
     handleReviewEditDecision,
@@ -158,7 +169,7 @@ export default function AiAssistant() {
     isAiAssisted,
     formSeverity,
     formDescription,
-    userEmail
+    userEmail: effectiveUserEmail
   });
 
   useEffect(() => {
@@ -173,7 +184,7 @@ export default function AiAssistant() {
       const timeoutId = setTimeout(() => {
         setIsTyping(false);
         if (user) {
-          setChatStep('LOCATION_START');
+          setChatStep('LOGGED_START');
           const fullName = profile?.nome_completo || user.user_metadata?.username || 'Cidadão';
           const firstName = fullName.split(' ')[0];
           
@@ -181,8 +192,8 @@ export default function AiAssistant() {
             {
               id: Date.now(),
               sender: 'ai',
-              text: `Olá, **${firstName}**! Tudo bem? Já identifiquei que você está conectado. Para começarmos o seu relato, preciso saber onde aconteceu o problema.`,
-              extraData: { type: 'location_start_options' },
+              text: `Olá, **${firstName}**! Tudo bem? Já identifiquei que você está conectado à sua conta.\n\nComo você prefere prosseguir com este relato?`,
+              extraData: { type: 'logged_start_options' },
               timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             }
           ]);
@@ -205,12 +216,42 @@ export default function AiAssistant() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading, user, profile]);
 
+  const handleLoggedStartDecision = (choice) => {
+    setMessages(prev => prev.map(msg =>
+      msg.extraData?.type === 'logged_start_options' ? { ...msg, extraData: { ...msg.extraData, hideOptions: true } } : msg
+    ));
+
+    const fullName = profile?.nome_completo || user?.user_metadata?.username || 'Cidadão';
+    const firstName = fullName.split(' ')[0];
+
+    if (choice === 'ACCOUNT') {
+      setIsAnonymousSession(false);
+      addMessage('user', '👤 Continuar com minha conta');
+      setIsTyping(true);
+      setTimeout(() => {
+        setIsTyping(false);
+        addMessage('ai', `Perfeito, **${firstName}**! O seu relato será vinculado à sua conta pública. Para começarmos, preciso saber onde aconteceu o problema:`);
+        triggerLocationStart();
+      }, 800);
+    } else if (choice === 'ANONYMOUS') {
+      setIsAnonymousSession(true);
+      addMessage('user', '🕵️ Enviar como Anônimo');
+      setChatStep('ANONYMOUS_DISCLAIMER');
+      setIsTyping(true);
+      setTimeout(() => {
+        setIsTyping(false);
+        addMessage('ai', null, { type: 'anonymous_disclaimer' });
+      }, 800);
+    }
+  };
+
   const handleStartDecision = (choice) => {
     setMessages(prev => prev.map(msg =>
       msg.extraData?.type === 'start_options' ? { ...msg, extraData: { ...msg.extraData, hideOptions: true } } : msg
     ));
 
     if (choice === 'ANONYMOUS') {
+      setIsAnonymousSession(true);
       addMessage('user', 'Enviar como Anônimo');
       setChatStep('ANONYMOUS_DISCLAIMER');
 
@@ -220,6 +261,7 @@ export default function AiAssistant() {
         addMessage('ai', null, { type: 'anonymous_disclaimer' });
       }, 1000);
     } else if (choice === 'LOGIN') {
+      setIsAnonymousSession(false);
       addMessage('user', '🔑 Já tenho conta / Fazer Login');
       setChatStep('LOGIN_EMAIL');
 
@@ -229,6 +271,7 @@ export default function AiAssistant() {
         addMessage('ai', 'Ótimo! Para vincular este relato à sua conta e permitir que você receba atualizações sobre a resolução, por favor **digite o seu e-mail cadastrado**:');
       }, 1000);
     } else if (choice === 'REGISTER') {
+      setIsAnonymousSession(false);
       addMessage('user', '✨ Criar nova conta');
       setChatStep('REGISTER_NAME');
 
@@ -277,8 +320,34 @@ export default function AiAssistant() {
   else if (chatStep === 'ANONYMOUS_DECLINED') placeholderText = "Sessão encerrada.";
   else if (chatStep === 'LOCATION_PAUSED') placeholderText = "Fluxo de localização concluído.";
 
+  const executeExitNavigation = (target) => {
+    if (target === -1 || target === '-1') {
+      safeNavigateBack(navigate, '/');
+    } else {
+      navigate(target || '/');
+    }
+  };
+
+  const handleRequestExit = (target = '/') => {
+    const isCompleted = messages.some(m => m.extraData?.type === 'success_options');
+    if (isCompleted) {
+      executeExitNavigation(target);
+      return;
+    }
+    setPendingExitTarget(target);
+    setIsExitModalOpen(true);
+  };
+
+  const handleConfirmExit = () => {
+    setIsExitModalOpen(false);
+    executeExitNavigation(pendingExitTarget ?? '/');
+  };
+
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') sendUserMessage();
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendUserMessage();
+    }
   };
 
   const sendUserMessage = () => {
@@ -321,32 +390,37 @@ export default function AiAssistant() {
   const renderPasswordStrengthWidget = () => {
     if (!['REGISTER_PASSWORD', 'REGISTER_CONFIRM_PASSWORD'].includes(chatStep)) return null;
 
-    const currentPass = chatStep === 'REGISTER_PASSWORD' ? inputValue : registerPassword;
-    const confirmPass = chatStep === 'REGISTER_CONFIRM_PASSWORD' ? inputValue : '';
+    const isConfirmStep = chatStep === 'REGISTER_CONFIRM_PASSWORD';
+    const currentPass = inputValue;
 
     const checks = {
       length: currentPass.length >= 8,
       upper: /[A-Z]/.test(currentPass),
       number: /[0-9]/.test(currentPass),
       symbol: /[!@#$%^&*(),.?":{}|<>]/.test(currentPass),
-      match: chatStep === 'REGISTER_CONFIRM_PASSWORD' ? currentPass === confirmPass && confirmPass.length > 0 : false
+      match: isConfirmStep ? currentPass === registerPassword && currentPass.length > 0 : false
     };
 
     const requirements = [
       { id: 'length', text: 'Mínimo 8 caracteres', pass: checks.length },
       { id: 'upper', text: 'Letra maiúscula', pass: checks.upper },
       { id: 'number', text: 'Um número', pass: checks.number },
-      { id: 'symbol', text: 'Símbolo (!@#)', pass: checks.symbol },
-      { id: 'match', text: 'Senhas conferem', pass: checks.match, dimInFirstStep: chatStep === 'REGISTER_PASSWORD' }
+      { id: 'symbol', text: 'Símbolo (!@#)', pass: checks.symbol }
     ];
+
+    if (isConfirmStep) {
+      requirements.push({ id: 'match', text: 'Senhas conferem', pass: checks.match });
+    }
 
     return (
       <div className="mx-4 mb-4 p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm animate-in fade-in slide-in-from-bottom-2">
-        <h4 className="text-sm font-bold text-zinc-800 dark:text-zinc-100 mb-2">Força da senha</h4>
+        <h2 className="text-sm font-bold text-zinc-800 dark:text-zinc-100 mb-2">
+          {isConfirmStep ? 'Confirmação da senha' : 'Força da senha'}
+        </h2>
         <div className="h-px w-full bg-zinc-100 dark:bg-zinc-800 mb-3" />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {requirements.map(req => (
-            <div key={req.id} className={`flex items-center gap-2 text-sm transition-all duration-300 ${req.pass ? 'text-green-600 dark:text-green-500 font-semibold' : (req.dimInFirstStep ? 'text-zinc-300 dark:text-zinc-700' : 'text-zinc-500 dark:text-zinc-400')}`}>
+            <div key={req.id} className={`flex items-center gap-2 text-sm transition-all duration-300 ${req.pass ? 'text-green-600 dark:text-green-500 font-semibold' : 'text-zinc-500 dark:text-zinc-400'}`}>
               {req.pass ? <CheckCircle2 className="h-4 w-4 scale-110 transition-transform" /> : <Circle className="h-4 w-4" />}
               <span>{req.text}</span>
             </div>
@@ -368,9 +442,14 @@ export default function AiAssistant() {
 
   return (
     <div className="h-screen overflow-hidden bg-white dark:bg-zinc-950 flex flex-col font-sans">
-      <SimpleHeader backLink={-1} />
+      <SimpleHeader 
+        backLink={-1} 
+        onLogoClick={() => handleRequestExit('/')}
+        onBackClick={() => handleRequestExit(-1)}
+      />
 
       <main className="flex-1 min-h-0 w-full max-w-5xl mx-auto flex flex-col px-2 sm:px-6 lg:px-8 pb-2 sm:pb-4 pt-20 sm:pt-28 animate-in slide-in-from-bottom-4 duration-500">
+        <h1 className="sr-only">Assistente Virtual do Radar Territorial</h1>
 
         <div className="flex flex-col flex-1 relative min-h-0 w-full">
           <AiAssistantChatMessages
@@ -378,6 +457,7 @@ export default function AiAssistant() {
             isTyping={isTyping}
             chatStep={chatStep}
             handleStartDecision={handleStartDecision}
+            handleLoggedStartDecision={handleLoggedStartDecision}
             handleDisclaimerDecision={handleDisclaimerDecision}
             handleLocationDecision={handleLocationDecision}
             handleLocationConfirmDecision={handleLocationConfirmDecision}
@@ -402,7 +482,7 @@ export default function AiAssistant() {
             handleReviewDecision={handleReviewDecision}
             handleReviewEditDecision={handleReviewEditDecision}
             handleSuccessDecision={handleSuccessDecision}
-            userName={userName}
+            userName={isAnonymousSession ? 'Cidadão Anônimo' : (userName || profile?.nome_completo || user?.user_metadata?.username || '')}
             termsAccepted={termsAccepted}
             setTermsAccepted={setTermsAccepted}
             isResendDisabled={isResendDisabled}
@@ -431,7 +511,7 @@ export default function AiAssistant() {
           />
 
           <div className="text-center pb-2">
-            <p className="text-[10px] sm:text-xs text-zinc-400 dark:text-zinc-500 font-medium px-4">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium px-4">
               A Inteligência Artificial do Radar Territorial está em fase Beta (v2.0.0) e pode apresentar erros ou inconsistências.
             </p>
           </div>
@@ -440,6 +520,11 @@ export default function AiAssistant() {
 
       <AiAssistantHowItWorksModal isOpen={isHowModalOpen} onClose={() => setIsHowModalOpen(false)} />
       <AiAssistantBetaModal isOpen={isBetaModalOpen} onClose={() => setIsBetaModalOpen(false)} />
+      <AiAssistantExitModal
+        isOpen={isExitModalOpen}
+        onClose={() => setIsExitModalOpen(false)}
+        onConfirm={handleConfirmExit}
+      />
     </div>
   );
 }

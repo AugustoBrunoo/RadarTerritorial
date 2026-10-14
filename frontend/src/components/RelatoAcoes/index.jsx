@@ -96,36 +96,36 @@ export default function RelatoAcoes({ report, isOwner, currentUserId }) {
 
   return (
     <>
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 relative shadow-sm">
-        <div className="text-center mb-6">
-          <div className="text-4xl font-black text-zinc-900 dark:text-white flex items-center justify-center gap-2 mb-1">
-            <Flame className="h-8 w-8 text-red-600" /> {apoiosCount}
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 relative shadow-sm">
+        <div className="text-center mb-4 sm:mb-6">
+          <div className="text-3xl sm:text-4xl font-black text-zinc-900 dark:text-white flex items-center justify-center gap-1.5 sm:gap-2 mb-1">
+            <Flame className="h-7 w-7 sm:h-8 sm:w-8 text-red-600" /> {apoiosCount}
           </div>
-          <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Apoios da Vizinhança</p>
+          <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-wider">Apoios da Vizinhança</p>
         </div>
 
         <button 
           onClick={handleApoiar}
           disabled={isLiking}
-          className={`w-full font-bold py-4 rounded-2xl transition-all shadow-[0_0_20px_rgba(220,38,38,0.2)] flex items-center justify-center gap-2 mb-3 active:scale-95 disabled:opacity-70 disabled:cursor-wait
+          className={`w-full font-bold py-3 sm:py-4 rounded-xl sm:rounded-2xl transition-all shadow-[0_0_20px_rgba(220,38,38,0.2)] flex items-center justify-center gap-2 mb-2.5 sm:mb-3 text-sm sm:text-base active:scale-95 disabled:opacity-70 disabled:cursor-wait cursor-pointer
             ${hasSupported 
               ? "bg-red-50 dark:bg-red-950/40 text-red-600 border-2 border-red-200 dark:border-red-900 shadow-none hover:bg-red-100 dark:hover:bg-red-900/40" 
               : "bg-red-600 hover:bg-red-500 text-white hover:shadow-[0_0_25px_rgba(239,68,68,0.4)]"
             }
           `}
         >
-          {isLiking ? <Loader2 className="h-5 w-5 animate-spin" /> : <ThumbsUp className={`h-5 w-5 ${hasSupported ? "fill-red-600" : ""}`} />} 
+          {isLiking ? <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin" /> : <ThumbsUp className={`h-4 w-4 sm:h-5 sm:w-5 ${hasSupported ? "fill-red-600" : ""}`} />} 
           {hasSupported ? "Apoiado" : "Apoiar Causa"}
         </button>
 
         <button 
           onClick={() => setShowShareModal(true)}
-          className="w-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white font-bold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2 border border-zinc-200 dark:border-zinc-700 active:scale-95"
+          className="w-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white font-bold py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl transition-all flex items-center justify-center gap-2 border border-zinc-200 dark:border-zinc-700 active:scale-95 text-xs sm:text-sm cursor-pointer"
         >
-          <Share2 className="h-5 w-5" /> Compartilhar
+          <Share2 className="h-4 w-4 sm:h-5 sm:w-5" /> Compartilhar
         </button>
 
-        <p className="text-[11px] text-zinc-500 text-center mt-4 font-medium leading-relaxed">
+        <p className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 text-center mt-3 sm:mt-4 font-medium leading-relaxed">
           Ao apoiar, este relato ganha mais relevância no ranking da região e pressiona as autoridades por uma solução rápida.
         </p>
       </div>
@@ -133,53 +133,60 @@ export default function RelatoAcoes({ report, isOwner, currentUserId }) {
       {/* Modal de Compartilhamento */}
       {showShareModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-zinc-950 rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl border border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-black text-zinc-900 dark:text-white flex items-center gap-2">
-                <Share2 className="h-5 w-5 text-zinc-400" />
+          <div 
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="share-modal-title"
+            className="bg-white dark:bg-zinc-950 rounded-2xl sm:rounded-3xl p-5 sm:p-8 max-w-sm w-full shadow-2xl border border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200"
+          >
+            <div className="flex justify-between items-center mb-4 sm:mb-6">
+              <h3 id="share-modal-title" className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white flex items-center gap-2">
+                <Share2 className="h-4 w-4 sm:h-5 sm:w-5 text-zinc-400" />
                 Compartilhar
               </h3>
               <button 
                 onClick={() => setShowShareModal(false)}
-                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors bg-zinc-100 dark:bg-zinc-800 p-2 rounded-full"
+                aria-label="Fechar modal de compartilhamento"
+                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors bg-zinc-100 dark:bg-zinc-800 p-1.5 sm:p-2 rounded-full cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
             
-            <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-6 font-medium">
+            <p className="text-zinc-600 dark:text-zinc-400 text-xs sm:text-sm mb-4 sm:mb-6 font-medium">
               Envie este relato para seus vizinhos ou grupos. Quanto mais apoios, mais rápido o problema é resolvido!
             </p>
 
-            <div className="flex bg-zinc-100 dark:bg-zinc-900 p-2 rounded-xl mb-6 border border-zinc-200 dark:border-zinc-800">
+            <div className="flex bg-zinc-100 dark:bg-zinc-900 p-1.5 sm:p-2 rounded-xl mb-4 sm:mb-6 border border-zinc-200 dark:border-zinc-800">
               <input 
                 type="text" 
                 readOnly 
                 value={shareUrl}
+                aria-label="Link do relato para copiar"
                 className="bg-transparent text-zinc-500 dark:text-zinc-400 text-xs w-full px-2 outline-none"
               />
               <button 
                 onClick={handleCopyLink}
-                className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white text-xs font-bold px-4 py-2 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 transition-colors flex items-center gap-2 shrink-0"
+                className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white text-xs font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 transition-colors flex items-center gap-1.5 sm:gap-2 shrink-0 cursor-pointer"
               >
-                {copied ? <Check className="h-4 w-4 text-green-500" /> : <Link2 className="h-4 w-4" />}
+                {copied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Link2 className="h-3.5 w-3.5" />}
                 {copied ? "Copiado" : "Copiar"}
               </button>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-2.5 sm:space-y-3">
               <button 
                 onClick={handleWhatsAppShare}
-                className="w-full bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] font-bold py-3.5 px-4 rounded-xl transition-all flex items-center gap-3 border border-[#25D366]/20"
+                className="w-full bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] font-bold py-3 sm:py-3.5 px-3.5 sm:px-4 rounded-xl transition-all flex items-center gap-2.5 sm:gap-3 border border-[#25D366]/20 text-xs sm:text-sm cursor-pointer"
               >
-                <MessageCircle className="h-5 w-5" /> Enviar pelo WhatsApp
+                <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" /> Enviar pelo WhatsApp
               </button>
 
               <button 
                 onClick={handleInstagramShare}
-                className="w-full bg-gradient-to-r from-[#833AB4]/10 via-[#FD1D1D]/10 to-[#F56040]/10 hover:opacity-80 text-[#E1306C] font-bold py-3.5 px-4 rounded-xl transition-all flex items-center gap-3 border border-[#E1306C]/20"
+                className="w-full bg-gradient-to-r from-[#833AB4]/10 via-[#FD1D1D]/10 to-[#F56040]/10 hover:opacity-80 text-[#E1306C] font-bold py-3 sm:py-3.5 px-3.5 sm:px-4 rounded-xl transition-all flex items-center gap-2.5 sm:gap-3 border border-[#E1306C]/20 text-xs sm:text-sm cursor-pointer"
               >
-                <InstagramIcon className="h-5 w-5" /> Compartilhar no Instagram
+                <InstagramIcon className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" /> Compartilhar no Instagram
               </button>
             </div>
           </div>
@@ -189,39 +196,45 @@ export default function RelatoAcoes({ report, isOwner, currentUserId }) {
       {/* Modal de confirmação do Instagram */}
       {showInstagramModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-zinc-950 rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl border border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200 text-center relative">
+          <div 
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="instagram-modal-title"
+            className="bg-white dark:bg-zinc-950 rounded-2xl sm:rounded-3xl p-5 sm:p-8 max-w-sm w-full shadow-2xl border border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200 text-center relative"
+          >
             <button 
               onClick={() => setShowInstagramModal(false)}
-              className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors bg-zinc-100 dark:bg-zinc-800 p-2 rounded-full"
+              aria-label="Fechar aviso do Instagram"
+              className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors bg-zinc-100 dark:bg-zinc-800 p-1.5 sm:p-2 rounded-full cursor-pointer"
             >
               <X className="h-4 w-4" />
             </button>
 
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#F56040] text-white flex items-center justify-center mx-auto mb-5 shadow-lg shadow-pink-500/20">
-              <InstagramIcon className="h-8 w-8" />
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#F56040] text-white flex items-center justify-center mx-auto mb-4 sm:mb-5 shadow-lg shadow-pink-500/20">
+              <InstagramIcon className="h-7 w-7 sm:h-8 sm:w-8" />
             </div>
 
-            <h3 className="text-xl font-black text-zinc-900 dark:text-white mb-2">
+            <h3 id="instagram-modal-title" className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white mb-2">
               Link Copiado!
             </h3>
 
-            <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-6 font-medium leading-relaxed">
+            <p className="text-zinc-600 dark:text-zinc-400 text-xs sm:text-sm mb-5 sm:mb-6 font-medium leading-relaxed">
               O link deste relato já foi copiado para sua área de transferência. Agora é só colar no seu Instagram (Direct ou Stories)!
             </p>
 
-            <div className="space-y-2.5">
+            <div className="space-y-2 sm:space-y-2.5">
               <button 
                 onClick={() => {
                   setShowInstagramModal(false);
                   window.open('https://instagram.com', '_blank');
                 }}
-                className="w-full bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F56040] hover:opacity-95 text-white font-bold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md"
+                className="w-full bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F56040] hover:opacity-95 text-white font-bold py-3 sm:py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md text-xs sm:text-sm cursor-pointer"
               >
                 <InstagramIcon className="h-4 w-4" /> Abrir Instagram
               </button>
               <button 
                 onClick={() => setShowInstagramModal(false)}
-                className="w-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-bold py-3 px-4 rounded-xl transition-colors text-xs"
+                className="w-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-bold py-2.5 sm:py-3 px-4 rounded-xl transition-colors text-xs cursor-pointer"
               >
                 Fechar
               </button>

@@ -22,7 +22,12 @@ export default function FilaOperacional() {
   const navigate = useNavigate();
   const { profile } = useAuth();
   const { kpis, loading: dashboardLoading, relatos } = useOrgaoDashboard();
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof document !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return true;
+  });
 
   useEffect(() => {
     setIsDarkMode(document.documentElement.classList.contains('dark'));
@@ -31,7 +36,11 @@ export default function FilaOperacional() {
   const toggleTheme = () => {
     const html = document.documentElement;
     html.classList.toggle('dark');
-    setIsDarkMode(html.classList.contains('dark'));
+    const isDark = html.classList.contains('dark');
+    setIsDarkMode(isDark);
+    try {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    } catch (e) {}
   };
 
   const [currentTab, setCurrentTab] = useState('pendente');

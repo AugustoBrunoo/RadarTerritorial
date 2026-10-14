@@ -13,7 +13,7 @@ export default function Home() {
         if (typeof document !== 'undefined') {
             return document.documentElement.classList.contains('dark');
         }
-        return false;
+        return true;
     });
     const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
     const [activeSection, setActiveSection] = useState('inicio');

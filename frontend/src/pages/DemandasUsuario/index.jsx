@@ -9,6 +9,7 @@ import DemandaCard from "../../components/DemandaCard";
 import DemandasPagination from "../../components/DemandasPagination";
 import DemandasTutorialModal from "../../components/DemandasTutorialModal";
 import { supabase } from "../../lib/supabaseClient";
+import { safeNavigateBack } from "../../utils/navigation";
 
 export default function DemandasUsuario() {
   const navigate = useNavigate();
@@ -162,7 +163,7 @@ export default function DemandasUsuario() {
         {/* Botões de Navegação */}
         <div className="mb-6 flex flex-wrap gap-3">
           <button 
-            onClick={() => navigate(-1)}
+            onClick={() => safeNavigateBack(navigate, '/central-cidadao')}
             className="flex items-center gap-2 text-sm font-bold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-4 py-2 rounded-xl shadow-sm hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all"
           >
             <ArrowLeft className="h-4 w-4" />

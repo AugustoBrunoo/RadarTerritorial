@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../hooks/useAuth';
+import { safeNavigateBack } from '../../utils/navigation';
 import {
   ArrowLeft,
   UserCog,
@@ -260,7 +261,7 @@ export default function Settings() {
             </p>
           </div>
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => safeNavigateBack(navigate, '/central-cidadao')}
             className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold text-xs transition-colors shadow-sm shrink-0"
           >
             <ArrowLeft className="h-4 w-4" /> Voltar

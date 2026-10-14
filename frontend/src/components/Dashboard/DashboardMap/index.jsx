@@ -53,11 +53,19 @@ const createMarkerIcon = (status, diasAberto) => {
 
 export default function DashboardMap({ mapCenter, mapZoom, locateUser, filteredData }) {
   const [mapTheme, setMapTheme] = useState(() => {
-    return localStorage.getItem('mapTheme') || 'light';
+    try {
+      const saved = localStorage.getItem('mapTheme');
+      if (saved) return saved;
+      return typeof document !== 'undefined' && document.documentElement.classList.contains('dark') ? 'dark' : 'dark';
+    } catch {
+      return 'dark';
+    }
   });
 
   useEffect(() => {
-    localStorage.setItem('mapTheme', mapTheme);
+    try {
+      localStorage.setItem('mapTheme', mapTheme);
+    } catch (e) {}
   }, [mapTheme]);
 
   const toggleTheme = () => {

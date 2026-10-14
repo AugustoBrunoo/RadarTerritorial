@@ -40,7 +40,7 @@ const getStatusBadge = (status) => {
   }
 };
 
-export default function RelatoLinhaDoTempo({ report, dateStr, orgao }) {
+export default function RelatoLinhaDoTempo({ report, dateStr, timeStr, orgao }) {
   const isPendente = report.status === 'pendente';
   const isResolvido = report.status === 'resolvido';
   const hasResposta = !!report.resposta_orgao;
@@ -56,11 +56,11 @@ export default function RelatoLinhaDoTempo({ report, dateStr, orgao }) {
   const formattedResponseTime = formatDateTime(rawTimestamp);
 
   return (
-    <section className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 mt-8 shadow-sm">
-      <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-100 dark:border-zinc-800/80">
+    <section className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 mt-6 sm:mt-8 shadow-sm">
+      <div className="flex items-center justify-between mb-6 pb-3 sm:mb-8 sm:pb-4 border-b border-zinc-100 dark:border-zinc-800/80">
         <div>
-          <h2 className="text-xl font-black flex items-center gap-2.5 text-zinc-900 dark:text-white">
-            <GitCommit className="h-5 w-5 text-blue-600 dark:text-blue-500" /> Trajeto & Linha do Tempo
+          <h2 className="text-lg sm:text-xl font-black flex items-center gap-2 sm:gap-2.5 text-zinc-900 dark:text-white">
+            <GitCommit className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-500" /> Trajeto & Linha do Tempo
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
             Acompanhe o percurso deste relato desde o registro do cidadão até a atuação do poder público.
@@ -68,28 +68,32 @@ export default function RelatoLinhaDoTempo({ report, dateStr, orgao }) {
         </div>
       </div>
 
-      <div className="relative pl-6 sm:pl-8 space-y-8">
+      <div className="relative pl-5 sm:pl-8 space-y-6 sm:space-y-8">
         
         {/* Etapa 1: Registro na Plataforma */}
         <div className="relative">
           {/* Linha conectora vertical até a Etapa 2 */}
-          <div className="absolute -left-[24px] sm:-left-[32px] top-3 -bottom-[46px] w-0.5 bg-zinc-200 dark:bg-zinc-800" />
+          <div className="absolute -left-[20px] sm:-left-[32px] top-3 -bottom-[38px] sm:-bottom-[46px] w-0.5 bg-zinc-200 dark:bg-zinc-800" />
 
-          <div className="absolute -left-[35px] sm:-left-[43px] top-0.5 h-6 w-6 rounded-full bg-emerald-500 border-4 border-white dark:border-zinc-900 flex items-center justify-center shadow-md shadow-emerald-500/20 text-white z-10">
-            <CheckCircle2 className="h-3 w-3" />
+          <div className="absolute -left-[29px] sm:-left-[43px] top-0.5 h-5 w-5 sm:h-6 sm:w-6 rounded-full bg-emerald-500 border-2 sm:border-4 border-white dark:border-zinc-900 flex items-center justify-center shadow-md shadow-emerald-500/20 text-white z-10">
+            <CheckCircle2 className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-base font-bold text-zinc-900 dark:text-white">Registro na Plataforma</h3>
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white">Registro na Plataforma</h3>
               <span className="text-[10px] font-black uppercase tracking-wider bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-900/40">
                 Concluído
               </span>
             </div>
-            <p className="text-zinc-600 dark:text-zinc-400 text-sm mt-1">
+            <p className="text-zinc-600 dark:text-zinc-400 text-xs sm:text-sm mt-1">
               O relato foi submetido pelo cidadão, geolocalizado e publicado no feed comunitário.
             </p>
-            <span className="text-xs font-semibold text-zinc-400 dark:text-zinc-500 mt-2 inline-flex items-center gap-1.5">
-              <Clock className="h-3 w-3" /> Registrado em {dateStr}
+            <span className="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400 mt-2 inline-flex items-center flex-wrap gap-1.5">
+              <Clock className="h-3 w-3 shrink-0" />
+              <span>
+                Registrado em {dateStr}
+                {timeStr && ` às ${timeStr}`}
+              </span>
             </span>
           </div>
         </div>
@@ -97,21 +101,21 @@ export default function RelatoLinhaDoTempo({ report, dateStr, orgao }) {
         {/* Etapa 2: Encaminhado ao Órgão Responsável */}
         <div className="relative">
           {/* Linha conectora vertical até a Etapa 3 */}
-          <div className="absolute -left-[24px] sm:-left-[32px] top-3 -bottom-[46px] w-0.5 bg-zinc-200 dark:bg-zinc-800" />
+          <div className="absolute -left-[20px] sm:-left-[32px] top-3 -bottom-[38px] sm:-bottom-[46px] w-0.5 bg-zinc-200 dark:bg-zinc-800" />
 
-          <div className={`absolute -left-[35px] sm:-left-[43px] top-0.5 h-6 w-6 rounded-full border-4 border-white dark:border-zinc-900 flex items-center justify-center z-10 ${
+          <div className={`absolute -left-[29px] sm:-left-[43px] top-0.5 h-5 w-5 sm:h-6 sm:w-6 rounded-full border-2 sm:border-4 border-white dark:border-zinc-900 flex items-center justify-center z-10 ${
             etapa2State === 'completed'
               ? 'bg-emerald-500 shadow-md shadow-emerald-500/30 text-white'
               : etapa2State === 'active'
               ? 'bg-blue-600 shadow-md shadow-blue-500/30 text-white'
               : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-400'
           }`}>
-            {etapa2State === 'completed' ? <CheckCircle2 className="h-3 w-3" /> : (orgao || !isPendente) ? <Building2 className="h-3 w-3" /> : <Clock className="h-3 w-3" />}
+            {etapa2State === 'completed' ? <CheckCircle2 className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> : (orgao || !isPendente) ? <Building2 className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> : <Clock className="h-2.5 w-2.5 sm:h-3 sm:w-3" />}
           </div>
 
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className={`text-base font-bold ${
+              <h3 className={`text-sm sm:text-base font-bold ${
                 etapa2State === 'completed' ? 'text-zinc-900 dark:text-white' 
                 : etapa2State === 'active' ? 'text-blue-600 dark:text-blue-400'
                 : 'text-zinc-700 dark:text-zinc-300'
@@ -135,34 +139,34 @@ export default function RelatoLinhaDoTempo({ report, dateStr, orgao }) {
 
             {/* Bloco Detalhado do Órgão Atribuído */}
             {orgao ? (
-              <div className="mt-3.5 bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 sm:p-5">
-                <div className="flex items-start gap-3.5">
-                  <div className={`p-2.5 rounded-xl shrink-0 ${
+              <div className="mt-3 bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-800 rounded-xl sm:rounded-2xl p-3 sm:p-5">
+                <div className="flex items-start gap-2.5 sm:gap-3.5">
+                  <div className={`p-2 sm:p-2.5 rounded-lg sm:rounded-xl shrink-0 ${
                     etapa2State === 'completed'
                       ? 'bg-emerald-100/80 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400'
                       : 'bg-blue-100/80 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400'
                   }`}>
-                    <Building2 className="h-5 w-5" />
+                    <Building2 className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
-                  <div className="flex-grow">
+                  <div className="flex-grow min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h4 className="text-sm font-black text-zinc-900 dark:text-white">
+                      <h4 className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white truncate">
                         {nomeOrgao}
                       </h4>
                       {siglaOrgao && siglaOrgao !== nomeOrgao && (
-                        <span className="text-[11px] font-bold text-zinc-500 bg-zinc-200/60 dark:bg-zinc-800 px-2 py-0.5 rounded">
+                        <span className="text-[10px] sm:text-[11px] font-bold text-zinc-500 bg-zinc-200/60 dark:bg-zinc-800 px-1.5 sm:px-2 py-0.5 rounded">
                           {siglaOrgao}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">
+                    <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">
                       {orgao.descricao || "Este órgão público é a autoridade competente para fiscalizar, planejar e executar a resolução deste chamado."}
                     </p>
                   </div>
                 </div>
               </div>
             ) : (
-              <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-1 leading-relaxed">
+              <p className="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm mt-1 leading-relaxed">
                 O chamado está na fila do Radar Territorial aguardando triagem automática ou direcionamento manual para o órgão competente.
               </p>
             )}
@@ -171,13 +175,13 @@ export default function RelatoLinhaDoTempo({ report, dateStr, orgao }) {
 
         {/* Etapa 3: Resolução e Validação */}
         <div className={`relative ${etapa3State === 'pending' ? 'opacity-60' : ''}`}>
-          <div className={`absolute -left-[35px] sm:-left-[43px] top-0.5 h-6 w-6 rounded-full border-4 border-white dark:border-zinc-900 flex items-center justify-center z-10 ${
+          <div className={`absolute -left-[29px] sm:-left-[43px] top-0.5 h-5 w-5 sm:h-6 sm:w-6 rounded-full border-2 sm:border-4 border-white dark:border-zinc-900 flex items-center justify-center z-10 ${
             etapa3State === 'completed' || etapa3State === 'active'
               ? 'bg-emerald-500 shadow-md shadow-emerald-500/30 text-white'
               : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-400'
           }`}>
             {etapa3State === 'completed' || etapa3State === 'active' ? (
-              <CheckCircle2 className="h-3 w-3" />
+              <CheckCircle2 className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             ) : (
               <div className="h-1.5 w-1.5 rounded-full bg-zinc-400"></div>
             )}
@@ -185,7 +189,7 @@ export default function RelatoLinhaDoTempo({ report, dateStr, orgao }) {
 
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className={`text-base font-bold ${
+              <h3 className={`text-sm sm:text-base font-bold ${
                 etapa3State === 'completed' || etapa3State === 'active'
                   ? 'text-zinc-900 dark:text-white'
                   : 'text-zinc-700 dark:text-zinc-300'
@@ -200,33 +204,33 @@ export default function RelatoLinhaDoTempo({ report, dateStr, orgao }) {
             </div>
             
             {hasResposta ? (
-              <div className="mt-3.5 bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 sm:p-5">
-                <div className="flex items-start gap-3.5">
-                  <div className="bg-emerald-100/80 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 p-2.5 rounded-xl shrink-0">
-                    <MessageSquare className="h-5 w-5" />
+              <div className="mt-3 bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-800 rounded-xl sm:rounded-2xl p-3 sm:p-5">
+                <div className="flex items-start gap-2.5 sm:gap-3.5">
+                  <div className="bg-emerald-100/80 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 p-2 sm:p-2.5 rounded-lg sm:rounded-xl shrink-0">
+                    <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
                   <div className="flex-grow min-w-0">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h4 className="text-sm font-black text-zinc-900 dark:text-white">
+                        <h4 className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white truncate">
                           {nomeOrgao || "Órgão Responsável"}
                         </h4>
                         {siglaOrgao && siglaOrgao !== nomeOrgao && (
-                          <span className="text-[11px] font-bold text-zinc-500 bg-zinc-200/60 dark:bg-zinc-800 px-2 py-0.5 rounded">
+                          <span className="text-[10px] sm:text-[11px] font-bold text-zinc-500 bg-zinc-200/60 dark:bg-zinc-800 px-1.5 sm:px-2 py-0.5 rounded">
                             {siglaOrgao}
                           </span>
                         )}
                       </div>
 
                       {formattedResponseTime && (
-                        <span className="text-xs font-semibold text-zinc-400 dark:text-zinc-500 inline-flex items-center gap-1.5">
+                        <span className="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
                           <Clock className="h-3 w-3" /> Respondido em {formattedResponseTime}
                         </span>
                       )}
                     </div>
 
-                    <div className="mt-3.5 pt-3.5 border-t border-zinc-200/70 dark:border-zinc-800/80">
-                      <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed font-medium">
+                    <div className="mt-3 pt-3 border-t border-zinc-200/70 dark:border-zinc-800/80">
+                      <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed font-medium">
                         {report.resposta_orgao}
                       </p>
                     </div>
@@ -234,7 +238,7 @@ export default function RelatoLinhaDoTempo({ report, dateStr, orgao }) {
                 </div>
               </div>
             ) : (
-              <p className="text-zinc-500 text-sm mt-1 leading-relaxed">
+              <p className="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm mt-1 leading-relaxed">
                 Após a conclusão das obras ou reparos pelo órgão, a resposta oficial e o status serão exibidos aqui.
               </p>
             )}

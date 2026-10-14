@@ -9,12 +9,18 @@ export default function AuthRequiredModal({ isOpen, onClose, message = "Crie uma
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-all duration-300 animate-in fade-in">
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-300">
+      <div 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="auth-modal-title"
+        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative animate-in zoom-in-95 duration-300"
+      >
 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-full transition-colors z-10"
+          aria-label="Fechar modal de autenticação"
+          className="absolute top-4 right-4 p-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-full transition-colors z-10 cursor-pointer"
         >
           <X className="h-5 w-5" />
         </button>
@@ -24,7 +30,7 @@ export default function AuthRequiredModal({ isOpen, onClose, message = "Crie uma
             <UserCircle className="h-8 w-8" />
           </div>
 
-          <h2 className="text-2xl font-black text-zinc-900 dark:text-white mb-3">Acesso Restrito</h2>
+          <h2 id="auth-modal-title" className="text-2xl font-black text-zinc-900 dark:text-white mb-3">Acesso Restrito</h2>
 
           <p className="text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed mb-8">
             {message}

@@ -1,14 +1,18 @@
 import React from 'react';
 import { ShieldCheck, EyeOff, UserCheck, Sparkles } from 'lucide-react';
 import SimpleHeader from '../../components/SimpleHeader';
+import LoggedHeader from '../../components/LoggedHeader';
 import SimpleFooter from '../../components/SimpleFooter';
 import ReportOptionCard from '../../components/ReportOptionCard';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function SelectReport() {
+    const { user } = useAuth();
+
     return (
         <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white flex flex-col">
 
-            <SimpleHeader backLink="/" />
+            {user ? <LoggedHeader /> : <SimpleHeader backLink="/" />}
 
             {/* === SEÇÃO PRINCIPAL DE ESCOLHA === */}
             <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full flex flex-col justify-center min-h-[90vh]">
@@ -44,7 +48,7 @@ export default function SelectReport() {
                     />
 
                     <ReportOptionCard
-                        to="/acesso"
+                        to={user ? "/reportar-logado" : "/acesso"}
                         icon={UserCheck}
                         optionNumber="Opção 02"
                         title="Usar Conta"

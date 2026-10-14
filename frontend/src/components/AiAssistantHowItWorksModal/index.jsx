@@ -18,7 +18,12 @@ export default function AiAssistantHowItWorksModal({ isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-zinc-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
-      <div className="bg-white dark:bg-zinc-900 w-full max-w-4xl max-h-[90vh] rounded-3xl sm:rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col">
+      <div 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="how-it-works-title"
+        className="bg-white dark:bg-zinc-900 w-full max-w-4xl max-h-[90vh] rounded-3xl sm:rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col"
+      >
 
         {/* Header */}
         <div className="p-4 sm:p-6 border-b border-zinc-100 dark:border-zinc-800/80 flex justify-between items-center bg-zinc-50 dark:bg-zinc-950/40 shrink-0">
@@ -27,12 +32,13 @@ export default function AiAssistantHowItWorksModal({ isOpen, onClose }) {
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-black text-lg text-zinc-900 dark:text-white leading-none">Como funciona a IA?</h3>
+              <h2 id="how-it-works-title" className="font-black text-lg text-zinc-900 dark:text-white leading-none">Como funciona a IA?</h2>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full transition-colors text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+            aria-label="Fechar"
+            className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full transition-colors text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-br" class="dark">
 
 <head>
   <meta charset="UTF-8" />
@@ -18,17 +18,19 @@
     (function () {
       try {
         var saved = localStorage.getItem('theme');
-        if (saved === 'dark' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.classList.add('dark');
-        } else {
+        if (saved === 'light') {
           document.documentElement.classList.remove('dark');
+        } else {
+          document.documentElement.classList.add('dark');
         }
-      } catch (e) {}
+      } catch (e) {
+        document.documentElement.classList.add('dark');
+      }
     })();
   </script>
 </head>
 
-<body>
+<body class="bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 min-h-screen">
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>

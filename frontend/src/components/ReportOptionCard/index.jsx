@@ -19,7 +19,7 @@ export default function ReportOptionCard({
                 </div>
                 <span className="relative z-10 text-red-400 font-bold tracking-widest uppercase text-xs mb-3 block">{optionNumber}</span>
                 <h3 className="relative z-10 text-3xl font-black text-white tracking-tight mb-2">{title}</h3>
-                <p className="relative z-10 text-zinc-400 mt-4 leading-relaxed text-base">
+                <p className="relative z-10 text-zinc-400 dark:text-zinc-300 mt-4 leading-relaxed text-base">
                     {description}
                 </p>
                 <div className="relative z-10 mt-auto pt-8 w-full">

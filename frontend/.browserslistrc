@@ -1,0 +1,8 @@
+# Fonte única de verdade para Autoprefixer, PostCSS Preset Env e @vitejs/plugin-legacy.
+# Piso: iOS/Safari 15 (WebKit legado, ex.: iPhone 7 Plus no iOS 15.8).
+ios >= 15
+safari >= 15
+chrome >= 90
+edge >= 90
+firefox >= 90
+samsung >= 15

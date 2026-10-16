@@ -1,4 +1,8 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+
+/* Escaneia apenas HTML/JSX do app (evita gerar utilitários a partir de dumps, logs e configs) */
+@source "../index.html";
+@source "./";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -146,40 +150,46 @@ html {
   grid-template-rows: 0fr;
   transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .accordion-grid.open {
   grid-template-rows: 1fr;
 }
+
 .accordion-inner {
   overflow: hidden;
+  min-height: 0; /* WebKit 15: sem isso a trilha 0fr pode não colapsar totalmente */
 }
 
 /* Dashboard Map Pins */
 .pin-ativo {
-    background-color: #ef4444;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
-    width: 14px !important;
-    height: 14px !important;
+  background-color: #ef4444;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+  width: 14px !important;
+  height: 14px !important;
 }
+
 .pin-alerta {
-    background-color: #f59e0b;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
-    width: 14px !important;
-    height: 14px !important;
+  background-color: #f59e0b;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+  width: 14px !important;
+  height: 14px !important;
 }
+
 .pin-resolvido {
-    background-color: #10b981;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    width: 12px !important;
-    height: 12px !important;
-    opacity: 0.8;
+  background-color: #10b981;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  width: 12px !important;
+  height: 12px !important;
+  opacity: 0.8;
 }
+
 .dark .pin-ativo,
 .dark .pin-alerta,
 .dark .pin-resolvido {
-    border-color: #18181b;
+  border-color: #18181b;
 }

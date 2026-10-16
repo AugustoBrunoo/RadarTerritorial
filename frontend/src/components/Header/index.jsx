@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router';
-import { MapPin, Plus, Menu, Megaphone, LogIn, LayoutDashboard, Layers, Sun, Moon } from 'lucide-react';
+import { MapPin, Plus, Menu, X, Megaphone, LogIn, LayoutDashboard, Layers, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
 export default function Header({ activeSection, isDarkMode, toggleTheme, openInstallModal }) {
@@ -50,7 +50,7 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
     return (
         <div className="fixed top-3 sm:top-6 left-0 right-0 z-50 px-2.5 sm:px-4 flex justify-center pointer-events-none">
             <header
-                className="pointer-events-auto w-full max-w-5xl bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full px-3 sm:px-6 py-2 sm:py-3 flex justify-between items-center shadow-lg shadow-zinc-200/20 dark:shadow-black/40 transition-all duration-300 relative">
+                className="pointer-events-auto w-full max-w-5xl bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full px-3 sm:px-6 py-2 sm:py-3 flex justify-between items-center shadow-lg shadow-zinc-200/20 dark:shadow-black/40 transition-all duration-300 relative min-h-[54px] sm:min-h-[66px]">
 
                 {/* Logo */}
                 <Link
@@ -61,7 +61,7 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
                     <div className="bg-red-600 p-1.5 sm:p-2 rounded-full group-hover:scale-105 transition-transform shrink-0">
                         <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                     </div>
-                    <span className="font-bold text-[15px] sm:text-lg md:text-xl tracking-tight text-zinc-900 dark:text-white truncate">
+                    <span className="font-bold text-[18px] sm:text-[20px] md:text-xl tracking-tight text-zinc-900 dark:text-white truncate">
                         Radar<span className="text-red-600">Territorial</span>
                     </span>
                 </Link>
@@ -87,7 +87,7 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
                 <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                     {/* Botão de Ação Direta no Desktop */}
                     <Link to={user ? "/reportar-logado" : "/reportar"}
-                        className="hidden sm:flex items-center gap-1.5 sm:gap-2 bg-red-600 hover:bg-red-700 text-white px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all shadow-md shadow-red-500/10 hover:shadow-red-500/20 active:scale-95 pointer-events-auto focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 shrink-0">
+                        className="hidden sm:flex items-center justify-center gap-1.5 sm:gap-2 h-10 bg-red-600 hover:bg-red-700 text-white px-4 sm:px-5 rounded-full text-xs sm:text-sm font-bold transition-all shadow-md shadow-red-500/10 hover:shadow-red-500/20 active:scale-95 pointer-events-auto focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 shrink-0">
                         <span>Reportar</span>
                         <Plus className="h-4 w-4" aria-hidden="true" />
                     </Link>
@@ -97,10 +97,25 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
                             aria-label={isMenuOpen ? "Fechar menu principal" : "Abrir menu principal"}
                             aria-expanded={isMenuOpen}
                             aria-controls="app-menu-dropdown"
-                            className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full transition-colors border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-red-500 pointer-events-auto shrink-0 relative cursor-pointer">
-                            <Menu className="h-4 w-4 sm:h-5 sm:w-5 text-zinc-700 dark:text-zinc-300" aria-hidden="true" />
+                            className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full transition-all duration-300 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-red-500 pointer-events-auto shrink-0 relative cursor-pointer overflow-hidden">
+                            <Menu
+                                className={`h-4 w-4 sm:h-5 sm:w-5 text-zinc-700 dark:text-zinc-300 absolute transition-all duration-300 ease-in-out ${
+                                    isMenuOpen
+                                        ? 'opacity-0 rotate-90 scale-50 pointer-events-none'
+                                        : 'opacity-100 rotate-0 scale-100'
+                                }`}
+                                aria-hidden="true"
+                            />
+                            <X
+                                className={`h-4 w-4 sm:h-5 sm:w-5 text-zinc-700 dark:text-zinc-300 absolute transition-all duration-300 ease-in-out ${
+                                    isMenuOpen
+                                        ? 'opacity-100 rotate-0 scale-100'
+                                        : 'opacity-0 -rotate-90 scale-50 pointer-events-none'
+                                }`}
+                                aria-hidden="true"
+                            />
                             {user && (
-                                <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-600 rounded-full ring-2 ring-white dark:ring-zinc-900" title="Usuário autenticado" />
+                                <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-red-600 rounded-full ring-2 ring-white dark:ring-zinc-900 z-10" title="Usuário autenticado" />
                             )}
                         </button>
 

@@ -9,23 +9,42 @@ export default function AiAssistantBetaModal({ isOpen, onClose }) {
       setShow(true);
       document.body.style.overflow = 'hidden';
     } else {
-      setTimeout(() => setShow(false), 300);
+      const timer = setTimeout(() => setShow(false), 300);
       document.body.style.overflow = '';
+      return () => clearTimeout(timer);
     }
     return () => {
       document.body.style.overflow = '';
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen && !show) return null;
 
   return (
-    <div className={`fixed inset-0 z-[110] flex items-center justify-center p-4 bg-zinc-900/60 dark:bg-black/80 backdrop-blur-md transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
+    <div
+      className={`fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-4 bg-zinc-900/60 dark:bg-black/80 backdrop-blur-md transition-opacity duration-300 overflow-y-auto ${
+        isOpen ? 'opacity-100' : 'opacity-0'
+      }`}
+      onClick={onClose}
+    >
       <div 
         role="dialog"
         aria-modal="true"
         aria-labelledby="beta-modal-title"
-        className={`bg-white dark:bg-zinc-950 w-full max-w-2xl rounded-3xl sm:rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden transition-transform duration-300 transform ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-8'} flex flex-col`}
+        onClick={(e) => e.stopPropagation()}
+        className={`bg-white dark:bg-zinc-950 w-full max-w-2xl max-h-[calc(100vh-2rem)] max-h-[calc(100dvh-2rem)] sm:max-h-[90vh] my-auto rounded-3xl sm:rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden transition-all duration-300 transform ${
+          isOpen ? 'scale-100 translate-y-0 opacity-100' : 'scale-95 translate-y-4 opacity-0'
+        } flex flex-col`}
       >
         
         {/* Header */}
@@ -35,7 +54,9 @@ export default function AiAssistantBetaModal({ isOpen, onClose }) {
               <Beaker className="h-5 w-5" />
             </div>
             <div>
-              <h2 id="beta-modal-title" className="font-black text-lg sm:text-xl text-zinc-900 dark:text-white leading-none">Assistente Beta (v2.0.0)</h2>
+              <h2 id="beta-modal-title" className="font-black text-lg sm:text-xl text-zinc-900 dark:text-white leading-none">
+                Assistente Beta (v2.0.0)
+              </h2>
             </div>
           </div>
           <button
@@ -48,16 +69,16 @@ export default function AiAssistantBetaModal({ isOpen, onClose }) {
         </div>
 
         {/* Body (Cards) */}
-        <div className="p-4 sm:p-6 flex-1 overflow-y-auto bg-white dark:bg-zinc-950">
-          <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 font-medium mb-6">
+        <div className="p-4 sm:p-6 flex-1 overflow-y-auto overscroll-contain bg-white dark:bg-zinc-950">
+          <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 font-medium mb-4 sm:mb-6">
             Nossa Inteligência Artificial está em constante aprendizado. Antes de começarmos, é importante que você saiba de algumas coisas:
           </p>
 
           <div className="flex flex-col gap-3 sm:gap-4">
             
             {/* Card 1 */}
-            <div className="bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 flex gap-4 items-start">
-              <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-xl text-blue-600 dark:text-blue-400 shrink-0 mt-1 sm:mt-0">
+            <div className="bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5 sm:p-4 flex gap-3.5 sm:gap-4 items-start">
+              <div className="bg-blue-100 dark:bg-blue-900/30 p-2.5 sm:p-3 rounded-xl text-blue-600 dark:text-blue-400 shrink-0 mt-0.5 sm:mt-0">
                 <Beaker className="h-5 w-5 sm:h-6 sm:w-6" />
               </div>
               <div>
@@ -69,8 +90,8 @@ export default function AiAssistantBetaModal({ isOpen, onClose }) {
             </div>
 
             {/* Card 2 */}
-            <div className="bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 flex gap-4 items-start">
-              <div className="bg-amber-100 dark:bg-amber-900/30 p-3 rounded-xl text-amber-600 dark:text-amber-400 shrink-0 mt-1 sm:mt-0">
+            <div className="bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5 sm:p-4 flex gap-3.5 sm:gap-4 items-start">
+              <div className="bg-amber-100 dark:bg-amber-900/30 p-2.5 sm:p-3 rounded-xl text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0">
                 <AlertTriangle className="h-5 w-5 sm:h-6 sm:w-6" />
               </div>
               <div>
@@ -82,8 +103,8 @@ export default function AiAssistantBetaModal({ isOpen, onClose }) {
             </div>
 
             {/* Card 3 */}
-            <div className="bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 flex gap-4 items-start">
-              <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-xl text-red-600 dark:text-red-400 shrink-0 mt-1 sm:mt-0">
+            <div className="bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5 sm:p-4 flex gap-3.5 sm:gap-4 items-start">
+              <div className="bg-red-100 dark:bg-red-900/30 p-2.5 sm:p-3 rounded-xl text-red-600 dark:text-red-400 shrink-0 mt-0.5 sm:mt-0">
                 <Bug className="h-5 w-5 sm:h-6 sm:w-6" />
               </div>
               <div>
@@ -95,16 +116,17 @@ export default function AiAssistantBetaModal({ isOpen, onClose }) {
             </div>
 
           </div>
+        </div>
 
-          <div className="mt-6 flex justify-end">
-            <button
-              onClick={onClose}
-              className="w-full sm:w-auto bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-extrabold text-sm py-3.5 px-6 rounded-xl transition-all hover:scale-105 active:scale-95 flex justify-center items-center gap-2 shadow-lg shadow-zinc-900/20 dark:shadow-white/10"
-            >
-              <span>Estou ciente, continuar</span>
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
+        {/* Footer com botão de confirmação */}
+        <div className="p-4 sm:p-5 border-t border-zinc-100 dark:border-zinc-800/80 flex justify-end bg-zinc-50/70 dark:bg-zinc-900/40 shrink-0">
+          <button
+            onClick={onClose}
+            className="w-full sm:w-auto bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-extrabold text-sm py-3.5 px-6 rounded-xl transition-all hover:scale-105 active:scale-95 flex justify-center items-center gap-2 shadow-lg shadow-zinc-900/20 dark:shadow-white/10 cursor-pointer"
+          >
+            <span>Estou ciente, continuar</span>
+            <ChevronRight className="h-4 w-4" />
+          </button>
         </div>
 
       </div>

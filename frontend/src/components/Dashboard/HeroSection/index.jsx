@@ -8,8 +8,10 @@ export default function HeroSection({ eixoData, notaBairro, notaProgressPct, not
   const navigate = useNavigate();
 
   return (
-    <section className="relative bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-10 shadow-xl min-w-0 overflow-hidden">
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-red-600/5 dark:bg-red-600/10 blur-[100px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
+    <section className="relative bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-10 shadow-xl min-w-0">
+      <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-red-600/5 dark:bg-red-600/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/3"></div>
+      </div>
       <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
         <div className="max-w-3xl">
           <h2 className="text-3xl sm:text-4xl font-black text-zinc-900 dark:text-white tracking-tight mb-3">

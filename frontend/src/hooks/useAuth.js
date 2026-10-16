@@ -7,15 +7,34 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchProfile(userId) {
+    async function fetchProfile(userId, currentUser) {
       const { data } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
       
-      if (data) {
-        setProfile(data);
+      let currentProfile = data;
+
+      // Se o perfil na tabela profiles estiver com 'Cidadão' ou vazio, mas os metadados contiverem o nome real
+      const metaName = currentUser?.user_metadata?.nome_completo ||
+                       currentUser?.user_metadata?.name ||
+                       currentUser?.user_metadata?.full_name ||
+                       currentUser?.user_metadata?.username;
+
+      if (currentProfile && metaName && (!currentProfile.nome_completo || currentProfile.nome_completo === 'Cidadão')) {
+        const { data: synced } = await supabase
+          .from('profiles')
+          .update({ nome_completo: metaName })
+          .eq('id', userId)
+          .select()
+          .maybeSingle();
+
+        if (synced) currentProfile = synced;
+      }
+
+      if (currentProfile) {
+        setProfile(currentProfile);
       }
       setLoading(false);
     }
@@ -26,7 +45,7 @@ export function useAuth() {
       
       if (session?.user) {
         setUser(session.user);
-        await fetchProfile(session.user.id);
+        await fetchProfile(session.user.id, session.user);
       } else {
         setUser(null);
         setProfile(null);
@@ -39,8 +58,7 @@ export function useAuth() {
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         setUser(session.user);
-        // Only fetch profile if it's a new user or profile is null
-        await fetchProfile(session.user.id);
+        await fetchProfile(session.user.id, session.user);
       } else {
         setUser(null);
         setProfile(null);

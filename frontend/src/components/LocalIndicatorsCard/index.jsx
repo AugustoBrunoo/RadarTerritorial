@@ -21,7 +21,7 @@ export default function LocalIndicatorsCard() {
       <div className="space-y-4">
 
         <Link
-          to="#"
+          to="/dashboard"
           className="w-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 font-extrabold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all"
         >
           <span>Ver Dashboard de Dados</span> <LineChart className="h-3.5 w-3.5" />

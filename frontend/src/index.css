@@ -160,6 +160,55 @@ html {
   min-height: 0; /* WebKit 15: sem isso a trilha 0fr pode não colapsar totalmente */
 }
 
+/* Feed Filters Collapsible Smooth Animation */
+.feed-filter-collapsible {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.feed-filter-collapsible.open {
+  grid-template-rows: 1fr;
+}
+
+.feed-filter-content {
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+  visibility: hidden;
+}
+
+.feed-filter-collapsible.open .feed-filter-content {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+@media (min-width: 1024px) {
+  .feed-filter-collapsible {
+    display: block;
+    grid-template-rows: unset;
+    transition: none;
+  }
+  .feed-filter-content {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+    overflow: visible !important;
+    transition: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feed-filter-collapsible,
+  .feed-filter-content {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
 /* Dashboard Map Pins */
 .pin-ativo {
   background-color: #ef4444;

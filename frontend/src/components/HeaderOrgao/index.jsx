@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router';
-import { MapPin, Menu, PieChart, Settings, BarChart3, LogOut } from 'lucide-react';
+import { MapPin, Menu, X, PieChart, Settings, BarChart3, LogOut } from 'lucide-react';
 import { signOutUser } from '../../services/authService';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -43,23 +43,23 @@ export default function HeaderOrgao() {
     };
 
     return (
-        <div className="fixed top-6 left-0 right-0 z-50 px-4 flex justify-center pointer-events-none">
-            <header className="pointer-events-auto w-full max-w-6xl bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full px-4 sm:px-6 py-3 flex justify-between items-center shadow-lg transition-all duration-300">
-                
+        <div className="fixed top-3 sm:top-6 left-0 right-0 z-50 px-2.5 sm:px-4 flex justify-center pointer-events-none">
+            <header className="pointer-events-auto w-full max-w-6xl bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full px-3 sm:px-6 py-2 sm:py-3 flex justify-between items-center shadow-lg shadow-zinc-200/20 dark:shadow-black/40 transition-all duration-300 relative min-h-[54px] sm:min-h-[66px]">
+
                 {/* Logo */}
-                <Link to="/gestao" className="flex items-center gap-2 cursor-pointer group">
-                    <div className="bg-red-600 p-2 rounded-full group-hover:scale-105 transition-transform">
-                        <MapPin className="h-5 w-5 text-white" />
+                <Link to="/gestao" className="flex items-center gap-1.5 sm:gap-2 cursor-pointer group min-w-0 shrink">
+                    <div className="bg-red-600 p-1.5 sm:p-2 rounded-full group-hover:scale-105 transition-transform shrink-0">
+                        <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                     </div>
-                    <span className="font-bold text-lg sm:text-xl tracking-tight text-zinc-900 dark:text-white">
+                    <span className="font-bold text-[18px] sm:text-[20px] md:text-xl tracking-tight text-zinc-900 dark:text-white truncate">
                         Radar<span className="text-red-600">Territorial</span>
                     </span>
                 </Link>
 
                 {/* Actions */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                     {/* Identificação do Órgão */}
-                    <div className="hidden sm:flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 px-4 py-1.5 rounded-full">
+                    <div className="hidden sm:flex items-center gap-2 h-10 bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 px-4 rounded-full">
                         <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
                             Vinculado como: <strong className="font-bold text-zinc-900 dark:text-white">{profile?.nome_completo || 'Órgão'}</strong>
                         </span>
@@ -67,12 +67,13 @@ export default function HeaderOrgao() {
 
                     {/* Menu Hamburguer */}
                     <div className="relative flex items-center" ref={menuRef}>
-                        <button onClick={toggleMenu} className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-blue-500 transition-colors focus:outline-none shadow-sm active:scale-95">
-                            <Menu className="h-5 w-5" />
+                        <button onClick={toggleMenu} aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"} className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-blue-500 transition-all duration-300 border border-zinc-200 dark:border-zinc-700 focus:outline-none shadow-sm active:scale-95 overflow-hidden">
+                            <Menu className={`h-4 w-4 sm:h-5 sm:w-5 absolute transition-all duration-300 ease-in-out ${isMenuOpen ? 'opacity-0 rotate-90 scale-50 pointer-events-none' : 'opacity-100 rotate-0 scale-100'}`} />
+                            <X className={`h-4 w-4 sm:h-5 sm:w-5 absolute transition-all duration-300 ease-in-out ${isMenuOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-50 pointer-events-none'}`} />
                         </button>
 
                         {/* Dropdown Menu */}
-                        <div className={`absolute right-0 top-full mt-3 w-56 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-xl shadow-zinc-200/20 dark:shadow-black/40 py-2 transition-all duration-200 origin-top-right z-50 ${isMenuOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none hidden'}`}>
+                        <div className={`absolute right-0 top-full mt-3 w-56 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-xl shadow-zinc-200/20 dark:shadow-black/40 py-2 transition-all duration-200 origin-top-right z-50 ${isMenuOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}>
                             <div className="px-2 space-y-1">
                                 <a href="#analytics-section" onClick={closeMenu} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white rounded-xl transition-colors">
                                     <PieChart className="h-4 w-4 text-zinc-400" /> Relatórios & Dados
@@ -84,11 +85,11 @@ export default function HeaderOrgao() {
                                     <BarChart3 className="h-4 w-4 text-zinc-400" /> Painel Público
                                 </Link>
                                 <div className="border-t border-zinc-100 dark:border-zinc-800 my-1"></div>
-                                <button 
-                                    onClick={() => { 
-                                        setShowLogoutModal(true); 
-                                        closeMenu(); 
-                                    }} 
+                                <button
+                                    onClick={() => {
+                                        setShowLogoutModal(true);
+                                        closeMenu();
+                                    }}
                                     className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors"
                                 >
                                     <LogOut className="h-4 w-4 text-red-500" /> Sair

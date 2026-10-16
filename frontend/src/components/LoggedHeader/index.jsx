@@ -81,14 +81,14 @@ export default function LoggedHeader() {
 
   return (
     <div className="fixed top-3 sm:top-6 left-0 right-0 z-50 px-2.5 sm:px-4 flex justify-center pointer-events-none">
-      <header className="pointer-events-auto w-full max-w-5xl bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full px-3 sm:px-6 py-2 sm:py-3 flex justify-between items-center shadow-lg shadow-zinc-200/20 dark:shadow-black/40 transition-all duration-300 relative">
+      <header className="pointer-events-auto w-full max-w-5xl bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-full px-3 sm:px-6 py-2 sm:py-3 flex justify-between items-center shadow-lg shadow-zinc-200/20 dark:shadow-black/40 transition-all duration-300 relative min-h-[54px] sm:min-h-[66px]">
 
         {/* Logo */}
         <Link to="/central-cidadao" className="flex items-center gap-1.5 sm:gap-2 cursor-pointer group min-w-0 shrink">
           <div className="bg-red-600 p-1.5 sm:p-2 rounded-full group-hover:scale-105 transition-transform shrink-0">
             <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
           </div>
-          <span className="font-bold text-[15px] sm:text-lg md:text-xl tracking-tight text-zinc-900 dark:text-white truncate">
+          <span className="font-bold text-[18px] sm:text-[20px] md:text-xl tracking-tight text-zinc-900 dark:text-white truncate">
             Radar<span className="text-red-600">Territorial</span>
           </span>
         </Link>
@@ -100,15 +100,15 @@ export default function LoggedHeader() {
             onBlur={() => setTimeout(() => setShowProfileMenu(false), 200)}
             aria-label="Abrir menu do perfil de usuário"
             aria-expanded={showProfileMenu}
-            className="flex items-center gap-1.5 sm:gap-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 pl-2 sm:pl-3 pr-1.5 sm:pr-2 py-1 sm:py-1.5 rounded-full transition-colors border border-zinc-200 dark:border-zinc-700 cursor-pointer shrink-0"
+            className="flex items-center justify-center gap-1.5 sm:gap-2 h-9 sm:h-10 pl-2 sm:pl-3 pr-1.5 sm:pr-2.5 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full transition-all duration-300 border border-zinc-200 dark:border-zinc-700 cursor-pointer shrink-0 active:scale-95 shadow-sm"
           >
             <span className="text-xs sm:text-sm font-bold text-zinc-700 dark:text-zinc-300 max-w-[100px] truncate hidden sm:block">
               {userName.split(' ')[0]}
             </span>
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-zinc-300 dark:bg-zinc-600 flex items-center justify-center overflow-hidden shrink-0">
-              <span className="font-extrabold text-[11px] sm:text-xs text-zinc-600 dark:text-zinc-300">{userInitials}</span>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-zinc-300 dark:bg-zinc-600 flex items-center justify-center overflow-hidden shrink-0">
+              <span className="font-extrabold text-[10px] sm:text-[11px] text-zinc-600 dark:text-zinc-300">{userInitials}</span>
             </div>
-            <ChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-zinc-500 shrink-0" />
+            <ChevronDown className={`h-3.5 w-3.5 sm:h-4 sm:w-4 text-zinc-500 shrink-0 transition-transform duration-300 ease-in-out ${showProfileMenu ? 'rotate-180' : 'rotate-0'}`} />
           </button>
 
           {/* Dropdown */}

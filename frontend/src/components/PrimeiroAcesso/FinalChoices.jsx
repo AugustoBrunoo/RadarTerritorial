@@ -15,7 +15,7 @@ export default function FinalChoices() {
 
       {/* Grid de Opções */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-        
+
         {/* Card 1: Criar Relato */}
         <Link to="/reportar" className="group bg-red-600 text-white rounded-[2rem] p-6 sm:p-8 flex flex-col justify-between border border-red-700 hover:-translate-y-1 transition-all shadow-lg shadow-red-600/20 active:scale-95">
           <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-6">
@@ -28,7 +28,7 @@ export default function FinalChoices() {
         </Link>
 
         {/* Card 2: Meu Painel */}
-        <Link to="/hub" className="group bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white rounded-[2rem] p-6 sm:p-8 flex flex-col justify-between border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:-translate-y-1 transition-all shadow-sm active:scale-95 relative overflow-hidden">
+        <Link to="/central-cidadao" className="group bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white rounded-[2rem] p-6 sm:p-8 flex flex-col justify-between border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:-translate-y-1 transition-all shadow-sm active:scale-95 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full pointer-events-none"></div>
           <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center mb-6 relative z-10">
             <LayoutDashboard className="h-6 w-6 text-blue-500" />

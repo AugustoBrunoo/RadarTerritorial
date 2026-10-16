@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabaseClient'; // Ajuste o caminho conforme s
 export async function signUpUser({ email, password, nomeCompleto }) {
   try {
     const redirectUrl = `${window.location.origin}/confirmacao-sucesso`;
+    const cleanName = (nomeCompleto || '').trim();
 
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
@@ -14,7 +15,11 @@ export async function signUpUser({ email, password, nomeCompleto }) {
       options: {
         emailRedirectTo: redirectUrl,
         data: {
-          nome_completo: nomeCompleto.trim(),
+          nome_completo: cleanName,
+          name: cleanName,
+          full_name: cleanName,
+          username: cleanName,
+          nome: cleanName,
         }
       }
     });
@@ -60,7 +65,27 @@ export async function signInUser({ email, password }) {
     if (error) throw error;
 
     // Busca o perfil na tabela 'profiles'
-    const profile = await getUserProfile(data.user.id);
+    let profile = await getUserProfile(data.user.id);
+
+    // Auto-recuperação: se o perfil no banco estiver com o fallback 'Cidadão' ou nulo,
+    // mas o usuário possui nome nos metadados de autenticação, sincroniza com a tabela profiles
+    const metadataName = data.user.user_metadata?.nome_completo ||
+                         data.user.user_metadata?.name ||
+                         data.user.user_metadata?.full_name ||
+                         data.user.user_metadata?.username;
+
+    if (metadataName && (!profile?.nome_completo || profile.nome_completo === 'Cidadão')) {
+      const { data: updatedProfile } = await supabase
+        .from('profiles')
+        .update({ nome_completo: metadataName })
+        .eq('id', data.user.id)
+        .select()
+        .maybeSingle();
+
+      if (updatedProfile) {
+        profile = updatedProfile;
+      }
+    }
 
     // Avalia se é o primeiro acesso (se não estiver false explicitly, consideramos true para novas contas)
     // Primeiro checa user_metadata, depois o profile.
@@ -137,15 +162,32 @@ export async function completeFirstAccess() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
 
+    const metaName = user.user_metadata?.nome_completo ||
+                     user.user_metadata?.name ||
+                     user.user_metadata?.full_name ||
+                     user.user_metadata?.username;
+
+    const profileUpdates = { primeiro_acesso: false };
+    if (metaName) {
+      profileUpdates.nome_completo = metaName;
+    }
+
     // Tenta atualizar na tabela profiles (pode falhar por RLS dependendo da config)
     const { error: profileError } = await supabase
       .from('profiles')
-      .update({ primeiro_acesso: false })
+      .update(profileUpdates)
       .eq('id', user.id);
 
     // Garante a atualização no user_metadata do Auth (não sofre bloqueio de RLS)
+    const authDataUpdates = { primeiro_acesso: false };
+    if (metaName) {
+      authDataUpdates.nome_completo = metaName;
+      authDataUpdates.name = metaName;
+      authDataUpdates.full_name = metaName;
+    }
+
     const { error: authError } = await supabase.auth.updateUser({
-      data: { primeiro_acesso: false }
+      data: authDataUpdates
     });
 
     if (profileError && authError) {

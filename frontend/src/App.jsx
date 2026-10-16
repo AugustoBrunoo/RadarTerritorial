@@ -1,5 +1,6 @@
 import { useState, useEffect, Suspense, lazy } from 'react';
 import AppRoutes from './routes';
+import ScrollToTop from './components/ScrollToTop';
 
 const BetaWarningModal = lazy(() => import('./components/BetaWarningModal'));
 
@@ -30,6 +31,7 @@ function App() {
 
   return (
     <>
+      <ScrollToTop />
       {showModal && (
         <Suspense fallback={null}>
           <BetaWarningModal onClose={() => setShowModal(false)} />

@@ -91,13 +91,13 @@ export default function ComoFunciona() {
                             resolução.
                         </p>
                         <div className="flex flex-wrap gap-4">
-                            <a href="/dashboard"
+                            <Link to="/dashboard"
                                 className="bg-white text-red-600 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-zinc-100 transition-colors shadow-lg shadow-black/10">
                                 Painel Público <BarChart3 className="h-4 w-4" />
-                            </a>
+                            </Link>
                             <Link to="/feed"
                                 className="bg-red-900/40 text-white border border-white/10 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-red-900/60 transition-colors">
-                                Ver Recentes <MessageSquare className="h-4 w-4" />
+                                Ver Feed <MessageSquare className="h-4 w-4" />
                             </Link>
                         </div>
                     </div>

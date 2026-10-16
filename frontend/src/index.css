@@ -193,3 +193,41 @@ html {
 .dark .pin-resolvido {
   border-color: #18181b;
 }
+
+/* AppPromo Phone Levitation & Dynamic Shadow Animation */
+@keyframes phone-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes phone-shadow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scale(0.82);
+    opacity: 0.2;
+  }
+}
+
+.animate-phone-float {
+  animation: phone-float 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-phone-shadow {
+  animation: phone-shadow 5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-phone-float,
+  .animate-phone-shadow {
+    animation: none !important;
+  }
+}

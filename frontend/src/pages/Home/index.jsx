@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense, lazy } from 'react';
+import { useEffect, useState, Suspense, lazy } from 'react';
 
 import Header from '../../components/Header';
 import Hero from '../../components/Hero';

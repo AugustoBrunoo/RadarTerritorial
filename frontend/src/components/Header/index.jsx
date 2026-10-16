@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router';
 import { MapPin, Plus, Menu, Megaphone, LogIn, LayoutDashboard, Layers, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -144,11 +144,10 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
 
                                 <Link to={user ? "/central-cidadao" : "/login"}
                                     onClick={closeAppMenu}
-                                    className={`flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl transition-colors focus:outline-none ${
-                                        user
+                                    className={`flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl transition-colors focus:outline-none ${user
                                             ? "font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 focus:bg-red-50 dark:focus:bg-red-900/10"
                                             : "font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white focus:bg-zinc-50 dark:focus:bg-zinc-800/50"
-                                    }`}>
+                                        }`}>
                                     {user ? (
                                         <LayoutDashboard className="h-4 w-4 text-red-600 dark:text-red-400" aria-hidden="true" />
                                     ) : (

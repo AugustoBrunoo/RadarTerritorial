@@ -96,6 +96,17 @@ export async function signInUser({ email, password }) {
       isFirstAccess = false;
     }
 
+    if (typeof window !== 'undefined') {
+      // Remove qualquer chave global legada para não interferir entre contas diferentes
+      localStorage.removeItem('primeiro_acesso_concluido');
+
+      if (!isFirstAccess) {
+        localStorage.setItem(`primeiro_acesso_concluido_${data.user.id}`, 'true');
+      } else {
+        localStorage.removeItem(`primeiro_acesso_concluido_${data.user.id}`);
+      }
+    }
+
     return {
       success: true,
       user: data.user,
@@ -202,9 +213,56 @@ export async function completeFirstAccess() {
 }
 
 /**
+ * Verifica se o usuário autenticado já concluiu o primeiro acesso.
+ * Retorna true caso já tenha concluído (impedindo acesso à tela /bem-vindo).
+ */
+export async function isFirstAccessCompleted() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return true;
+
+    if (typeof window !== 'undefined') {
+      // Remove chave global legada para não interferir entre usuários no mesmo aparelho
+      localStorage.removeItem('primeiro_acesso_concluido');
+      if (localStorage.getItem(`primeiro_acesso_concluido_${user.id}`) === 'true') {
+        return true;
+      }
+    }
+
+    if (user.user_metadata?.primeiro_acesso === false) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(`primeiro_acesso_concluido_${user.id}`, 'true');
+      }
+      return true;
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('primeiro_acesso')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (profile?.primeiro_acesso === false) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(`primeiro_acesso_concluido_${user.id}`, 'true');
+      }
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    console.error('Erro ao verificar primeiro acesso:', error);
+    return false;
+  }
+}
+
+/**
  * Encerra a sessão do usuário
  */
 export async function signOutUser() {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('primeiro_acesso_concluido');
+  }
   const { error } = await supabase.auth.signOut();
   if (error) console.error('Erro ao sair:', error.message);
 }

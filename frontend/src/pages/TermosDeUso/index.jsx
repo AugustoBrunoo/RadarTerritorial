@@ -9,7 +9,8 @@ import {
     CheckCircle, 
     MessageSquare, 
     ShieldOff, 
-    Gavel 
+    Gavel,
+    ShieldAlert
 } from 'lucide-react';
 import SimpleHeader from '../../components/SimpleHeader';
 import SimpleFooter from '../../components/SimpleFooter';
@@ -17,7 +18,7 @@ import SimpleFooter from '../../components/SimpleFooter';
 export default function TermosDeUso() {
     return (
         <div className="min-h-screen bg-[#F9FAFB] dark:bg-[#09090B] flex flex-col font-sans text-zinc-900 dark:text-zinc-50 selection:bg-red-500 selection:text-white relative">
-            <SimpleHeader />
+            <SimpleHeader backLink={-1} />
             
             {/* Background elements - contidos em viewport fixo para não gerar overflow nem recálculos na rolagem */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
@@ -31,7 +32,7 @@ export default function TermosDeUso() {
                     Termos de Uso e <br className="hidden sm:inline" />Política de Privacidade
                 </h1>
                 <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-medium flex justify-center items-center gap-1.5 sm:gap-2">
-                    <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 text-red-600" /> Versão atualizada em: 04 de julho de 2026
+                    <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 text-red-600" /> Versão atualizada em: 16 de outubro de 2026
                 </p>
             </section>
 
@@ -95,31 +96,35 @@ export default function TermosDeUso() {
                         {/* Grid de Dados */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
                             <div className="p-3.5 sm:p-4 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 flex items-start gap-3">
-                                <User className="h-5 w-5 text-zinc-500 mt-0.5 shrink-0 flex-shrink-0" />
+                                <User className="h-5 w-5 text-zinc-500 dark:text-zinc-400 mt-0.5 shrink-0 flex-shrink-0" />
                                 <div className="min-w-0">
-                                    <span className="font-bold text-zinc-900 dark:text-white block text-sm">Nome Completo</span>
-                                    <span className="text-xs text-zinc-500 leading-relaxed block mt-0.5">Necessário para identificar a autoria do relato e evitar "spam" ou registros falsos.</span>
+                                    <span className="font-bold text-zinc-900 dark:text-white block text-sm">Nome de Exibição (Apelido)</span>
+                                    <span className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed block mt-0.5">
+                                        Você tem a liberdade de escolher como deseja ser identificado na plataforma (nome real ou apelido). O uso de um nome de exibição protege sua identidade enquanto mantém a autoria do relato para a comunidade.
+                                    </span>
                                 </div>
                             </div>
                             <div className="p-3.5 sm:p-4 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 flex items-start gap-3">
-                                <Mail className="h-5 w-5 text-zinc-500 mt-0.5 shrink-0 flex-shrink-0" />
+                                <Mail className="h-5 w-5 text-zinc-500 dark:text-zinc-400 mt-0.5 shrink-0 flex-shrink-0" />
                                 <div className="min-w-0">
                                     <span className="font-bold text-zinc-900 dark:text-white block text-sm">E-mail</span>
-                                    <span className="text-xs text-zinc-500 leading-relaxed block mt-0.5">Necessário para validação da conta e contato, caso necessário.</span>
+                                    <span className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed block mt-0.5">
+                                        Necessário para validação da conta e contato, caso necessário. Seu e-mail é criptografado em nosso banco de dados e nunca será exibido publicamente ou compartilhado com outros usuários.
+                                    </span>
                                 </div>
                             </div>
                             <div className="p-3.5 sm:p-4 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 flex items-start gap-3">
-                                <Phone className="h-5 w-5 text-zinc-500 mt-0.5 shrink-0 flex-shrink-0" />
+                                <Phone className="h-5 w-5 text-zinc-500 dark:text-zinc-400 mt-0.5 shrink-0 flex-shrink-0" />
                                 <div className="min-w-0">
                                     <span className="font-bold text-zinc-900 dark:text-white block text-sm">Telefone (Opcional)</span>
-                                    <span className="text-xs text-zinc-500 leading-relaxed block mt-0.5">Coletado apenas se desejar ser contatado agilmente pelos responsáveis.</span>
+                                    <span className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed block mt-0.5">Coletado apenas se desejar ser contatado agilmente pelos responsáveis.</span>
                                 </div>
                             </div>
                             <div className="p-3.5 sm:p-4 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 flex items-start gap-3">
-                                <MapPin className="h-5 w-5 text-zinc-500 mt-0.5 shrink-0 flex-shrink-0" />
+                                <MapPin className="h-5 w-5 text-zinc-500 dark:text-zinc-400 mt-0.5 shrink-0 flex-shrink-0" />
                                 <div className="min-w-0">
                                     <span className="font-bold text-zinc-900 dark:text-white block text-sm">Dados do Relato</span>
-                                    <span className="text-xs text-zinc-500 leading-relaxed block mt-0.5">Categoria do problema, descrição e local aproximado da ocorrência.</span>
+                                    <span className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed block mt-0.5">Categoria do problema, descrição e local aproximado da ocorrência.</span>
                                 </div>
                             </div>
                         </div>
@@ -132,7 +137,9 @@ export default function TermosDeUso() {
                             </li>
                             <li className="flex items-start gap-3 text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
                                 <CheckCircle className="h-5 w-5 text-green-500 shrink-0 flex-shrink-0 mt-0.5" />
-                                <span>As informações estatísticas coletadas (problemas e locais) serão utilizadas exclusivamente para gerar relatórios de melhoria para o bairro.</span>
+                                <span>
+                                    As informações estatísticas coletadas (categoria do problema e localização) serão <strong>anonimizadas</strong>. Isso significa que geramos mapas de calor e relatórios de melhoria para o poder público sem expor qual usuário fez a denúncia, garantindo sua privacidade total.
+                                </span>
                             </li>
                         </ul>
 
@@ -156,7 +163,7 @@ export default function TermosDeUso() {
                         </p>
                         <ul className="space-y-3 sm:space-y-4">
                             <li className="flex items-start gap-3 bg-zinc-50 dark:bg-zinc-950 p-3.5 sm:p-4 rounded-xl border border-zinc-100 dark:border-zinc-800">
-                                <div className="mt-0.5 shrink-0 flex-shrink-0"><MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-zinc-500" /></div>
+                                <div className="mt-0.5 shrink-0 flex-shrink-0"><MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-zinc-500 dark:text-zinc-400" /></div>
                                 <span className="text-xs sm:text-sm md:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed">As informações enviadas são verdadeiras e baseadas na sua percepção real.</span>
                             </li>
                             <li className="flex items-start gap-3 bg-zinc-50 dark:bg-zinc-950 p-3.5 sm:p-4 rounded-xl border border-zinc-100 dark:border-zinc-800">
@@ -164,8 +171,12 @@ export default function TermosDeUso() {
                                 <span className="text-xs sm:text-sm md:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed">Não utilizará a plataforma para propagar conteúdo ofensivo, discriminatório, fake news ou para fins ilícitos.</span>
                             </li>
                             <li className="flex items-start gap-3 bg-zinc-50 dark:bg-zinc-950 p-3.5 sm:p-4 rounded-xl border border-zinc-100 dark:border-zinc-800">
-                                <div className="mt-0.5 shrink-0 flex-shrink-0"><Gavel className="h-4 w-4 sm:h-5 sm:w-5 text-zinc-500" /></div>
+                                <div className="mt-0.5 shrink-0 flex-shrink-0"><Gavel className="h-4 w-4 sm:h-5 sm:w-5 text-zinc-500 dark:text-zinc-400" /></div>
                                 <span className="text-xs sm:text-sm md:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed">Você é o único responsável pelo conteúdo do seu relato. A administração do Radar Territorial reserva-se o direito de remover qualquer conteúdo que viole estas diretrizes.</span>
+                            </li>
+                            <li className="flex items-start gap-3 bg-zinc-50 dark:bg-zinc-950 p-3.5 sm:p-4 rounded-xl border border-zinc-100 dark:border-zinc-800">
+                                <div className="mt-0.5 shrink-0 flex-shrink-0"><ShieldAlert className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500" /></div>
+                                <span className="text-xs sm:text-sm md:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed"><strong>Responsabilidade sobre o Perfil:</strong> O uso de um nome de exibição/apelido não isenta o usuário de responder por denúncias comprovadamente falsas, caluniosas ou que infrinjam a lei, podendo a conta ser banida pelos administradores.</span>
                             </li>
                         </ul>
                     </section>

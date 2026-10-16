@@ -7,6 +7,7 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
     const { user, profile } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navPillRef = useRef(null);
+    const mobileNavPillRef = useRef(null);
 
     const userName = profile?.nome_completo || user?.user_metadata?.nome_completo || user?.email?.split('@')[0] || 'Cidadão';
     const userInitials = (() => {
@@ -38,14 +39,53 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
         navPillRef.current.style.opacity = '1';
     };
 
+    const updateMobileNavPill = (id) => {
+        if (!mobileNavPillRef.current) return;
+        const targetId = id || 'inicio';
+        const activeLink = document.querySelector(`.mobile-nav-item[data-section="${targetId}"]`);
+
+        if (!activeLink) {
+            mobileNavPillRef.current.style.opacity = '0';
+            return;
+        }
+
+        const offsetTop = activeLink.offsetTop;
+        const height = activeLink.offsetHeight;
+
+        mobileNavPillRef.current.style.top = `${offsetTop}px`;
+        mobileNavPillRef.current.style.height = `${height}px`;
+        mobileNavPillRef.current.style.opacity = '1';
+    };
+
     useEffect(() => {
         updateNavPill(activeSection);
 
-        const handleResize = () => updateNavPill(activeSection);
+        const handleResize = () => {
+            updateNavPill(activeSection);
+            if (isMenuOpen) {
+                updateMobileNavPill(activeSection);
+            }
+        };
         window.addEventListener('resize', handleResize);
 
         return () => window.removeEventListener('resize', handleResize);
-    }, [activeSection]);
+    }, [activeSection, isMenuOpen]);
+
+    useEffect(() => {
+        if (isMenuOpen) {
+            updateMobileNavPill(activeSection);
+            const raf = requestAnimationFrame(() => {
+                updateMobileNavPill(activeSection);
+            });
+            return () => cancelAnimationFrame(raf);
+        }
+    }, [activeSection, isMenuOpen]);
+
+    const mobileNavSections = [
+        { id: 'inicio', label: 'Início', href: '#inicio' },
+        { id: 'como-funciona', label: 'A Dinâmica', href: '#como-funciona' },
+        { id: 'dashboard', label: 'Impacto', href: '#dashboard' }
+    ];
 
     return (
         <div className="fixed top-3 sm:top-6 left-0 right-0 z-50 px-2.5 sm:px-4 flex justify-center pointer-events-none">
@@ -97,7 +137,7 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
                             aria-label={isMenuOpen ? "Fechar menu principal" : "Abrir menu principal"}
                             aria-expanded={isMenuOpen}
                             aria-controls="app-menu-dropdown"
-                            className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full transition-all duration-300 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-red-500 pointer-events-auto shrink-0 relative cursor-pointer overflow-hidden">
+                            className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full transition-all duration-300 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-red-500 pointer-events-auto shrink-0 relative cursor-pointer">
                             <Menu
                                 className={`h-4 w-4 sm:h-5 sm:w-5 text-zinc-700 dark:text-zinc-300 absolute transition-all duration-300 ease-in-out ${
                                     isMenuOpen
@@ -115,12 +155,12 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
                                 aria-hidden="true"
                             />
                             {user && (
-                                <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-red-600 rounded-full ring-2 ring-white dark:ring-zinc-900 z-10" title="Usuário autenticado" />
+                                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-600 rounded-full ring-2 ring-white dark:ring-zinc-900 z-10 shadow-sm pointer-events-none" title="Usuário autenticado" />
                             )}
                         </button>
 
-                        {/* Dropdown Menu */}
-                        <div id="app-menu-dropdown" className={`absolute right-0 top-full mt-4 sm:mt-6 w-60 sm:w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl sm:rounded-3xl shadow-xl shadow-zinc-200/20 dark:shadow-black/40 py-2 transition-all duration-200 origin-top-right transform z-50 ${isMenuOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"}`}>
+                        {/* Dropdown Menu - 100% opaco para máxima legibilidade e sem vazamento de fundo */}
+                        <div id="app-menu-dropdown" className={`absolute right-0 top-full mt-4 sm:mt-6 w-60 sm:w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl sm:rounded-3xl shadow-2xl shadow-zinc-900/25 dark:shadow-black/70 py-2 transition-all duration-200 origin-top-right transform z-50 ${isMenuOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"}`}>
 
                             {/* Informações do usuário logado */}
                             {user && (
@@ -138,15 +178,35 @@ export default function Header({ activeSection, isDarkMode, toggleTheme, openIns
                             )}
 
                             {/* Links de Navegação (Visível apenas no Mobile) */}
-                            <nav aria-label="Navegação mobile" className="md:hidden border-b border-zinc-100 dark:border-zinc-800 pb-2 mb-2 px-2">
-                                <a href="#inicio" onClick={closeAppMenu}
-                                    className="block px-4 py-2 text-sm font-semibold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg transition-colors focus:outline-none focus:bg-zinc-100 dark:focus:bg-zinc-800">Início</a>
-                                <a href="#como-funciona" onClick={closeAppMenu}
-                                    className="block px-4 py-2 text-sm font-semibold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg transition-colors focus:outline-none focus:bg-zinc-100 dark:focus:bg-zinc-800">A Dinâmica</a>
-                                {/* <a href="#projetos-jcc" onClick={closeAppMenu}
-                                    className="block px-4 py-2 text-sm font-semibold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg transition-colors focus:outline-none focus:bg-zinc-100 dark:focus:bg-zinc-800">Ecossistema</a> */}
-                                <a href="#dashboard" onClick={closeAppMenu}
-                                    className="block px-4 py-2 text-sm font-semibold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg transition-colors focus:outline-none focus:bg-zinc-100 dark:focus:bg-zinc-800">Impacto</a>
+                            <nav aria-label="Navegação mobile" className="md:hidden border-b border-zinc-100 dark:border-zinc-800 pb-2 mb-2 px-2 relative">
+                                {/* Pílula de fundo animada tipo Glass sobre fundo opaco */}
+                                <div
+                                    ref={mobileNavPillRef}
+                                    className="absolute left-2 right-2 rounded-xl transition-all duration-300 ease-out pointer-events-none bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm"
+                                    style={{ top: '0px', height: '0px', opacity: 0 }}
+                                />
+
+                                {mobileNavSections.map((item) => {
+                                    const isActive = (activeSection || 'inicio') === item.id;
+                                    return (
+                                        <a
+                                            key={item.id}
+                                            href={item.href}
+                                            data-section={item.id}
+                                            onClick={closeAppMenu}
+                                            className={`mobile-nav-item relative z-10 flex items-center justify-between px-4 py-2.5 text-sm rounded-xl transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500/50 ${
+                                                isActive
+                                                    ? 'font-bold text-zinc-900 dark:text-white'
+                                                    : 'font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100/40 dark:hover:bg-zinc-800/30'
+                                            }`}
+                                        >
+                                            <span>{item.label}</span>
+                                            {isActive && (
+                                                <span className="w-1.5 h-1.5 rounded-full bg-red-600 shadow-sm shadow-red-600/50" />
+                                            )}
+                                        </a>
+                                    );
+                                })}
                             </nav>
 
                             {/* Opções Principais do App */}

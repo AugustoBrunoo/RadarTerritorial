@@ -12,7 +12,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
-export default function ReportChoiceModal({ isOpen, onClose }) {
+export default function ReportChoiceModal({ isOpen, onClose, onSelect, replaceNavigation = false }) {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
 
@@ -44,7 +44,13 @@ export default function ReportChoiceModal({ isOpen, onClose }) {
 
   const handleSelect = (path) => {
     onClose();
-    navigate(path);
+    if (onSelect) {
+      onSelect(path);
+    } else if (replaceNavigation) {
+      navigate(path, { replace: true });
+    } else {
+      navigate(path);
+    }
   };
 
   return (

@@ -10,7 +10,8 @@ import {
     MessageSquare, 
     ShieldOff, 
     Gavel,
-    ShieldAlert
+    ShieldAlert,
+    UserCheck
 } from 'lucide-react';
 import SimpleHeader from '../../components/SimpleHeader';
 import SimpleFooter from '../../components/SimpleFooter';
@@ -32,7 +33,7 @@ export default function TermosDeUso() {
                     Termos de Uso e <br className="hidden sm:inline" />Política de Privacidade
                 </h1>
                 <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-medium flex justify-center items-center gap-1.5 sm:gap-2">
-                    <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 text-red-600" /> Versão atualizada em: 16 de outubro de 2026
+                    <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 text-red-600" /> Versão atualizada em: 17 de outubro de 2026
                 </p>
             </section>
 
@@ -159,9 +160,13 @@ export default function TermosDeUso() {
                             <span className="leading-snug">Conduta e Responsabilidades do Usuário</span>
                         </h2>
                         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-5 sm:mb-6">
-                            Ao utilizar o sistema, você declara que:
+                            Ao utilizar o sistema, criar uma conta e confirmar sua adesão aos termos de responsabilidade, você declara expressamente que:
                         </p>
                         <ul className="space-y-3 sm:space-y-4">
+                            <li className="flex items-start gap-3 bg-zinc-50 dark:bg-zinc-950 p-3.5 sm:p-4 rounded-xl border border-zinc-100 dark:border-zinc-800">
+                                <div className="mt-0.5 shrink-0 flex-shrink-0"><UserCheck className="h-4 w-4 sm:h-5 sm:w-5 text-zinc-500 dark:text-zinc-400" /></div>
+                                <span className="text-xs sm:text-sm md:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed"><strong>Maioridade e Capacidade Civil:</strong> É maior de 18 anos (ou civilmente emancipado) e assume total capacidade e responsabilidade legal, cívica e jurídica pelos dados cadastrados, relatos publicados e interações na plataforma.</span>
+                            </li>
                             <li className="flex items-start gap-3 bg-zinc-50 dark:bg-zinc-950 p-3.5 sm:p-4 rounded-xl border border-zinc-100 dark:border-zinc-800">
                                 <div className="mt-0.5 shrink-0 flex-shrink-0"><MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-zinc-500 dark:text-zinc-400" /></div>
                                 <span className="text-xs sm:text-sm md:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed">As informações enviadas são verdadeiras e baseadas na sua percepção real.</span>

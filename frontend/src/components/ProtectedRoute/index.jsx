@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router';
 import { supabase } from '../../lib/supabaseClient';
+import SEO from '../SEO';
 
 export default function ProtectedRoute({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -40,5 +41,10 @@ export default function ProtectedRoute({ children }) {
   }
 
   // Render children if authenticated
-  return children;
+  return (
+    <>
+      <SEO title="Área do Cidadão | Radar Territorial" noindex={true} />
+      {children}
+    </>
+  );
 }

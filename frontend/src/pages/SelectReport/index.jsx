@@ -4,6 +4,7 @@ import SimpleHeader from '../../components/SimpleHeader';
 import LoggedHeader from '../../components/LoggedHeader';
 import SimpleFooter from '../../components/SimpleFooter';
 import ReportOptionCard from '../../components/ReportOptionCard';
+import SEO from '../../components/SEO';
 import { useAuth } from '../../hooks/useAuth';
 
 export default function SelectReport() {
@@ -11,6 +12,11 @@ export default function SelectReport() {
 
     return (
         <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white flex flex-col">
+            <SEO 
+                title="Reportar Problema Urbano | Radar Territorial"
+                description="Escolha a melhor forma de relatar ocorrências no seu bairro: de forma 100% anônima e segura ou através da sua conta para acompanhar o andamento da solução."
+                canonical="/reportar"
+            />
 
             {user ? <LoggedHeader /> : <SimpleHeader backLink="/" />}
 

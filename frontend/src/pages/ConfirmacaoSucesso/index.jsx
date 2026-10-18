@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { CheckCircle2, MapPin, ArrowRight, LogIn } from 'lucide-react';
+import SEO from '../../components/SEO';
 
 export default function ConfirmacaoSucesso() {
   const navigate = useNavigate();
@@ -12,6 +13,11 @@ export default function ConfirmacaoSucesso() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#09090B] text-zinc-50 font-sans selection:bg-red-500 selection:text-white">
+      <SEO 
+        title="Conta Confirmada com Sucesso | Radar Territorial" 
+        noindex={true}
+        canonical="/confirmacao-sucesso"
+      />
       {/* Main Content */}
       <main className="flex-grow flex items-center justify-center px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="w-full max-w-md bg-zinc-900 rounded-3xl border border-zinc-800 shadow-2xl p-8 sm:p-10 animate-fade-in-up text-center relative overflow-hidden">

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 
 import SimpleHeader from '../../components/SimpleHeader';
+import SEO from '../../components/SEO';
 
 export default function EsqueciSenha() {
   const [email, setEmail] = useState('');
@@ -88,7 +89,12 @@ export default function EsqueciSenha() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white flex flex-col">
-
+      <SEO 
+        title="Recuperar Senha | Radar Territorial"
+        description="Recupere o acesso à sua conta no Radar Territorial."
+        canonical="/esqueci-senha"
+        noindex={true}
+      />
       <SimpleHeader backLink="/login" />
 
       {/* === SEÇÃO DE RECUPERAÇÃO DE SENHA (SPLIT LAYOUT) === */}

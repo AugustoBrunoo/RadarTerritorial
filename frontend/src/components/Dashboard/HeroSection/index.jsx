@@ -14,9 +14,9 @@ export default function HeroSection({ eixoData, notaBairro, notaProgressPct, not
       </div>
       <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
         <div className="max-w-3xl">
-          <h2 className="text-3xl sm:text-4xl font-black text-zinc-900 dark:text-white tracking-tight mb-3">
+          <h1 className="text-3xl sm:text-4xl font-black text-zinc-900 dark:text-white tracking-tight mb-3">
             {eixoData.label}
-          </h2>
+          </h1>
           <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed mb-6">
             {eixoData.desc}
           </p>

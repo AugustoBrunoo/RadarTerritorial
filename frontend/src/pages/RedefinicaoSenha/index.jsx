@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 
 import SimpleHeader from '../../components/SimpleHeader';
+import SEO from '../../components/SEO';
 
 export default function RedefinicaoSenha() {
   const [password, setPassword] = useState('');
@@ -82,7 +83,12 @@ export default function RedefinicaoSenha() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white flex flex-col">
-
+      <SEO 
+        title="Redefinir Senha | Radar Territorial"
+        description="Redefina sua senha de acesso na plataforma Radar Territorial."
+        canonical="/redefinir-senha"
+        noindex={true}
+      />
       <SimpleHeader backLink="/login" />
 
       {/* === SEÇÃO DE TROCA DE SENHA === */}

@@ -5,6 +5,7 @@ import SimpleFooter from "../../components/SimpleFooter";
 import AnonymousTutorial from "../../components/AnonymousTutorial";
 import AnonymousAcceptance from "../../components/AnonymousAcceptance";
 import AnonymousForm from "../../components/AnonymousForm";
+import SEO from "../../components/SEO";
 import { useAuth } from "../../hooks/useAuth";
 import { safeNavigateBack } from "../../utils/navigation";
 
@@ -60,6 +61,11 @@ export default function AnonymousReport() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
+      <SEO 
+        title="Relato Anônimo e Sigiloso | Radar Territorial"
+        description="Registre problemas urbanos na sua comunidade com total sigilo e proteção de identidade. Nenhum dado pessoal é exigido ou armazenado."
+        canonical="/reportar/anonimo"
+      />
       <SimpleHeader 
         backLink={-1} 
         onBackClick={handleBack}
@@ -67,6 +73,7 @@ export default function AnonymousReport() {
       />
 
       <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto w-full flex flex-col items-center justify-center min-h-[90vh]">
+        <h1 className="sr-only">Fazer Relato Urbano Anônimo</h1>
         <AnonymousTutorial
           currentStep={currentStep}
           currentSlide={currentSlide}

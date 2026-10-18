@@ -7,6 +7,7 @@ import AiAssistantExitModal from '../../components/AiAssistantExitModal';
 import AiAssistantChatMessages from '../../components/AiAssistantChatMessages';
 import AiAssistantInputBar from '../../components/AiAssistantInputBar';
 import SimpleHeader from '../../components/SimpleHeader';
+import SEO from '../../components/SEO';
 
 import { useAiChat } from '../../hooks/useAiChat';
 import { useAiAuth } from '../../hooks/useAiAuth';
@@ -442,6 +443,11 @@ export default function AiAssistant() {
 
   return (
     <div className="h-screen overflow-hidden bg-white dark:bg-zinc-950 flex flex-col font-sans">
+      <SEO 
+        title="Assistente Virtual com Inteligência Artificial | Radar Territorial"
+        description="Relate problemas urbanos conversando com a nossa IA. Ela identifica a localização, categoria e encaminha sua demanda rapidamente."
+        canonical="/assistente-ia"
+      />
       <SimpleHeader 
         backLink={-1} 
         onLogoClick={() => handleRequestExit('/')}

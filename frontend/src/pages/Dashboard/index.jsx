@@ -15,6 +15,7 @@ import MapSection from '../../components/Dashboard/MapSection';
 import ChartsSection from '../../components/Dashboard/ChartsSection';
 import TopRuasTable from '../../components/Dashboard/TopRuasTable';
 import ConstructionModal from '../../components/Dashboard/ConstructionModal';
+import SEO from '../../components/SEO';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -416,6 +417,22 @@ export default function Dashboard() {
 
   return (
     <div className="bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 font-sans min-h-screen flex flex-col selection:bg-red-600 selection:text-white overflow-x-hidden relative">
+      <SEO 
+        title="Painel Público de Indicadores Urbanos | Radar Territorial"
+        description="Monitore indicadores em tempo real de zeladoria urbana, taxa de resolução de problemas, mapa territorial e demandas por bairro em Campo Grande e região."
+        canonical="/dashboard"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Dataset",
+          "name": "Indicadores Públicos de Zeladoria Urbana - Radar Territorial",
+          "description": "Dados abertos e indicadores territoriais de resolução de problemas urbanos em Campo Grande, Cosmos e Inhoaíba.",
+          "url": "https://radar-territorial.vercel.app/dashboard",
+          "creator": {
+            "@type": "Organization",
+            "name": "Radar Territorial"
+          }
+        }}
+      />
       
       <Header toggleTheme={toggleTheme} currentTime={currentTime} />
 

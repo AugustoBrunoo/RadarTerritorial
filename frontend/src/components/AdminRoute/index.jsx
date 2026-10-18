@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
 import { Loader2 } from 'lucide-react';
+import SEO from '../SEO';
 
 export default function AdminRoute({ children }) {
   const { user, isAdmin, loading } = useAuth();
@@ -22,5 +23,10 @@ export default function AdminRoute({ children }) {
     return <Navigate to="/central-cidadao" replace />;
   }
 
-  return children ? children : <Outlet />;
+  return (
+    <>
+      <SEO title="Painel Administrativo | Radar Territorial" noindex={true} />
+      {children ? children : <Outlet />}
+    </>
+  );
 }

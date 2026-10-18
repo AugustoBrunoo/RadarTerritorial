@@ -5,6 +5,7 @@ import Hero from '../../components/Hero';
 import ComoFunciona from '../../components/ComoFunciona';
 import AppPromo from '../../components/AppPromo';
 import Footer from '../../components/Footer';
+import SEO from '../../components/SEO';
 
 const InstallModal = lazy(() => import('../../components/InstallModal'));
 
@@ -66,6 +67,11 @@ export default function Home() {
 
     return (
         <div className={`min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white ${isDarkMode ? 'dark' : ''}`}>
+            <SEO 
+                title="Radar Territorial | Zeladoria Urbana Inteligente e Indicadores"
+                description="Aponte problemas no seu bairro diretamente para a gestão pública, sem burocracia. Acompanhe indicadores de zeladoria urbana e participe da melhoria comunitária de Campo Grande e Zona Oeste do Rio."
+                canonical="/"
+            />
 
             {/* Skip Link para Acessibilidade */}
             <a

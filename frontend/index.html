@@ -1,19 +1,100 @@
 <!doctype html>
-<html lang="pt-br" class="dark">
+<html lang="pt-BR" class="dark">
 
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Radar Territorial | Zeladoria Urbana Inteligente e Indicadores</title>
+  <meta name="description" content="O Radar Territorial é uma plataforma focada em zeladoria urbana inteligente, acompanhamento de indicadores territoriais e participação comunitária colaborativa para Campo Grande e Zona Oeste do Rio de Janeiro." />
+  <meta name="author" content="Radar Territorial - Jovens Cientistas / Nave do Conhecimento" />
+  <meta name="keywords" content="zeladoria urbana, campo grande rj, zona oeste rio de janeiro, indicadores urbanos, cidadania colaborativa, relato de problemas urbanos, radar territorial" />
+
+  <!-- Canonical URL Oficial -->
+  <link rel="canonical" href="https://radar-territorial.vercel.app/" />
+
+  <!-- Google Search Console & Diretrizes de Indexação -->
+  <meta name="google-site-verification" content="google72b80f82c158db0a" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+  <!-- Preconnect & DNS-Prefetch para Performance e Core Web Vitals -->
+  <link rel="dns-prefetch" href="https://mt1.google.com" />
+  <link rel="dns-prefetch" href="https://unpkg.com" />
+  <link rel="dns-prefetch" href="https://nominatim.openstreetmap.org" />
+  <link rel="dns-prefetch" href="https://viacep.com.br" />
+
+  <!-- Favicons e PWA -->
   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
   <link rel="shortcut icon" href="/favicon/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
   <meta name="apple-mobile-web-app-title" content="RadarTerritorial" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="/favicon/site.webmanifest" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
-  <meta name="description" content="O Radar Territorial é uma plataforma focada em zeladoria urbana inteligente, acompanhamento de indicadores e ação comunitária colaborativa para melhoria das cidades." />
-  <title>RadarTerritorial</title>
+
+  <!-- Open Graph (Facebook, WhatsApp, LinkedIn, Discord) -->
+  <meta property="og:site_name" content="Radar Territorial" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:title" content="Radar Territorial | Zeladoria Urbana Inteligente e Indicadores" />
+  <meta property="og:description" content="Aponte problemas no seu bairro, acompanhe indicadores em tempo real e colabore para a melhoria urbana de Campo Grande e Zona Oeste do Rio." />
+  <meta property="og:url" content="https://radar-territorial.vercel.app/" />
+  <meta property="og:image" content="https://radar-territorial.vercel.app/og-image.jpg" />
+  <meta property="og:image:secure_url" content="https://radar-territorial.vercel.app/og-image.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="675" />
+  <meta property="og:image:alt" content="Radar Territorial - Plataforma Inteligente de Zeladoria Urbana" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Radar Territorial | Zeladoria Urbana Inteligente e Indicadores" />
+  <meta name="twitter:description" content="Aponte problemas no seu bairro, acompanhe indicadores em tempo real e colabore para a melhoria urbana de Campo Grande e Zona Oeste do Rio." />
+  <meta name="twitter:image" content="https://radar-territorial.vercel.app/og-image.jpg" />
+  <meta name="twitter:image:alt" content="Radar Territorial - Plataforma Inteligente de Zeladoria Urbana" />
+
+  <!-- Dados Estruturados Schema.org (JSON-LD) para Rich Snippets no Google -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://radar-territorial.vercel.app/#website",
+        "url": "https://radar-territorial.vercel.app/",
+        "name": "Radar Territorial",
+        "description": "Plataforma focada em zeladoria urbana inteligente, acompanhamento de indicadores territoriais e participação comunitária colaborativa para Campo Grande e Zona Oeste do Rio de Janeiro.",
+        "inLanguage": "pt-BR",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://radar-territorial.vercel.app/feed?search={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "GovernmentService",
+        "@id": "https://radar-territorial.vercel.app/#service",
+        "name": "Radar Territorial - Zeladoria Urbana",
+        "serviceType": "Zeladoria Urbana e Participação Comunitária",
+        "areaServed": {
+          "@type": "AdministrativeArea",
+          "name": "Zona Oeste, Rio de Janeiro"
+        },
+        "provider": {
+          "@type": "Organization",
+          "name": "Jovens Cientistas Cariocas / Nave do Conhecimento",
+          "url": "https://radar-territorial.vercel.app/"
+        },
+        "description": "Canal rápido e inteligente apoiado pela Nave do Conhecimento para apontamento e resolução de problemas urbanos em bairros como Campo Grande, Cosmos e Inhoaíba."
+      }
+    ]
+  }
+  </script>
+
+  <!-- Theme Script (Prevenção de FOUC) -->
   <script>
     (function () {
       try {

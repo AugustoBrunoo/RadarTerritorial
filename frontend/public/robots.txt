@@ -1,42 +1,49 @@
 # ==============================================================================
 # Robots.txt - Radar Territorial (https://radar-territorial.vercel.app)
+# Otimizado de acordo com as diretrizes do Google Search Console & Googlebot
 # ==============================================================================
 
 User-agent: *
 
 # --- Áreas Públicas Permitidas para Indexação (SEO) ---
-Allow: /$
-Allow: /index.html
+Allow: /
 Allow: /feed
-Allow: /publicacoes/
-Allow: /relato/
 Allow: /dashboard
+Allow: /relato/
+Allow: /reportar
 Allow: /termos
 Allow: /privacidade
-Allow: /static/
+Allow: /politica-de-privacidade
 Allow: /assets/
+Allow: /favicon/
+Allow: /og-image.jpg
+Allow: /og-image.png
+Allow: /sitemap.xml
 
-# --- Áreas Administrativas e de Gestão (Bloqueadas) ---
+# --- Áreas Administrativas e de Gestão Governamental (Bloqueadas) ---
 Disallow: /admin/
 Disallow: /admin*
 Disallow: /gestao/
 Disallow: /moderacao/
 
-# --- Áreas Privadas e de Autenticação do Usuário (Bloqueadas) ---
-Disallow: /hub
-Disallow: /painel
-Disallow: /configuracoes
-Disallow: /settings
+# --- Áreas Privadas e de Autenticação do Cidadão (Bloqueadas) ---
+Disallow: /acesso
 Disallow: /login
 Disallow: /cadastro
-Disallow: /auth/
-Disallow: /escolhaReporte.html
-Disallow: /novo-relato
+Disallow: /confirmacao-sucesso
+Disallow: /esqueci-senha
+Disallow: /redefinir-senha
+Disallow: /central-cidadao
+Disallow: /demandas-usuario
+Disallow: /reportar-logado
+Disallow: /configuracoes
+Disallow: /bem-vindo
+Disallow: /em-construcao
 
-# --- Parâmetros de Busca e Sessão ---
+# --- Parâmetros de URL Sensíveis e Tokens de Sessão ---
 Disallow: /*?*token=
 Disallow: /*?*session=
 Disallow: /*?*code=
 
-# --- Sitemap Oficial ---
+# --- Sitemap Oficial Registrado ---
 Sitemap: https://radar-territorial.vercel.app/sitemap.xml

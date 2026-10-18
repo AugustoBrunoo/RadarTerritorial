@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
+import SEO from '../SEO';
 
 export function GestorRoute() {
   const { profile, loading } = useAuth();
@@ -20,5 +21,10 @@ export function GestorRoute() {
     return <Navigate replace to="/login"/>;
   }
 
-  return <Outlet/>;
+  return (
+    <>
+      <SEO title="Gestão Pública Operacional | Radar Territorial" noindex={true} />
+      <Outlet/>
+    </>
+  );
 }

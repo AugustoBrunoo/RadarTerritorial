@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import { Navigate } from 'react-router';
 import { Loader2 } from 'lucide-react';
 
 const Home = React.lazy(() => import('../pages/Home/index.jsx'));
@@ -21,6 +22,9 @@ export const publicRoutes = [
   { path: "/reportar", element: <Suspense fallback={<Fallback />}><SelectReport /></Suspense> },
   { path: "/reportar/anonimo", element: <Suspense fallback={<Fallback />}><AnonymousReport /></Suspense> },
   { path: "/termos", element: <Suspense fallback={<Fallback />}><TermosDeUso /></Suspense> },
+  { path: "/termos-de-uso", element: <Navigate to="/termos" replace /> },
+  { path: "/privacidade", element: <Navigate to="/termos" replace /> },
+  { path: "/politica-de-privacidade", element: <Navigate to="/termos" replace /> },
   { path: "/feed", element: <Suspense fallback={<Fallback />}><Feed /></Suspense> },
   { path: "/assistente-ia", element: <Suspense fallback={<Fallback />}><AiAssistant /></Suspense> },
   { path: "/dashboard", element: <Suspense fallback={<Fallback />}><Dashboard /></Suspense> },

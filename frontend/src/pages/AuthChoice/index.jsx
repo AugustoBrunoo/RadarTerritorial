@@ -4,6 +4,7 @@ import { LogIn, UserPlus, MapPin } from 'lucide-react';
 import SimpleHeader from '../../components/SimpleHeader';
 import SimpleFooter from '../../components/SimpleFooter';
 import AuthCard from '../../components/AuthCard';
+import SEO from '../../components/SEO';
 import { useAuth } from '../../hooks/useAuth';
 
 export default function AuthChoice() {
@@ -22,6 +23,12 @@ export default function AuthChoice() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white flex flex-col">
+      <SEO 
+        title="Acesse sua Conta ou Cadastre-se | Radar Territorial" 
+        description="Acesse ou crie sua conta no Radar Territorial para acompanhar seus relatos e participar da zeladoria urbana."
+        noindex={true}
+        canonical="/acesso"
+      />
       <SimpleHeader backLink="/" />
 
       <main className="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full flex flex-col justify-center min-h-[90vh] relative">

@@ -6,6 +6,7 @@ import FeedHeader from '../../components/FeedHeader';
 import FeedFilters from '../../components/FeedFilters';
 import FeedList from '../../components/FeedList';
 import FeedSkeleton from '../../components/FeedSkeleton';
+import SEO from '../../components/SEO';
 import { supabase } from '../../lib/supabaseClient';
 import { getUserApoios, toggleApoio } from '../../services/interacoesService';
 
@@ -303,6 +304,18 @@ export default function Feed() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
+      <SEO 
+        title="Feed de Relatos e Ocorrências Comunitárias | Radar Territorial"
+        description="Acompanhe relatos em tempo real sobre problemas de iluminação, saneamento, buracos, trânsito e segurança em Campo Grande, Cosmos, Inhoaíba e região."
+        canonical="/feed"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": "Feed Comunitário - Radar Territorial",
+          "description": "Feed público de ocorrências e zeladoria urbana compartilhadas pela comunidade na Zona Oeste do Rio de Janeiro.",
+          "url": "https://radar-territorial.vercel.app/feed"
+        }}
+      />
       {currentUserId ? <LoggedHeader /> : <SimpleHeader backLink="/" />}
 
       <main className="flex-grow pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full flex flex-col justify-start animate-in slide-in-from-bottom-4 duration-500">

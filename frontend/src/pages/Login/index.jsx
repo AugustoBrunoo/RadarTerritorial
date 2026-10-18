@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import SimpleHeader from '../../components/SimpleHeader';
 import SimpleFooter from '../../components/SimpleFooter';
+import SEO from '../../components/SEO';
 import { supabase } from '../../lib/supabaseClient';
 import { signInUser, resendConfirmationEmail } from '../../services/authService';
 import { 
@@ -192,6 +193,12 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans selection:bg-red-500 selection:text-white flex flex-col">
+      <SEO 
+        title="Entrar na sua Conta | Radar Territorial"
+        description="Acesse sua conta no Radar Territorial para acompanhar seus relatos e notificações."
+        canonical="/login"
+        noindex={true}
+      />
       
       <SimpleHeader backLink="/acesso" />
 

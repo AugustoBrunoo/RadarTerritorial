@@ -16,6 +16,7 @@ import RelatoLinhaDoTempo from '../../components/RelatoLinhaDoTempo';
 import RelatoAcoes from '../../components/RelatoAcoes';
 import RelatoComentarios from '../../components/RelatoComentarios';
 import RelatoDetalhadoSkeleton from '../../components/RelatoDetalhadoSkeleton';
+import SEO from '../../components/SEO';
 
 const getCategoryIcon = (macroEixo) => {
   const eixoStr = (macroEixo || "").toLowerCase();
@@ -114,6 +115,11 @@ export default function RelatoDetalhado() {
   if (!report) {
     return (
       <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col">
+        <SEO 
+          title="Relato Não Encontrado | Radar Territorial" 
+          noindex={true} 
+          canonical={`/relato/${id}`}
+        />
         {currentUserId ? <LoggedHeader /> : <SimpleHeader backLink="/feed" />}
         <main className="flex-grow pt-40 pb-16 px-4 flex flex-col items-center justify-center">
           <MapPin className="h-10 w-10 text-zinc-400 mb-4" />
@@ -138,8 +144,38 @@ export default function RelatoDetalhado() {
   let locationStr = locationParts.join(', ') || 'Localização não informada';
   if (report.referencia) locationStr += ` • Ref: ${report.referencia}`;
 
+  const reportTitle = `${report.categoria_nome || report.macro_eixo || 'Relato'} em ${report.bairro || 'Rio de Janeiro'}`;
+  const reportDescription = report.descricao
+    ? (report.descricao.length > 155 ? `${report.descricao.slice(0, 152)}...` : report.descricao)
+    : `Acompanhe o status e atualizações do chamado de zeladoria urbana para ${report.categoria_nome || report.macro_eixo} em ${report.bairro || 'Zona Oeste'}.`;
+
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-zinc-900 dark:bg-[#09090B] dark:text-zinc-50 font-sans flex flex-col w-full overflow-x-hidden">
+      <SEO 
+        title={`${reportTitle} | Radar Territorial`}
+        description={reportDescription}
+        canonical={`/relato/${id}`}
+        ogImage={report.foto_url || undefined}
+        ogType="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Report",
+          "headline": reportTitle,
+          "description": reportDescription,
+          "datePublished": report.created_at,
+          "image": report.foto_url || "https://radar-territorial.vercel.app/og-image.jpg",
+          "locationCreated": {
+            "@type": "Place",
+            "name": locationStr,
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": report.bairro || "Campo Grande",
+              "addressRegion": "RJ",
+              "addressCountry": "BR"
+            }
+          }
+        }}
+      />
       {currentUserId ? <LoggedHeader /> : <SimpleHeader backLink="/feed" />}
 
       <main className="flex-grow pt-20 sm:pt-28 md:pt-32 pb-12 sm:pb-16 px-3.5 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full animate-in fade-in duration-300">

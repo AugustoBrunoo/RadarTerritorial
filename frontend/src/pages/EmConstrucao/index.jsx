@@ -3,10 +3,16 @@ import { Link } from 'react-router';
 import { HardHat, ArrowLeft, Wrench, Sparkles } from 'lucide-react';
 import SimpleHeader from '../../components/SimpleHeader';
 import SimpleFooter from '../../components/SimpleFooter';
+import SEO from '../../components/SEO';
 
 export default function EmConstrucao() {
     return (
         <div className="min-h-screen bg-[#F9FAFB] dark:bg-[#09090B] flex flex-col font-sans relative overflow-hidden text-zinc-900 dark:text-zinc-50">
+            <SEO 
+                title="Página em Construção | Radar Territorial"
+                description="Funcionalidade em desenvolvimento na plataforma Radar Territorial."
+                noindex={true}
+            />
             <SimpleHeader />
             
             {/* Background elements */}

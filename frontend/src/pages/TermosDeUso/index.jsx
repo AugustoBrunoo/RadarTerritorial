@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { 
     Calendar, 
     AlertTriangle, 
@@ -15,10 +15,16 @@ import {
 } from 'lucide-react';
 import SimpleHeader from '../../components/SimpleHeader';
 import SimpleFooter from '../../components/SimpleFooter';
+import SEO from '../../components/SEO';
 
 export default function TermosDeUso() {
     return (
         <div className="min-h-screen bg-[#F9FAFB] dark:bg-[#09090B] flex flex-col font-sans text-zinc-900 dark:text-zinc-50 selection:bg-red-500 selection:text-white relative">
+            <SEO 
+                title="Termos de Uso e Política de Privacidade | Radar Territorial"
+                description="Conheça os Termos de Uso e as Políticas de Privacidade do Radar Territorial. Entenda como protegemos seus dados, garantimos o anonimato e tratamos as informações comunitárias com total conformidade com a LGPD."
+                canonical="/termos"
+            />
             <SimpleHeader backLink={-1} />
             
             {/* Background elements - contidos em viewport fixo para não gerar overflow nem recálculos na rolagem */}

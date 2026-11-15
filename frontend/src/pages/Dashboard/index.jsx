@@ -1,9 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { SlidersHorizontal, Activity, TriangleAlert, CloudRain, Zap, Bus, ShieldAlert, Loader2 } from 'lucide-react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import html2pdf from 'html2pdf.js';
 
 import { EIXOS, CONTATOS_ORGAOS, ruas } from './data';
+import { exportDashboardCSV, exportDashboardPDF } from '../../utils/dashboardExport';
 import { getRelatosRealtime } from '../../services/reports';
 import Header from '../../components/Dashboard/Header';
 import FilterBar from '../../components/Dashboard/FilterBar';
@@ -168,7 +168,7 @@ export default function Dashboard() {
   }, [currentTab, bairroFilter, timeFilter, realDatabase]);
 
   // KPIs calculation
-  const hasScore = stats.comResposta > 0;
+  const hasScore = stats.comResposta > 5;
   const resolucaoPct = stats.total > 0 ? Math.round((stats.resolvidos / stats.total) * 100) : 0;
   const tempoMedio = stats.resolvidos > 0 ? Math.round(stats.somaDias / stats.resolvidos) : 0;
   const notaBairro = hasScore ? ((stats.resolvidos / stats.total) * 10).toFixed(1) : "0.0";
@@ -258,161 +258,28 @@ export default function Dashboard() {
 
   // Exports
   const executeExportCSV = () => {
-    let csvContent = "data:text/csv;charset=utf-8,ID,Bairro,Rua,Eixo,Categoria,Operador,Status,Dias_Aberto,Apoios,Reaberto\n";
-    filteredData.forEach(row => { csvContent += `${row.id},${row.bairro},"${row.rua}",${row.eixo},${row.category},${row.operador},${row.status},${row.diasAberto},${row.apoios},${row.reaberto}\n`; });
-    const link = document.createElement("a"); 
-    link.setAttribute("href", encodeURI(csvContent)); 
-    link.setAttribute("download", `RadarTerritorial_${currentTab}_${new Date().getTime()}.csv`);
-    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    exportDashboardCSV({ filteredData, currentTab });
     setIsExportModalOpen(false);
   };
 
-  const executeExportPDF = () => {
+  const executeExportPDF = async () => {
     setIsExportModalOpen(false);
-
-    const bName = bairroFilter === 'all' ? 'Todos os Bairros' : bairroFilter;
-    const tMap = { 'all': 'Todo Histórico', '30': 'Últimos 30 dias', '90': 'Últimos 3 meses', '180': 'Últimos 6 meses' };
-    const tName = tMap[timeFilter];
-    const dataAtual = new Date().toLocaleString('pt-BR');
-    const tabName = EIXOS[currentTab].label;
-
-    let htmlPDF = `
-        <div class="border-b-2 border-zinc-300 pb-4 mb-6 flex justify-between items-end">
-            <div>
-                <h1 class="text-4xl font-black tracking-tight text-zinc-900">Radar<span class="text-red-600">Territorial</span></h1>
-                <p class="text-[11px] font-bold text-zinc-500 uppercase tracking-widest mt-1">Relatório Oficial de Zeladoria Urbana</p>
-            </div>
-            <div class="text-right text-sm text-zinc-600">
-                <p><strong>Gerado em:</strong> ${dataAtual}</p>
-                <p><strong>Bairro:</strong> ${bName} | <strong>Período:</strong> ${tName}</p>
-            </div>
-        </div>
-        <div class="bg-zinc-100 p-4 rounded-xl mb-6 border border-zinc-200">
-            <h2 class="text-xl font-bold text-zinc-900">${tabName}</h2>
-            <p class="text-sm text-zinc-700 mt-1">${EIXOS[currentTab].desc}</p>
-        </div>
-    `;
-
-    if (currentTab === 'geral') {
-        htmlPDF += `
-        <div class="grid grid-cols-4 gap-4 mb-8">
-            <div class="border border-zinc-200 p-4 rounded-xl bg-white">
-                <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Em Andamento</p>
-                <h3 class="text-3xl font-black text-zinc-900 mt-1">${stats.ativas}</h3>
-                <p class="text-[10px] text-red-500 mt-1 font-bold">+${stats.reabertas} reabertas</p>
-            </div>
-            <div class="border border-zinc-200 p-4 rounded-xl bg-white">
-                <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Taxa de Solução</p>
-                <h3 class="text-3xl font-black text-zinc-900 mt-1">${resolucaoPct}%</h3>
-                <p class="text-[10px] text-zinc-500 mt-1">Média geral</p>
-            </div>
-            <div class="border border-zinc-200 p-4 rounded-xl bg-white">
-                <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Prazo Médio</p>
-                <h3 class="text-3xl font-black text-zinc-900 mt-1">${tempoMedio} <span class="text-sm">dias</span></h3>
-                <p class="text-[10px] text-zinc-500 mt-1">Tempo de resposta</p>
-            </div>
-            <div class="border border-red-200 bg-red-50 p-4 rounded-xl">
-                <p class="text-[10px] font-bold text-red-600 uppercase tracking-wider">Prazo Vencido</p>
-                <h3 class="text-3xl font-black text-red-600 mt-1">${stats.slaEstourado}</h3>
-                <p class="text-[10px] text-red-500 mt-1">> 30 dias paralisados</p>
-            </div>
-        </div>`;
-    } else {
-        let kpiClass = "bg-zinc-100 border-zinc-200 text-zinc-900";
-        if (cor === 'red') kpiClass = "bg-red-50 border-red-200 text-red-600";
-        else if (cor === 'blue') kpiClass = "bg-blue-50 border-blue-200 text-blue-600";
-        else if (cor === 'amber') kpiClass = "bg-amber-50 border-amber-200 text-amber-600";
-
-        htmlPDF += `
-        <div class="border p-6 rounded-xl mb-8 text-center ${kpiClass}">
-            <h3 class="text-5xl font-black mb-2">${topProblemCount}</h3>
-            <p class="text-lg font-bold">${topProblemName}</p>
-            <p class="text-sm mt-1 opacity-80">Maior problema reportado neste eixo.</p>
-        </div>`;
-    }
-
-    htmlPDF += `<h3 class="text-lg font-bold text-zinc-900 mb-4 border-b border-zinc-200 pb-2">Distribuição de Ocorrências</h3>`;
-    htmlPDF += `<div class="mb-8 space-y-3">`;
-
-    let dataForBars = {};
-    if (currentTab === 'geral') {
-        Object.keys(stats.ops).forEach(op => { dataForBars[op] = stats.ops[op].resolvido + stats.ops[op].pendente; });
-    } else { dataForBars = stats.subs; }
-
-    const sortedBars = Object.entries(dataForBars).sort((a, b) => b[1] - a[1]);
-    const maxVal = sortedBars.length > 0 ? sortedBars[0][1] : 1;
-
-    sortedBars.forEach(([label, value]) => {
-        const pct = Math.max(2, Math.round((value / maxVal) * 100));
-        htmlPDF += `
-        <div class="flex items-center gap-4">
-            <div class="w-2/5 text-sm font-bold text-zinc-700 truncate">${label}</div>
-            <div class="w-3/5 flex items-center gap-3">
-                <div class="flex-grow bg-zinc-100 rounded-md h-5 overflow-hidden border border-zinc-200">
-                    <div class="bg-blue-500 h-full rounded-md" style="width: ${pct}%"></div>
-                </div>
-                <div class="w-10 text-right text-sm font-black text-zinc-900">${value}</div>
-            </div>
-        </div>`;
+    await exportDashboardPDF({
+      currentTab,
+      bairroFilter,
+      timeFilter,
+      eixos: EIXOS,
+      stats,
+      filteredData,
+      hasScore,
+      notaBairro,
+      resolucaoPct,
+      tempoMedio,
+      topRuas,
+      topProblemName,
+      topProblemCount,
+      cor,
     });
-    htmlPDF += `</div>`;
-
-    htmlPDF += `<h3 class="text-lg font-bold text-zinc-900 mb-4 border-b border-zinc-200 pb-2">Vias Mais Críticas (Top 5)</h3>`;
-    htmlPDF += `
-    <table class="w-full text-left border-collapse text-sm">
-        <thead>
-            <tr class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider border-b-2 border-zinc-200">
-                <th class="pb-2">Onde / Responsável</th>
-                <th class="pb-2">Bairro</th>
-                <th class="pb-2 text-center">Registros</th>
-                <th class="pb-2 text-center text-blue-600">Moradores Afetados</th>
-            </tr>
-        </thead>
-        <tbody class="text-zinc-800">
-    `;
-
-    if (topRuas.length === 0) {
-        htmlPDF += `<tr><td colspan="4" class="py-4 text-center text-zinc-500 italic">Nenhum problema crítico ativo neste filtro.</td></tr>`;
-    } else {
-        topRuas.forEach(([key, val]) => {
-            const [rua, bairro, op] = key.split('|');
-            htmlPDF += `
-                <tr class="border-b border-zinc-100">
-                    <td class="py-3"><strong class="block text-zinc-900">${rua}</strong><span class="text-[10px] text-zinc-500 uppercase block">${op}</span></td>
-                    <td class="py-3 text-zinc-600">${bairro}</td>
-                    <td class="py-3 text-center font-bold">${val.registros}</td>
-                    <td class="py-3 text-center font-black text-blue-600">${val.apoios}</td>
-                </tr>
-            `;
-        });
-    }
-    htmlPDF += `</tbody></table>`;
-
-    const tempContainer = document.createElement('div');
-    tempContainer.innerHTML = htmlPDF;
-    tempContainer.className = "bg-white text-zinc-900 w-[800px] p-10 font-sans shadow-none";
-    tempContainer.style.position = 'absolute';
-    tempContainer.style.top = '0';
-    tempContainer.style.left = '0';
-    tempContainer.style.zIndex = '-9999';
-    tempContainer.style.opacity = '0.01';
-    tempContainer.style.pointerEvents = 'none';
-
-    document.body.appendChild(tempContainer);
-
-    const opt = {
-        margin: 10,
-        filename: `RadarTerritorial_${currentTab}_${Date.now()}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    setTimeout(() => {
-        html2pdf().set(opt).from(tempContainer).save().then(() => {
-            document.body.removeChild(tempContainer);
-        });
-    }, 150);
   };
 
   return (
@@ -492,7 +359,8 @@ export default function Dashboard() {
               <GeralKpis 
                 stats={stats} 
                 resolucaoPct={resolucaoPct} 
-                tempoMedio={tempoMedio} 
+                tempoMedio={tempoMedio}
+                hasScore={hasScore}
               />
             )}
 

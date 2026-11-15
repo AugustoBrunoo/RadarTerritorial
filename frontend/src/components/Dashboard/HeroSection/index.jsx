@@ -32,7 +32,7 @@ export default function HeroSection({ eixoData, notaBairro, notaProgressPct, not
 
         <div className="bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 text-center shadow-inner shrink-0 w-full md:w-64 relative">
           <div className="absolute top-3 right-3">
-            <TooltipWrapper text={<span><strong>Nota do Bairro:</strong> A nota apenas é calculada após o primeiro caso relatado receber alguma resposta oficial do órgão responsável ou ser resolvido.<br/><br/><strong>Cálculo:</strong> (Relatos Resolvidos ÷ Total de Relatos) × 10.</span>}>
+            <TooltipWrapper text={<span><strong>Nota do Bairro:</strong> A nota apenas é calculada após mais de 5 casos relatados receberem resposta oficial do órgão responsável ou serem resolvidos.<br/><br/><strong>Cálculo:</strong> (Relatos Resolvidos ÷ Total de Relatos) × 10.</span>}>
               <HelpCircle className="h-4 w-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-help transition-colors" />
             </TooltipWrapper>
           </div>
@@ -50,9 +50,13 @@ export default function HeroSection({ eixoData, notaBairro, notaProgressPct, not
             </>
           ) : (
             <div className="flex flex-col items-center justify-center pt-2">
-              <span className="text-sm font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-200/50 dark:bg-zinc-800/50 px-4 py-2 rounded-xl mb-3">
-                Ainda não avaliado
-              </span>
+              <div className="mb-3">
+                <TooltipWrapper text="Não houve resposta suficiente dos órgãos públicos para calcular este indicador." posClass="tooltip-bottom-center">
+                  <span className="inline-flex items-center text-2xl font-black text-zinc-400 dark:text-zinc-500 tracking-tight cursor-help border-b border-dashed border-zinc-300 dark:border-zinc-700 pb-0.5 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
+                    Não definido
+                  </span>
+                </TooltipWrapper>
+              </div>
               <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
                 <div className="bg-zinc-300 dark:bg-zinc-700 h-full rounded-full w-0"></div>
               </div>

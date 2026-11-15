@@ -6,7 +6,7 @@ const SubTabButton = ({ id, label, currentTab, setCurrentTab }) => {
   return (
     <button 
       onClick={() => setCurrentTab(id)}
-      className={`shrink-0 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors ${active ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-200 dark:border-zinc-700' : 'bg-transparent text-zinc-500 hover:text-zinc-900 dark:hover:text-white border border-transparent'}`}
+      className={`cursor-pointer shrink-0 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors ${active ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-200 dark:border-zinc-700' : 'bg-transparent text-zinc-500 hover:text-zinc-900 dark:hover:text-white border border-transparent'}`}
     >
       {label}
     </button>
